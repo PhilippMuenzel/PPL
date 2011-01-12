@@ -1,11 +1,18 @@
-#include "bitmaploader.h"
-#include "textureholder.h"
-#include "XPLMGraphics.h"
-#include "XPLMUtilities.h"
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
+// Released under the terms of the GNU General Public License version 2 or later
+// as published by the Free Software Foundation, Inc.
 
 #include <stdexcept>
+
+#include "XPLMGraphics.h"
+#include "XPLMUtilities.h"
+#include "bitmaploader.h"
+#include "textureholder.h"
 #include "log.h"
+
 #if IBM
+#define WIN32_LEAN_AND_MEAN
+#include "Windows.h"
 #include <gl\gl.h>
 #include <gl\glu.h>
 #elif LIN
@@ -20,6 +27,8 @@
 #include <glu.h>
 #endif
 #endif
+
+using namespace PPL;
 
 TextureHolder::TextureHolder()
 {

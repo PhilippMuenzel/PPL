@@ -1,9 +1,9 @@
-// Copyright (C) 2008,2009,2010 by Philipp Muenzel. All rights reserved
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
-#ifndef XPMESSAGEWIDGET_H
-#define XPMESSAGEWIDGET_H
+#ifndef MESSAGEWINDOW_H
+#define MESSAGEWINDOW_H
 
 #include <string>
 #include <list>
@@ -17,13 +17,13 @@
 namespace PPL {
 
 /**
-      * A convenient way to display a message box with a title and a longer text message
-      * that quits X-Plane when closed. This is a very good way to handle improper setups,
-      * blame the user, and force quit afterwards
-      * @version 1.0
-      * @author (c) 2009, 2010 by Philipp Muenzel
-      */
-class XPMessageWidget
+  * A convenient way to display a message box with a title and a longer text message
+  * that quits X-Plane when closed. This is a very good way to handle improper setups,
+  * blame the user, and force quit afterwards
+  * @version 1.0
+  * @author (c) 2009-2011 by Philipp Muenzel
+  */
+class MessageWindow
 {
 public:
     /**
@@ -36,6 +36,7 @@ public:
             std::runtime_error(msg)
         {}
     };
+
     /**
       * construct message box centered in the X-Plane window, with title and auto-breaking message
       * @param width in pixels
@@ -44,12 +45,12 @@ public:
       * @param message text gets automatically br'd according to window width
       * @param quit whether the simulator should be closed after the message was confirmed
       */
-    XPMessageWidget(int width, int height, const std::string& title, const std::string& message, bool quit);
+    MessageWindow(int width, int height, const std::string& title, const std::string& message, bool quit);
 
     /**
       * destroy window and all child windows
       */
-    ~XPMessageWidget();
+    ~MessageWindow();
 
     /**
       * @param width in pixels
@@ -126,13 +127,13 @@ private:
 
 private:
 
-    int m_left;         //!< upper left corner left offset in pixels from X-Plane main window
+    int m_left;             //!< upper left corner left offset in pixels from X-Plane main window
 
-    int m_right;        //!< upper right corner right offset in pixels from X-Plane main window
+    int m_right;            //!< upper right corner right offset in pixels from X-Plane main window
 
-    int m_top;          //!< upper left corner upper offset in pixels from X-Plane main window
+    int m_top;              //!< upper left corner upper offset in pixels from X-Plane main window
 
-    int m_bottom;       //!< lower left corner bottom offset in pixels from X-Plane main window
+    int m_bottom;           //!< lower left corner bottom offset in pixels from X-Plane main window
 
     std::string m_title;    //!< title bar caption
 
@@ -155,4 +156,4 @@ private:
 
 }
 
-#endif // XPMESSAGEWIDGET_H
+#endif // MESSAGEWINDOW_H

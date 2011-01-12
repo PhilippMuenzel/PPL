@@ -1,4 +1,4 @@
-// Copyright (C) 2008,2009,2010 by Philipp Muenzel. All rights reserved
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
@@ -13,9 +13,8 @@ namespace PPL {
 /**
   * abstract class for all kinds of processing that takes values from XP,
   * do calculations in the flightloop and publish the result in a custom Dataref
-  * @author (c) 2009, 2010 by Philipp Muenzel
-  * @version 0.3
-  * @file logichandler.h
+  * @author (c) 2009-2011 by Philipp Muenzel
+  * @version 0.4
   */
 class LogicHandler {
 

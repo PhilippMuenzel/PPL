@@ -1,8 +1,14 @@
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
+// Released under the terms of the GNU General Public License version 2 or later
+// as published by the Free Software Foundation, Inc.
+
 #ifndef BITMAPLOADER_H
 #define BITMAPLOADER_H
 
 #include <string>
 #include <vector>
+
+namespace PPL {
 
 class BitmapLoader
 {
@@ -55,5 +61,7 @@ private:
     IMAGEDATA m_imagedata;
 
 };
+
+}
 
 #endif // BITMAPLOADER_H

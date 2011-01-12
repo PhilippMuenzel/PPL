@@ -31,7 +31,7 @@ macx {
 }
 
 win32 {
-    DEFINES += APL=0 IBM=1 LIN=0
+    DEFINES += APL=0 IBM=1 LIN=0 NOMINMAX
     QMAKE_CXXFLAGS += -Werror -Wall -Wextra -pedantic
 }
 
@@ -43,8 +43,8 @@ unix:!macx {
 
 HEADERS += \
     src/dataref.h \
-    src/xpmessagewidget.h \
-    src/xposd.h \
+    src/messagewindow.h \
+    src/onscreendisplay.h \
     src/pluginpath.h \
     src/owneddata.h \
     src/logichandler.h \
@@ -55,22 +55,24 @@ HEADERS += \
     src/xposd.h \
     src/log.h \
     src/logwriter.h \
-    src/basics.h
+    src/basics.h \
+    src/menuitem.h \
+    src/action.h
 
 SOURCES += \
     src/pluginpath.cpp \
     src/settings.cpp \
     src/bitmaploader.cpp \
     src/dataref.cpp \
-    src/xpmessagewidget.cpp \
-    src/xposd.cpp \
+    src/messagewindow.cpp \
+    src/onscreendisplay.cpp \
     src/owneddata.cpp \
     src/logichandler.cpp \
     src/textureholder.cpp \
     src/overlaywindow.cpp \
     src/log.cpp \
     src/logwriter.cpp \
-    src/basics.cpp
+    src/menuitem.cpp
 
 withsound {
     HEADERS += \

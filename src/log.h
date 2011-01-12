@@ -1,5 +1,6 @@
-// Copyright (C) 2008,2009,2010 by Philipp Münzel. All rights reserved.
-// Released under the terms of the license described in license.txt
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
+// Released under the terms of the GNU General Public License version 2 or later
+// as published by the Free Software Foundation, Inc.
 
 #ifndef LOG_H
 #define LOG_H
@@ -38,7 +39,7 @@ struct LogEntry {
   * Specifying severity level and Log::endl are mandatory.
   * @code Log() << Log::Error << "This is an error" << Log::endl;
   * Log() << Log::Info << "This is an information about " << some_integer << Log::endl @endcode
-  * @author  (c) 2009, 2010 by Philipp Münzel
+  * @author  (c) 2009-2011 by Philipp Münzel
   * @version 1.4
   */
 class Log {

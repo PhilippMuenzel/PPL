@@ -1,14 +1,14 @@
-// Copyright (C) 2008,2009,2010 by Philipp Muenzel. All rights reserved
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
 #include <cstdlib>
 
-#include "xpmessagewidget.h"
+#include "messagewindow.h"
 
 using namespace PPL;
 
-XPMessageWidget::XPMessageWidget(int width, int height, const std::string& title, const std::string& message, bool quit):
+MessageWindow::MessageWindow(int width, int height, const std::string& title, const std::string& message, bool quit):
         m_is_displayed(false),
         m_xp_width("sim/graphics/view/window_width"),
         m_xp_height("sim/graphics/view/window_height")
@@ -39,7 +39,7 @@ XPMessageWidget::XPMessageWidget(int width, int height, const std::string& title
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-XPMessageWidget::~XPMessageWidget()
+MessageWindow::~MessageWindow()
 {
     XPSetWidgetProperty(m_box_widget, xpProperty_Object, 0);
     XPDestroyWidget(m_box_widget,1);
@@ -48,7 +48,7 @@ XPMessageWidget::~XPMessageWidget()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void XPMessageWidget::setWidth(int width)
+void MessageWindow::setWidth(int width)
 {
     if (width > m_xp_width)
         throw (BoxOutOfBoundsException("Requested window width greater than X-Plane window"));
@@ -59,7 +59,7 @@ void XPMessageWidget::setWidth(int width)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void XPMessageWidget::setHeight(int height)
+void MessageWindow::setHeight(int height)
 {
     if (height > m_xp_height)
         throw (BoxOutOfBoundsException("Requested window height greater than X-Plane window"));
@@ -70,7 +70,7 @@ void XPMessageWidget::setHeight(int height)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void XPMessageWidget::setTitle(const std::string &title)
+void MessageWindow::setTitle(const std::string &title)
 {
     m_title = title;
 }
@@ -78,7 +78,7 @@ void XPMessageWidget::setTitle(const std::string &title)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void XPMessageWidget::setMessage(const std::string &message)
+void MessageWindow::setMessage(const std::string &message)
 {
     m_message = message;
 }
@@ -86,7 +86,7 @@ void XPMessageWidget::setMessage(const std::string &message)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void XPMessageWidget::quitSimOnConfirm(bool quit)
+void MessageWindow::quitSimOnConfirm(bool quit)
 {
     m_quit_on_confirm = quit;
 }
@@ -94,7 +94,7 @@ void XPMessageWidget::quitSimOnConfirm(bool quit)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void XPMessageWidget::display()
+void MessageWindow::display()
 {
     createSurroundingBox();
     createInnerScreen();
@@ -147,7 +147,7 @@ void XPMessageWidget::display()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-bool XPMessageWidget::isDisplayed()
+bool MessageWindow::isDisplayed()
 {
     return m_is_displayed;
 }
@@ -155,7 +155,7 @@ bool XPMessageWidget::isDisplayed()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int XPMessageWidget::processMessages(XPWidgetMessage inMessage, long, long)
+int MessageWindow::processMessages(XPWidgetMessage inMessage, long, long)
 {
     if (inMessage == xpMessage_CloseButtonPushed)
     {
@@ -176,9 +176,9 @@ int XPMessageWidget::processMessages(XPWidgetMessage inMessage, long, long)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int XPMessageWidget::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, long param1, long param2)
+int MessageWindow::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, long param1, long param2)
 {
-    XPMessageWidget* widget = reinterpret_cast<XPMessageWidget *>(XPGetWidgetProperty(inWidget, xpProperty_Object, NULL));
+    MessageWindow* widget = reinterpret_cast<MessageWindow *>(XPGetWidgetProperty(inWidget, xpProperty_Object, NULL));
     if (widget)
     {
         return widget->processMessages(inMessage, param1, param2);
@@ -189,7 +189,7 @@ int XPMessageWidget::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidg
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int XPMessageWidget::splitStr(std::list<std::string>& L, const std::string& seq, const std::string& _1cdelim, bool _removews )
+int MessageWindow::splitStr(std::list<std::string>& L, const std::string& seq, const std::string& _1cdelim, bool _removews )
 {
     typedef std::string::size_type ST;
     std::string delims = _1cdelim;
@@ -218,7 +218,7 @@ int XPMessageWidget::splitStr(std::list<std::string>& L, const std::string& seq,
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void XPMessageWidget::createSurroundingBox()
+void MessageWindow::createSurroundingBox()
 {
     m_box_widget = XPCreateWidget(m_left,
                                   m_top,
@@ -236,7 +236,7 @@ void XPMessageWidget::createSurroundingBox()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void XPMessageWidget::createInnerScreen()
+void MessageWindow::createInnerScreen()
 {
     m_screen_widget = XPCreateWidget(m_left + 5,
                                      m_top - 25,

@@ -1,4 +1,4 @@
-// Copyright (C) 2008,2009,2010 by Philipp Muenzel. All rights reserved
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
@@ -16,8 +16,7 @@ namespace PPL {
   * Convenient access to ini-Files.
   * This is a small wrapper accessing the most frequently used basic functions of SimpleIni
   * @version 0.3
-  * @author (c) 2009, 2010 by Philipp Muenzel
-  * @file settings.h
+  * @author (c) 2009-2011 by Philipp Muenzel
   */
 class Settings : private CSimpleIniA
 {

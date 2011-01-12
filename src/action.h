@@ -2,23 +2,20 @@
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
-#ifndef TEXTUREHOLDER_H
-#define TEXTUREHOLDER_H
+#ifndef ACTION_H
+#define ACTION_H
 
-#include <vector>
 #include <string>
 
 namespace PPL {
 
-class TextureHolder
-{
+class Action {
 public:
-    TextureHolder();
-    int loadTexture(const std::string& filename);
-private:
-    std::vector<int> m_textures;
+    virtual ~Action() {};
+    virtual const std::string name() const = 0;
+    virtual void doAction() = 0;
 };
 
 }
 
-#endif // TEXTUREHOLDER_H
+#endif // ACTION_H

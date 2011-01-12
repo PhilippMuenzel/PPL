@@ -1,21 +1,20 @@
-// Copyright (C) 2008,2009,2010 by Philipp Muenzel. All rights reserved
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
-#ifndef XPOSD_H
-#define XPOSD_H
+#ifndef ONSCREENDISPLAY_H
+#define ONSCREENDISPLAY_H
 
 #include "XPWidgetDefs.h"
 #include "dataref.h"
 
 namespace PPL {
 
-
-class OverlayDisplay {
+class OnScreenDisplay {
 public:
-    OverlayDisplay(int width, int height, const std::string& title);
+    OnScreenDisplay(int width, int height, const std::string& title);
 
-    ~OverlayDisplay();
+    ~OnScreenDisplay();
 
     int processMessages(XPWidgetMessage inMessage, long, long);
 
@@ -31,4 +30,4 @@ private:
 
 }
 
-#endif // XPOSD_H
+#endif // ONSCREENDISPLAY_H

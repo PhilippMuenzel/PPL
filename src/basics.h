@@ -1,3 +1,7 @@
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
+// Released under the terms of the GNU General Public License version 2 or later
+// as published by the Free Software Foundation, Inc.
+
 #ifndef BASICS_H
 #define BASICS_H
 
@@ -15,6 +19,7 @@
 #if defined(_MSC_VER)
 #define _USE_MATH_DEFINES
 #include <float.h>
+#include <math.h>
 #define isnan _isnan
 #endif
 #include <cmath>

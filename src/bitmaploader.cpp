@@ -1,7 +1,13 @@
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
+// Released under the terms of the GNU General Public License version 2 or later
+// as published by the Free Software Foundation, Inc.
+
 #include <fstream>
 #include <stdexcept>
 #include "bitmaploader.h"
 #include "XPLMUtilities.h"
+
+using namespace PPL;
 
 #if APL && defined(__ppc__)
     short Endian(short Data)

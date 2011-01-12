@@ -1,3 +1,7 @@
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
+// Released under the terms of the GNU General Public License version 2 or later
+// as published by the Free Software Foundation, Inc.
+
 #include "overlaywindow.h"
 #include "basics.h"
 #include <cstdio>
@@ -60,10 +64,12 @@ int OverlayWindow::handleClickCallback(XPLMWindowID window_id, int x, int y, XPL
     printf("window (%d,%d)(%d,%d)\n", Left, Top, Right, Bottom);
     //x = static_cast<int>(round(x * 1024.0 / static_cast<double>(m_screen_width)));
     //y = static_cast<int>(round(y *  768.0 / static_cast<double>(m_screen_height)));
+    float widthRatio = ( Right - Left )/256.f;
+    float heightRatio = ( Top - Bottom )/256.f;
     switch(mouse) {
     case xplm_MouseDown:
         /// Test for the mouse in the window
-        if (coordInRect(x, y, Left+50, Top, Right-50, Top-50))
+        if (coordInRect(x, y, Left+50*widthRatio, Top, Right-50*widthRatio, Top-50*heightRatio))
         {
             dX = (x - Left);
             dY = (y - Top);
@@ -71,17 +77,17 @@ int OverlayWindow::handleClickCallback(XPLMWindowID window_id, int x, int y, XPL
             Height = Bottom - Top;
             gDragging = 1;
         }
-        if (coordInRect(x, y, Left+50, Top-50, Right-50, Bottom+50))
+        if (coordInRect(x, y, Left+50*widthRatio, Top-50*heightRatio, Right-50*widthRatio, Bottom+50*heightRatio))
         {
             handleNonDragClick(3);  // cheat
         }
-        if (coordInRect(x, y, Left, Bottom+50, Left+80, Bottom)) {
+        if (coordInRect(x, y, Left, Bottom+50*heightRatio, Left+80*widthRatio, Bottom)) {
             handleNonDragClick(0); // step
         }
-        if (coordInRect(x, y, Left+85, Bottom+50, Right-85, Bottom)) {
+        if (coordInRect(x, y, Left+85*widthRatio, Bottom+50*heightRatio, Right-85*widthRatio, Bottom)) {
             handleNonDragClick(2); // both
         }
-        if (coordInRect(x, y, Right-80, Bottom+50, Right, Bottom)) {
+        if (coordInRect(x, y, Right-80*widthRatio, Bottom+50*heightRatio, Right, Bottom)) {
             handleNonDragClick(1); // lean find
         }
         break;

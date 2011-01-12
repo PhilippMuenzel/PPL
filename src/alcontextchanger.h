@@ -1,4 +1,4 @@
-// Copyright (C) 2008,2009,2010 by Philipp Muenzel. All rights reserved
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
@@ -10,27 +10,36 @@
 
 #include <boost/noncopyable.hpp>
 
-namespace XSPL{
-    namespace Sound {
+namespace PPL {
 
-        /**
-          * RAII class to change the openal context on construction and
-          * ensure the old context is restored on destruction.
-          * @author (c) 2009, 2010 by Philipp Muenzel, Technische Universitaet Darmstadt, Department of Mathematics
-          * @version 0.3
-          * @file alcontextchanger.h
-        */
-        class ALContextChanger : boost::noncopyable
-        {
-        public:
-            ALContextChanger(ALCcontext* own_context) throw();
-            ~ALContextChanger() throw();
+/**
+  * @brief RAII class to change the openal context on construction and
+  * ensure the old context is restored on destruction.
+  *
+  * @author (c) 2009-2011 by Philipp Muenzel, Technische Universitaet Darmstadt, Department of Mathematics
+  * @version 0.4
+  * @file alcontextchanger.h
+  */
+class ALContextChanger : boost::noncopyable
+{
+public:
 
-        private:
-            ALCcontext* m_other_context;
-        };
+    /**
+      * Switch to the openAL context given for the time this object lives.
+      *
+      * @param own_context the AL context to switch to
+      */
+    ALContextChanger(ALCcontext* own_context);
 
-    }
+    /**
+      * switch back to whatever context was active at the time the object was created.
+      */
+    ~ALContextChanger();
+
+private:
+    ALCcontext* m_other_context;
+};
+
 }
 
 #endif // ALCONTEXTCHANGER_H

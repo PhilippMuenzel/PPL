@@ -1,4 +1,4 @@
-// Copyright (C) 2008-2010 by Philipp Muenzel. All rights reserved
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
@@ -16,7 +16,8 @@
 namespace PPL {
 
 /**
-  * RWType distinguishes the three types of acess to datarefs.
+  * @brief RWType distinguishes the three types of acess to datarefs.
+  *
   * For simdata, it specifies if incoming data may be written to X-Plane
   * and if data should be readable.
   * For owned data, it specifies if the data is readable or writebale
@@ -74,42 +75,45 @@ public:
 };
 
 /**
-      * Wrapper for access to datarefs published by XP itself or by other plugins.
-      * It wraps the lookup of datarefs, type-safe getting and setting of data, and
-      * obeying to X-Planes writeability restrictions.
-      * By creating a DataRef instance, it is bound to a specific dataref
-      * specified in the constructor.
-      * @author (c) 2009-2010 by Philipp Muenzel
-      * @version 2.0
-      */
+ * @brief Wrapper for access to datarefs published by XP itself or by other plugins.
+ *
+ * It wraps the lookup of datarefs, type-safe getting and setting of data, and
+ * obeying to X-Planes writeability restrictions.
+ * By creating a DataRef instance, it is bound to a specific dataref
+ * specified in the constructor.
+ * @author (c) 2009-2011 by Philipp Muenzel
+ * @version 2.0
+ */
 template <typename SimType>
 class DataRef
 {
 public:
 
     /**
-          * Sets up the dataref connection.
-          * looks up the datarefs and stores handler locally, also checks for correct
-          * type of data (sim-type) and correct read-/writeability
-          * @param identifier The identifier as in datarefs.txt as std::string (or implicitly convertable)
-          * @param writeability the writeability as defined by RWType
-          * @exception LookupException is thrown if one of the following happens
-          * a) DataRef can not be found
-          * b) Data type is invalid (trying to access an int DataRef through float functions
-          * c) data was requested to be writeable, but X-Plane says it is read-only
-          */
+      * Sets up the dataref connection.
+      * looks up the datarefs and stores handler locally, also checks for correct
+      * type of data (sim-type) and correct read-/writeability
+      * @param identifier The identifier as in datarefs.txt as std::string (or implicitly convertable)
+      * @param writeability the writeability as defined by RWType
+      * @exception LookupException is thrown if one of the following happens
+      * a) DataRef can not be found
+      * b) Data type is invalid (trying to access an int DataRef through float functions
+      * c) data was requested to be writeable, but X-Plane says it is read-only
+      */
     DataRef(std::string identifier, RWType writeability = ReadOnly);
 
     /**
-          * read the current value from X-Plane's plugin system
-          */
+      * read the current value from X-Plane's plugin system
+      */
     operator SimType() const;
 
     /**
-          * write value to X-Plane
-          */
+      * write value to X-Plane
+      */
     const DataRef& operator=(const SimType&);
 
+    // TODO: access to vector-data. Inferring the basic type is only possible in C++0x - soon
+    // auto operator[](std::size_t index);
 
 private:
 

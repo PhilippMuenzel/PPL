@@ -1,4 +1,4 @@
-// Copyright (C) 2008,2009,2010 by Philipp Muenzel. All rights reserved
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
@@ -6,7 +6,7 @@
 
 #include "alsoundbuffer.h"
 
-using namespace XSPL::Sound;
+using namespace PPL;
 
 ALSoundBuffer::ALSoundBuffer(const std::string& filename) throw(SoundPlayingError):
         m_name(filename)
@@ -51,7 +51,7 @@ ALSoundBuffer::ALSoundBuffer(const std::string& filename) throw(SoundPlayingErro
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-ALSoundBuffer::~ALSoundBuffer() throw()
+ALSoundBuffer::~ALSoundBuffer()
 {
     alDeleteSources(1, &m_source);
     alDeleteBuffers(1, &m_buffer);
@@ -103,7 +103,7 @@ bool ALSoundBuffer::play() throw(SoundPlayingError)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void ALSoundBuffer::stop() throw()
+void ALSoundBuffer::stop()
 {
     alSourceStop( m_source );
 }
@@ -111,7 +111,7 @@ void ALSoundBuffer::stop() throw()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void ALSoundBuffer::rewind() throw()
+void ALSoundBuffer::rewind()
 {
     alSourceRewind( m_source );
 }
@@ -119,7 +119,7 @@ void ALSoundBuffer::rewind() throw()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void ALSoundBuffer::setLoop(bool yes) throw()
+void ALSoundBuffer::setLoop(bool yes)
 {
     ALboolean loop = yes ? AL_TRUE : AL_FALSE;
     alSourcei( m_source, AL_LOOPING, loop );
@@ -128,7 +128,7 @@ void ALSoundBuffer::setLoop(bool yes) throw()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ALSoundBuffer::isPlaying() const throw()
+bool ALSoundBuffer::isPlaying() const
 {
     ALint state;
     alGetSourcei( m_source, AL_SOURCE_STATE, &state );

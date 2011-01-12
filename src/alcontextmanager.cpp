@@ -1,4 +1,4 @@
-// Copyright (C) 2008,2009,2010 by Philipp Muenzel. All rights reserved
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
@@ -7,9 +7,9 @@
 #include "alcontextmanager.h"
 #include "alcontextchanger.h"
 
-using namespace XSPL::Sound;
+using namespace PPL;
 
-ALContextManager::ALContextManager() throw():
+ALContextManager::ALContextManager():
         m_internal_counter(0)
 {
     m_device = alcOpenDevice(0);
@@ -23,7 +23,7 @@ ALContextManager::ALContextManager() throw():
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-ALContextManager::~ALContextManager() throw()
+ALContextManager::~ALContextManager()
 {
     deleteAllSounds();
     alutExit();
@@ -55,7 +55,7 @@ ALSoundBuffer* ALContextManager::findSoundById(int id) throw(SoundNotFoundError)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ALContextManager::addSoundByFile(const std::string& filename) throw(SoundLoadError)
+int ALContextManager::addSoundFromFile(const std::string& filename) throw(SoundLoadError)
 {
     std::pair<std::map<int, ALSoundBuffer*>::iterator, bool> return_value;
     m_internal_counter++;
@@ -189,7 +189,7 @@ void ALContextManager::removeSound(int id) throw (SoundNotFoundError)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void ALContextManager::deleteAllSounds() throw()
+void ALContextManager::deleteAllSounds()
 {
     for (std::map<int, ALSoundBuffer*>::iterator it = m_sounds.begin (); it!= m_sounds.end() ; it++)
     {

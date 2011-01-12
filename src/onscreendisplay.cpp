@@ -1,15 +1,15 @@
-// Copyright (C) 2008,2009,2010 by Philipp Muenzel. All rights reserved
+// Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
 // Released under the terms of the GNU General Public License version 2 or later
 // as published by the Free Software Foundation, Inc.
 
 #include "XPStandardWidgets.h"
 #include "XPWidgets.h"
 
-#include "xposd.h"
+#include "onscreendisplay.h"
 
 using namespace PPL;
 
-OverlayDisplay::OverlayDisplay(int width, int height, const std::string& title):
+OnScreenDisplay::OnScreenDisplay(int width, int height, const std::string& title):
     screen_w_("sim/graphics/view/window_width"),
     screen_h_("sim/graphics/view/window_height"),
     title_(title)
@@ -33,13 +33,19 @@ OverlayDisplay::OverlayDisplay(int width, int height, const std::string& title):
     XPAddWidgetCallback(widget_id_, widgetCallback);
 }
 
-OverlayDisplay::~OverlayDisplay()
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+OnScreenDisplay::~OnScreenDisplay()
 {
     XPSetWidgetProperty(widget_id_, xpProperty_Object, 0);
     XPDestroyWidget(widget_id_,1);
 }
 
-int OverlayDisplay::processMessages(XPWidgetMessage inMessage, long, long)
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+int OnScreenDisplay::processMessages(XPWidgetMessage inMessage, long, long)
 {
     if (inMessage == xpMessage_CloseButtonPushed)
     {
@@ -49,9 +55,12 @@ int OverlayDisplay::processMessages(XPWidgetMessage inMessage, long, long)
     return 0;
 }
 
-int OverlayDisplay::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, long param1, long param2)
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+int OnScreenDisplay::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, long param1, long param2)
 {
-    OverlayDisplay* display = reinterpret_cast<OverlayDisplay*>(XPGetWidgetProperty(inWidget, xpProperty_Object, 0));
+    OnScreenDisplay* display = reinterpret_cast<OnScreenDisplay*>(XPGetWidgetProperty(inWidget, xpProperty_Object, 0));
     if (display)
     {
         return display->processMessages(inMessage, param1, param2);
