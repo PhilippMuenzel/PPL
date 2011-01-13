@@ -74,6 +74,26 @@ public:
     {}
 };
 
+template <typename T>
+struct basic_trait {
+    typedef T Basic;
+};
+
+template<>
+struct basic_trait<std::vector<float> > {
+    typedef float Basic;
+};
+
+template<>
+struct basic_trait<std::vector<int> > {
+    typedef int Basic;
+};
+
+template<>
+struct basic_trait<std::string> {
+    typedef char Basic;
+};
+
 /**
  * @brief Wrapper for access to datarefs published by XP itself or by other plugins.
  *
@@ -112,10 +132,16 @@ public:
       */
     const DataRef& operator=(const SimType&);
 
-    // TODO: access to vector-data. Inferring the basic type is only possible in C++0x - soon
-    // auto operator[](std::size_t index);
+    /**
+      * read the current value from X-Plane and access element in vector data
+      * @note is the same as operator SimType() for non-vector data
+      * @todo is there a more elegant way to do this?
+      */
+    typename basic_trait<SimType>::Basic operator[](std::size_t index) const;
 
 private:
+
+    //typedef typename  T;
 
     void lookUp(const std::string& identifier);
 
@@ -155,9 +181,6 @@ DataRef<SimType>::DataRef(std::string identifier,
         throw;
     }
 }
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -262,6 +285,21 @@ const DataRef<std::vector<int> >& DataRef<std::vector<int> >::operator=(const st
 
 template <>
 const DataRef<std::string>& DataRef<std::string>::operator=(const std::string&);
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename SimType>
+typename basic_trait<SimType>::Basic DataRef<SimType>::operator[](std::size_t) const
+{
+    return basic_trait<SimType>::Basic(*this);
+}
+
+template<>
+typename basic_trait<std::vector<float> >::Basic DataRef<std::vector<float> >::operator[](std::size_t index) const;
+
+template<>
+typename basic_trait<std::vector<int> >::Basic DataRef<std::vector<int> >::operator[](std::size_t index) const;
 
 }
 
