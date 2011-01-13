@@ -15,6 +15,7 @@ class OverlayWindow
 public:
     OverlayWindow(int left, int top, int width, int height, bool is_visible = false);
     virtual ~OverlayWindow();
+    bool isVisible() const;
     void setVisible(bool b);
     int drawCallback(XPLMDrawingPhase phase, int is_before);
     void drawWindowCallback(XPLMWindowID window_id);

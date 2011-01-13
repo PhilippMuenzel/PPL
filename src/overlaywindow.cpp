@@ -28,6 +28,11 @@ void OverlayWindow::setVisible(bool b)
     m_visible = b;
 }
 
+bool OverlayWindow::isVisible() const
+{
+    return m_visible;
+}
+
 int OverlayWindow::drawCallback(XPLMDrawingPhase, int)
 {
     if (m_visible)
@@ -49,19 +54,19 @@ void OverlayWindow::handleKeyCallback(XPLMWindowID, char, XPLMKeyFlags, char, in
 
 int OverlayWindow::handleClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse)
 {
-    printf("mouse (%d,%d)\n",x,y);
-    static	int	dX = 0, dY = 0;
-    static	int	Weight = 0, Height = 0;
-    int	Left, Top, Right, Bottom;
+    //printf("mouse (%d,%d)\n",x,y);
+    static int dX = 0, dY = 0;
+    static int Weight = 0, Height = 0;
+    int Left, Top, Right, Bottom;
 
-    static	int	gDragging = 0;
+    static int gDragging = 0;
 
     if (!m_visible)
         return 0;
 
     /// Get the windows current position
     XPLMGetWindowGeometry(window_id, &Left, &Top, &Right, &Bottom);
-    printf("window (%d,%d)(%d,%d)\n", Left, Top, Right, Bottom);
+    //printf("window (%d,%d)(%d,%d)\n", Left, Top, Right, Bottom);
     //x = static_cast<int>(round(x * 1024.0 / static_cast<double>(m_screen_width)));
     //y = static_cast<int>(round(y *  768.0 / static_cast<double>(m_screen_height)));
     float widthRatio = ( Right - Left )/256.f;
@@ -76,6 +81,10 @@ int OverlayWindow::handleClickCallback(XPLMWindowID window_id, int x, int y, XPL
             Weight = Right - Left;
             Height = Bottom - Top;
             gDragging = 1;
+        }
+        if (coordInRect(x, y, Right-50*widthRatio, Top, Right, Top-50*heightRatio))
+        {
+            setVisible(!m_visible);
         }
         if (coordInRect(x, y, Left+50*widthRatio, Top-50*heightRatio, Right-50*widthRatio, Bottom+50*heightRatio))
         {
