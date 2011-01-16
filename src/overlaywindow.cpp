@@ -8,51 +8,92 @@
 
 using namespace PPL;
 
-OverlayWindow::OverlayWindow(int left, int top, int width, int height, bool is_visible):
-    m_visible(is_visible),
+OverlayWindow::OverlayWindow(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, bool is_visible2d):
+    m_visible_2d(is_visible2d),
     m_screen_width("sim/graphics/view/window_width"),
-    m_screen_height("sim/graphics/view/window_height")
+    m_screen_height("sim/graphics/view/window_height"),
+    m_panel_render_mode("sim/graphics/view/panel_render_type"),
+    m_click_3d_x("sim/graphics/view/click_3d_x"),
+    m_click_3d_y("sim/graphics/view/click_3d_y"),
+    m_panel_coord_l("sim/graphics/view/panel_total_pnl_l"),
+    m_panel_coord_t("sim/graphics/view/panel_total_pnl_t"),
+    m_call_counter(0)
 {
-    XPLMRegisterDrawCallback(drawCallback, xplm_Phase_LastCockpit, 0, this);
-    m_window_id = XPLMCreateWindow(left, top, left+width, top-height, is_visible, drawWindowCallback, handleKeyCallback, handleClickCallback, this);
+    XPLMRegisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
+    XPLMRegisterDrawCallback(draw3dCallback, xplm_Phase_Panel, 0, this);
+    m_window2d_id = XPLMCreateWindow(left2d, top2d, left2d+width2d, top2d-height2d, is_visible2d, draw2dWindowCallback, handle2dKeyCallback, handle2dClickCallback, this);
+    m_window3d_id = XPLMCreateWindow(left3d, top3d, left3d+width3d, top3d-height3d, true, draw3dWindowCallback, handle3dKeyCallback, handle3dClickCallback, this);
 }
 
 OverlayWindow::~OverlayWindow()
 {
-    XPLMUnregisterDrawCallback(drawCallback, xplm_Phase_LastCockpit, 0, this);
-    XPLMDestroyWindow(m_window_id);
+    XPLMUnregisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
+    XPLMUnregisterDrawCallback(draw3dCallback, xplm_Phase_Panel, 0, this);
+    XPLMDestroyWindow(m_window2d_id);
+    XPLMDestroyWindow(m_window3d_id);
 }
 
 void OverlayWindow::setVisible(bool b)
 {
-    m_visible = b;
+    m_visible_2d = b;
 }
 
 bool OverlayWindow::isVisible() const
 {
-    return m_visible;
+    return m_visible_2d;
 }
 
-int OverlayWindow::drawCallback(XPLMDrawingPhase, int)
+int OverlayWindow::draw2dCallback(XPLMDrawingPhase, int)
 {
-    if (m_visible)
+    if (m_visible_2d)
     {
         int left, top, right, bottom;
-        XPLMGetWindowGeometry(m_window_id, &left, &top, &right, &bottom);
+        XPLMGetWindowGeometry(m_window2d_id, &left, &top, &right, &bottom);
         draw(left, top, right, bottom);
     }
     return 1;
 }
 
-void OverlayWindow::drawWindowCallback(XPLMWindowID)
+void OverlayWindow::frame()
+{
+    m_call_counter = 0;
+}
+
+int OverlayWindow::draw3dCallback(XPLMDrawingPhase, int)
+{
+    if (m_panel_render_mode != 0)
+    {
+        float l = m_panel_coord_l;
+        float t = m_panel_coord_t;
+        printf("l=%f, t=%f\n", l, t);
+        m_call_counter++;
+        if (m_call_counter == 3)
+        {
+            int left, top, right, bottom;
+            XPLMGetWindowGeometry(m_window3d_id, &left, &top, &right, &bottom);
+            draw(left, top, right, bottom);
+        }
+    }
+    return 1;
+}
+
+void OverlayWindow::draw2dWindowCallback(XPLMWindowID)
 {
 }
 
-void OverlayWindow::handleKeyCallback(XPLMWindowID, char, XPLMKeyFlags, char, int)
+void OverlayWindow::draw3dWindowCallback(XPLMWindowID)
 {
 }
 
-int OverlayWindow::handleClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse)
+void OverlayWindow::handle2dKeyCallback(XPLMWindowID, char, XPLMKeyFlags, char, int)
+{
+}
+
+void OverlayWindow::handle3dKeyCallback(XPLMWindowID, char, XPLMKeyFlags, char, int)
+{
+}
+
+int OverlayWindow::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse)
 {
     //printf("mouse (%d,%d)\n",x,y);
     static int dX = 0, dY = 0;
@@ -61,7 +102,7 @@ int OverlayWindow::handleClickCallback(XPLMWindowID window_id, int x, int y, XPL
 
     static int gDragging = 0;
 
-    if (!m_visible)
+    if (!m_visible_2d)
         return 0;
 
     /// Get the windows current position
@@ -84,7 +125,7 @@ int OverlayWindow::handleClickCallback(XPLMWindowID window_id, int x, int y, XPL
         }
         if (coordInRect(x, y, Right-50*widthRatio, Top, Right, Top-50*heightRatio))
         {
-            setVisible(!m_visible);
+            setVisible(!m_visible_2d);
         }
         if (coordInRect(x, y, Left+50*widthRatio, Top-50*heightRatio, Right-50*widthRatio, Bottom+50*heightRatio))
         {
@@ -118,29 +159,57 @@ int OverlayWindow::handleClickCallback(XPLMWindowID window_id, int x, int y, XPL
     return 1;
 }
 
-
-int OverlayWindow::drawCallback(XPLMDrawingPhase phase, int is_before, void* refcon)
+int OverlayWindow::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus)
 {
-    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
-    return window->drawCallback(phase, is_before);
+    return 0;
 }
 
-void OverlayWindow::drawWindowCallback(XPLMWindowID window_id, void* refcon)
+int OverlayWindow::draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon)
 {
     OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
-    window->drawWindowCallback(window_id);
+    return window->draw2dCallback(phase, is_before);
 }
 
-void OverlayWindow::handleKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, void* refcon, int losing_focus)
+int OverlayWindow::draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon)
 {
     OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
-    window->handleKeyCallback(window_id, key, flags, virtual_key, losing_focus);
+    return window->draw3dCallback(phase, is_before);
 }
 
-int OverlayWindow::handleClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon)
+void OverlayWindow::draw2dWindowCallback(XPLMWindowID window_id, void* refcon)
 {
     OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
-    return window->handleClickCallback(window_id, x, y, mouse);
+    window->draw2dWindowCallback(window_id);
+}
+
+void OverlayWindow::draw3dWindowCallback(XPLMWindowID window_id, void* refcon)
+{
+    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    window->draw3dWindowCallback(window_id);
+}
+
+void OverlayWindow::handle2dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, void* refcon, int losing_focus)
+{
+    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    window->handle2dKeyCallback(window_id, key, flags, virtual_key, losing_focus);
+}
+
+void OverlayWindow::handle3dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, void* refcon, int losing_focus)
+{
+    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    window->handle3dKeyCallback(window_id, key, flags, virtual_key, losing_focus);
+}
+
+int OverlayWindow::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon)
+{
+    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    return window->handle2dClickCallback(window_id, x, y, mouse);
+}
+
+int OverlayWindow::handle3dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon)
+{
+    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    return window->handle3dClickCallback(window_id, x, y, mouse);
 }
 
 bool OverlayWindow::coordInRect(float x, float y, float l, float t, float r, float b)
