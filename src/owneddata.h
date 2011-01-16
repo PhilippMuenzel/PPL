@@ -1,5 +1,5 @@
 // Copyright (C) 2008-2011 by Philipp Muenzel. All rights reserved
-// Released under the terms of the GNU General Public License version 2 or later
+// Released under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation, Inc.
 
 #ifndef OWNEDDATA_H
