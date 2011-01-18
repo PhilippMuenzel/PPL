@@ -55,7 +55,7 @@ HEADERS += \
     src/settings.h \
     src/bitmaploader.h \
     src/textureholder.h \
-    src/overlaywindow.h \
+    src/overlaygauge.h \
     src/xposd.h \
     src/log.h \
     src/logwriter.h \
@@ -73,7 +73,7 @@ SOURCES += \
     src/owneddata.cpp \
     src/logichandler.cpp \
     src/textureholder.cpp \
-    src/overlaywindow.cpp \
+    src/overlaygauge.cpp \
     src/log.cpp \
     src/logwriter.cpp \
     src/menuitem.cpp

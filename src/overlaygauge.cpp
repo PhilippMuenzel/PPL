@@ -2,13 +2,13 @@
 // Released under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation, Inc.
 
-#include "overlaywindow.h"
+#include "overlaygauge.h"
 #include "basics.h"
 #include <cstdio>
 
 using namespace PPL;
 
-OverlayWindow::OverlayWindow(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, bool is_visible2d):
+OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, int textureId3d, bool is_visible2d):
     m_visible_2d(is_visible2d),
     m_screen_width("sim/graphics/view/window_width"),
     m_screen_height("sim/graphics/view/window_height"),
@@ -17,6 +17,7 @@ OverlayWindow::OverlayWindow(int left2d, int top2d, int width2d, int height2d, i
     m_click_3d_y("sim/graphics/view/click_3d_y"),
     m_panel_coord_l("sim/graphics/view/panel_total_pnl_l"),
     m_panel_coord_t("sim/graphics/view/panel_total_pnl_t"),
+    m_texture_id_3d(textureId3d),
     m_call_counter(0)
 {
     XPLMRegisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
@@ -25,7 +26,7 @@ OverlayWindow::OverlayWindow(int left2d, int top2d, int width2d, int height2d, i
     m_window3d_id = XPLMCreateWindow(left3d, top3d, left3d+width3d, top3d-height3d, true, draw3dWindowCallback, handle3dKeyCallback, handle3dClickCallback, this);
 }
 
-OverlayWindow::~OverlayWindow()
+OverlayGauge::~OverlayGauge()
 {
     XPLMUnregisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
     XPLMUnregisterDrawCallback(draw3dCallback, xplm_Phase_Panel, 0, this);
@@ -33,17 +34,24 @@ OverlayWindow::~OverlayWindow()
     XPLMDestroyWindow(m_window3d_id);
 }
 
-void OverlayWindow::setVisible(bool b)
+void OverlayGauge::set3d(int left3d, int top3d, int width3d, int height3d, int texture_id)
+{
+    XPLMDestroyWindow(m_window3d_id);
+    m_window3d_id = XPLMCreateWindow(left3d, top3d, left3d+width3d, top3d-height3d, true, draw3dWindowCallback, handle3dKeyCallback, handle3dClickCallback, this);
+    m_texture_id_3d = texture_id;
+}
+
+void OverlayGauge::setVisible(bool b)
 {
     m_visible_2d = b;
 }
 
-bool OverlayWindow::isVisible() const
+bool OverlayGauge::isVisible() const
 {
     return m_visible_2d;
 }
 
-int OverlayWindow::draw2dCallback(XPLMDrawingPhase, int)
+int OverlayGauge::draw2dCallback(XPLMDrawingPhase, int)
 {
     if (m_visible_2d)
     {
@@ -54,20 +62,19 @@ int OverlayWindow::draw2dCallback(XPLMDrawingPhase, int)
     return 1;
 }
 
-void OverlayWindow::frame()
+void OverlayGauge::frame()
 {
     m_call_counter = 0;
 }
 
-int OverlayWindow::draw3dCallback(XPLMDrawingPhase, int)
+int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 {
     if (m_panel_render_mode != 0)
     {
-        float l = m_panel_coord_l;
-        float t = m_panel_coord_t;
-        printf("l=%f, t=%f\n", l, t);
+        /*float l = m_panel_coord_l;
+        float t = m_panel_coord_t;*/
         m_call_counter++;
-        if (m_call_counter == 3)
+        if (m_texture_id_3d == -1 || m_call_counter == static_cast<unsigned int>(m_texture_id_3d))
         {
             int left, top, right, bottom;
             XPLMGetWindowGeometry(m_window3d_id, &left, &top, &right, &bottom);
@@ -77,23 +84,23 @@ int OverlayWindow::draw3dCallback(XPLMDrawingPhase, int)
     return 1;
 }
 
-void OverlayWindow::draw2dWindowCallback(XPLMWindowID)
+void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
 {
 }
 
-void OverlayWindow::draw3dWindowCallback(XPLMWindowID)
+void OverlayGauge::draw3dWindowCallback(XPLMWindowID)
 {
 }
 
-void OverlayWindow::handle2dKeyCallback(XPLMWindowID, char, XPLMKeyFlags, char, int)
+void OverlayGauge::handle2dKeyCallback(XPLMWindowID, char, XPLMKeyFlags, char, int)
 {
 }
 
-void OverlayWindow::handle3dKeyCallback(XPLMWindowID, char, XPLMKeyFlags, char, int)
+void OverlayGauge::handle3dKeyCallback(XPLMWindowID, char, XPLMKeyFlags, char, int)
 {
 }
 
-int OverlayWindow::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse)
+int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse)
 {
     //printf("mouse (%d,%d)\n",x,y);
     static int dX = 0, dY = 0;
@@ -159,60 +166,60 @@ int OverlayWindow::handle2dClickCallback(XPLMWindowID window_id, int x, int y, X
     return 1;
 }
 
-int OverlayWindow::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus)
+int OverlayGauge::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus)
 {
     return 0;
 }
 
-int OverlayWindow::draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon)
+int OverlayGauge::draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon)
 {
-    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     return window->draw2dCallback(phase, is_before);
 }
 
-int OverlayWindow::draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon)
+int OverlayGauge::draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon)
 {
-    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     return window->draw3dCallback(phase, is_before);
 }
 
-void OverlayWindow::draw2dWindowCallback(XPLMWindowID window_id, void* refcon)
+void OverlayGauge::draw2dWindowCallback(XPLMWindowID window_id, void* refcon)
 {
-    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     window->draw2dWindowCallback(window_id);
 }
 
-void OverlayWindow::draw3dWindowCallback(XPLMWindowID window_id, void* refcon)
+void OverlayGauge::draw3dWindowCallback(XPLMWindowID window_id, void* refcon)
 {
-    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     window->draw3dWindowCallback(window_id);
 }
 
-void OverlayWindow::handle2dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, void* refcon, int losing_focus)
+void OverlayGauge::handle2dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, void* refcon, int losing_focus)
 {
-    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     window->handle2dKeyCallback(window_id, key, flags, virtual_key, losing_focus);
 }
 
-void OverlayWindow::handle3dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, void* refcon, int losing_focus)
+void OverlayGauge::handle3dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, void* refcon, int losing_focus)
 {
-    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     window->handle3dKeyCallback(window_id, key, flags, virtual_key, losing_focus);
 }
 
-int OverlayWindow::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon)
+int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon)
 {
-    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     return window->handle2dClickCallback(window_id, x, y, mouse);
 }
 
-int OverlayWindow::handle3dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon)
+int OverlayGauge::handle3dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon)
 {
-    OverlayWindow* window = static_cast<OverlayWindow*>(refcon);
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     return window->handle3dClickCallback(window_id, x, y, mouse);
 }
 
-bool OverlayWindow::coordInRect(float x, float y, float l, float t, float r, float b)
+bool OverlayGauge::coordInRect(float x, float y, float l, float t, float r, float b)
 {
     return ((x >= l) && (x < r) && (y < t) && (y >= b));
 }

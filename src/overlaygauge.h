@@ -10,11 +10,13 @@
 
 namespace PPL {
 
-class OverlayWindow
+class OverlayGauge
 {
 public:
-    OverlayWindow(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, bool is_visible2d = false);
-    virtual ~OverlayWindow();
+    OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, int textureId3d, bool is_visible2d = false);
+    virtual ~OverlayGauge();
+
+    void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id);
     bool isVisible() const;
     void setVisible(bool b);
     void frame();
@@ -58,6 +60,7 @@ private:
     DataRef<float> m_click_3d_y;
     DataRef<float> m_panel_coord_l;
     DataRef<float> m_panel_coord_t;
+    int m_texture_id_3d;
     unsigned int m_call_counter;
 };
 
