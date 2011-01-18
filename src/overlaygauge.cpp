@@ -12,7 +12,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     m_visible_2d(is_visible2d),
     m_screen_width("sim/graphics/view/window_width"),
     m_screen_height("sim/graphics/view/window_height"),
-    m_panel_render_mode("sim/graphics/view/panel_render_type"),
+    m_view_type("sim/graphics/view/view_type"),
     m_click_3d_x("sim/graphics/view/click_3d_x"),
     m_click_3d_y("sim/graphics/view/click_3d_y"),
     m_panel_coord_l("sim/graphics/view/panel_total_pnl_l"),
@@ -21,7 +21,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     m_call_counter(0)
 {
     XPLMRegisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
-    XPLMRegisterDrawCallback(draw3dCallback, xplm_Phase_Panel, 0, this);
+    XPLMRegisterDrawCallback(draw3dCallback, xplm_Phase_Gauges, 0, this);
     m_window2d_id = XPLMCreateWindow(left2d, top2d, left2d+width2d, top2d-height2d, is_visible2d, draw2dWindowCallback, handle2dKeyCallback, handle2dClickCallback, this);
     m_window3d_id = XPLMCreateWindow(left3d, top3d, left3d+width3d, top3d-height3d, true, draw3dWindowCallback, handle3dKeyCallback, handle3dClickCallback, this);
 }
@@ -29,16 +29,23 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
 OverlayGauge::~OverlayGauge()
 {
     XPLMUnregisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
-    XPLMUnregisterDrawCallback(draw3dCallback, xplm_Phase_Panel, 0, this);
+    XPLMUnregisterDrawCallback(draw3dCallback, xplm_Phase_Gauges, 0, this);
     XPLMDestroyWindow(m_window2d_id);
     XPLMDestroyWindow(m_window3d_id);
 }
 
 void OverlayGauge::set3d(int left3d, int top3d, int width3d, int height3d, int texture_id)
 {
-    XPLMDestroyWindow(m_window3d_id);
-    m_window3d_id = XPLMCreateWindow(left3d, top3d, left3d+width3d, top3d-height3d, true, draw3dWindowCallback, handle3dKeyCallback, handle3dClickCallback, this);
     m_texture_id_3d = texture_id;
+    if (m_window3d_id != 0)
+        XPLMDestroyWindow(m_window3d_id);
+    m_window3d_id = XPLMCreateWindow(left3d, top3d, left3d+width3d, top3d-height3d, true, draw3dWindowCallback, handle3dKeyCallback, handle3dClickCallback, this);
+}
+
+void OverlayGauge::disable3d()
+{
+    XPLMDestroyWindow(m_window3d_id);
+    m_window3d_id = 0;
 }
 
 void OverlayGauge::setVisible(bool b)
@@ -69,12 +76,12 @@ void OverlayGauge::frame()
 
 int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 {
-    if (m_panel_render_mode != 0)
+    if (m_view_type == 1026)
     {
         /*float l = m_panel_coord_l;
         float t = m_panel_coord_t;*/
         m_call_counter++;
-        if (m_texture_id_3d == -1 || m_call_counter == static_cast<unsigned int>(m_texture_id_3d))
+        if (m_window3d_id && (m_texture_id_3d == -1 || m_call_counter == static_cast<unsigned int>(m_texture_id_3d)))
         {
             int left, top, right, bottom;
             XPLMGetWindowGeometry(m_window3d_id, &left, &top, &right, &bottom);

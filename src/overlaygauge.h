@@ -17,6 +17,7 @@ public:
     virtual ~OverlayGauge();
 
     void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id);
+    void disable3d();
     bool isVisible() const;
     void setVisible(bool b);
     void frame();
@@ -55,7 +56,7 @@ private:
     bool m_visible_2d;
     DataRef<int> m_screen_width;
     DataRef<int> m_screen_height;
-    DataRef<int> m_panel_render_mode;
+    DataRef<int> m_view_type;
     DataRef<float> m_click_3d_x;
     DataRef<float> m_click_3d_y;
     DataRef<float> m_panel_coord_l;

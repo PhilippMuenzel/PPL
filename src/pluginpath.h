@@ -39,7 +39,16 @@ public:
       * @return the absolute path
       * @exception PathSetupError is thrown if path conversion fails
       */
-    static std::string prependPath(const std::string&);
+    static std::string prependPluginPath(const std::string&);
+
+    /**
+      * prepend the absolute path to the directory of the currently loaded
+      * user airplane to the path
+      * @param path to which absolute path should be prepended
+      * @return the absolute path
+      * @exception PathSetupError is thrown if path conversion fails
+      */
+    static std::string prependPlanePath(const std::string&);
 
     /**
       * set the name of the directory where fat plugin resides

@@ -6,6 +6,7 @@
 #include <cstring>
 
 #include "XPLMUtilities.h"
+#include "XPLMPlanes.h"
 
 #include "pluginpath.h"
 
@@ -16,7 +17,7 @@ std::string PluginPath::plugin_directory = "";
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-std::string PluginPath::prependPath(const std::string& file)
+std::string PluginPath::prependPluginPath(const std::string& file)
 {
     if (plugin_directory == "")
         throw PathSetupError("Critical error - no plugin name set - unable to create file in the right directory");
@@ -36,6 +37,29 @@ std::string PluginPath::prependPath(const std::string& file)
         throw PathSetupError("Critical error - cannot convert Mac-HFS-format path to unix-format path");
 #endif
     return absolute_path;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+std::string PluginPath::prependPlanePath(const std::string& file)
+{
+    char name[512];
+    char path[512];
+    XPLMGetNthAircraftModel(0, name, path);
+    std::string absolute_path(path);
+    std::size_t pos = absolute_path.find(name);
+    absolute_path = absolute_path.substr(0, pos);
+    absolute_path.append(file);
+#if APL && __MACH__
+    int result = ConvertPath(absolute_path.c_str(), path, 512);
+    if (result == 0)
+        return std::string(path);
+    else
+        throw PathSetupError("Critical error - cannot convert Mac-HFS-format path to unix-format path");
+#endif
+    return absolute_path;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
