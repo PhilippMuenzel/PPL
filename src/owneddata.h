@@ -92,8 +92,20 @@ public:
     T value() const { return m_value; }
 
     /**
+      * acces the currently stored value
+      * @return value
+      */
+    operator T() const { return m_value; }
+
+    /**
       * set the value so all other monitors of the dataref get it
-      * @param value
+      * @param val
+      */
+    const OwnedData& operator=(const T& val) { m_value = val; }
+
+    /**
+      * set the value so all other monitors of the dataref get it
+      * @param val
       */
     void setValue(const T& val) { m_value = val; }
 
