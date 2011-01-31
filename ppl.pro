@@ -61,7 +61,8 @@ HEADERS += \
     src/logwriter.h \
     src/basics.h \
     src/menuitem.h \
-    src/action.h
+    src/action.h \
+    src/smoothed.h
 
 SOURCES += \
     src/pluginpath.cpp \
@@ -76,7 +77,8 @@ SOURCES += \
     src/overlaygauge.cpp \
     src/log.cpp \
     src/logwriter.cpp \
-    src/menuitem.cpp
+    src/menuitem.cpp \
+    src/smoothed.cpp
 
 withsound {
     HEADERS += \
