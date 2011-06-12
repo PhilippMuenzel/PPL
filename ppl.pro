@@ -32,7 +32,7 @@ macx {
 
 win32 {
     DEFINES += APL=0 IBM=1 LIN=0 NOMINMAX
-    !win32-msvc2008 {
+    !win32-msvc2008:!win32-msvc2010 {
         QMAKE_CXXFLAGS += -Werror -Wall -Wextra -pedantic
     } else {
         CONFIG += warn_on
