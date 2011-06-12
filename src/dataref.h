@@ -296,10 +296,10 @@ typename basic_trait<SimType>::Basic DataRef<SimType>::operator[](std::size_t) c
 }
 
 template<>
-typename basic_trait<std::vector<float> >::Basic DataRef<std::vector<float> >::operator[](std::size_t index) const;
+basic_trait<std::vector<float> >::Basic DataRef<std::vector<float> >::operator[](std::size_t index) const;
 
 template<>
-typename basic_trait<std::vector<int> >::Basic DataRef<std::vector<int> >::operator[](std::size_t index) const;
+basic_trait<std::vector<int> >::Basic DataRef<std::vector<int> >::operator[](std::size_t index) const;
 
 }
 

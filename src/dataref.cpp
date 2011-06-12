@@ -153,14 +153,14 @@ const DataRef<std::string>& DataRef<std::string>::operator=(const std::string& v
 ///////////////////////////////////////////////////////////////////////////////
 
 template<>
-typename basic_trait<std::vector<float> >::Basic DataRef<std::vector<float> >::operator[](std::size_t index) const
+basic_trait<std::vector<float> >::Basic DataRef<std::vector<float> >::operator[](std::size_t index) const
 {
     std::vector<float> vf(*this);
     return vf[index];
 }
 
 template<>
-typename basic_trait<std::vector<int> >::Basic DataRef<std::vector<int> >::operator[](std::size_t index) const
+basic_trait<std::vector<int> >::Basic DataRef<std::vector<int> >::operator[](std::size_t index) const
 {
     std::vector<int> vi(*this);
     return vi[index];
