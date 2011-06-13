@@ -36,6 +36,8 @@ win32 {
         QMAKE_CXXFLAGS += -Werror -Wall -Wextra -pedantic
     } else {
         CONFIG += warn_on
+        #disable the deprecated warnings that make writing standards-compliant code impossible
+        QMAKE_CXXFLAGS += -wd4996
     }
 }
 
