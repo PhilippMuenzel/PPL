@@ -17,10 +17,8 @@
 #endif
 
 #if defined(_MSC_VER)
-#define _USE_MATH_DEFINES
-#include <float.h>
-#include <math.h>
-#define isnan _isnan
+#    include <float.h>
+#    define isnan _isnan
 #endif
 #include <cmath>
 
@@ -57,7 +55,10 @@ inline long ipow(long base, long exp)
     return result;
 }
 
-
+inline double mods(double y, double x)
+{
+    return y - x*std::floor(y/x);
+}
 
 }
 
