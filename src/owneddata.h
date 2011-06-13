@@ -101,7 +101,7 @@ public:
       * set the value so all other monitors of the dataref get it
       * @param val
       */
-    const OwnedData& operator=(const T& val) { m_value = val; }
+    const OwnedData& operator=(const T& val) { m_value = val; return this; }
 
     /**
       * set the value so all other monitors of the dataref get it
