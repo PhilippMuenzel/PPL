@@ -56,7 +56,6 @@ public:
     OwnedData(const std::string& identifier,
               RWType read_write = ReadOnly):
         m_data_ref_identifier(identifier),
-        m_is_registered(false),
         m_data_ref(0),
         m_value(T())
     {
@@ -77,13 +76,7 @@ public:
     /**
       * upon destruction, the dataref is de-registered from X-Plane
       */
-    ~OwnedData() throw () { unregister(); }
-
-    /**
-      * check if setup process was correctly completed
-      * @return TRUE if the dataref registered and accessible
-      */
-    bool isRegistered() const { return m_is_registered; }
+    ~OwnedData() { unregister(); }
 
     /**
       * acces the currently stored value
@@ -101,7 +94,7 @@ public:
       * set the value so all other monitors of the dataref get it
       * @param val
       */
-    const OwnedData& operator=(const T& val) { m_value = val; return this; }
+    const OwnedData& operator=(const T& val) { m_value = val; return *this; }
 
     /**
       * set the value so all other monitors of the dataref get it
@@ -120,18 +113,16 @@ private:
 
     void unregister()
     {
-        if (m_is_registered && m_data_ref != 0)
+        if (m_data_ref)
         {
             XPLMUnregisterDataAccessor(m_data_ref);
             m_data_ref = 0;
         }
-        m_is_registered = false;
     }
 
 private:
 
     std::string m_data_ref_identifier;
-    bool m_is_registered;
     XPLMDataRef m_data_ref;
     T m_value;
 };

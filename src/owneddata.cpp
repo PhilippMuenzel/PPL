@@ -16,8 +16,6 @@ void OwnedData<int>::registerRead()
                                                  NULL, NULL, NULL, NULL, this, NULL );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,8 +29,6 @@ void OwnedData<float>::registerRead()
                                                  NULL, NULL, NULL, NULL, this, NULL );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -46,8 +42,6 @@ void OwnedData<double>::registerRead()
                                                  NULL, NULL, NULL, NULL, this, NULL);
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -61,8 +55,6 @@ void OwnedData<std::string>::registerRead()
                                                  NULL, NULL, readFuncStr, NULL, this, NULL );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -76,8 +68,6 @@ void OwnedData<std::vector<float> >::registerRead()
                                                  readFuncVF, NULL, NULL, NULL, this, NULL );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -92,8 +82,6 @@ void OwnedData<int>::registerWrite()
                                              NULL, NULL, NULL, NULL, NULL, this );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -107,8 +95,6 @@ void OwnedData<float>::registerWrite()
                                              NULL, NULL, NULL, NULL, NULL, this );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -122,8 +108,6 @@ void OwnedData<double>::registerWrite()
                                                  NULL, NULL, NULL, NULL, NULL, this );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -137,8 +121,6 @@ void OwnedData<std::string>::registerWrite()
                                                  NULL, NULL, NULL, writeFuncStr, NULL, this );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,8 +134,6 @@ void OwnedData<std::vector<float> >::registerWrite()
                                                  NULL, writeFuncVF, NULL, NULL, NULL, this );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,8 +148,6 @@ void OwnedData<int>::registerReadWrite()
                                                  NULL, NULL, NULL, NULL, this, this );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -183,8 +161,6 @@ void OwnedData<float>::registerReadWrite()
                                                  NULL, NULL, NULL, NULL, this, this );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -198,8 +174,6 @@ void OwnedData<double>::registerReadWrite()
                                                  NULL, NULL, NULL, NULL, this, this );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -213,8 +187,6 @@ void OwnedData<std::string>::registerReadWrite()
                                                  NULL, NULL, readFuncStr, writeFuncStr, this, this );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -228,8 +200,6 @@ void OwnedData<std::vector<float> >::registerReadWrite()
                                                  readFuncVF, writeFuncVF, NULL, NULL, this, this );
     if (m_data_ref == 0)
         throw DataRefNotPublishedException("");
-    else
-        m_is_registered = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
