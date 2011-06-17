@@ -115,12 +115,13 @@ public:
       * type of data (sim-type) and correct read-/writeability
       * @param identifier The identifier as in datarefs.txt as std::string (or implicitly convertable)
       * @param writeability the writeability as defined by RWType
+      * @param share treat the dataref as a shared dataref, i.e. register the user as a shared dataref participant
       * @exception LookupException is thrown if one of the following happens
       * a) DataRef can not be found
       * b) Data type is invalid (trying to access an int DataRef through float functions
       * c) data was requested to be writeable, but X-Plane says it is read-only
       */
-    DataRef(std::string identifier, RWType writeability = ReadOnly);
+    DataRef(std::string identifier, RWType writeability = ReadOnly, bool share = false);
 
     /**
       * read the current value from X-Plane's plugin system
@@ -148,6 +149,8 @@ public:
 
 private:
 
+    void shareDataRef(const std::string& identifier);
+
     void lookUp(const std::string& identifier);
 
     void checkWriteabilityIsValid();
@@ -169,12 +172,15 @@ private:
 
 template <typename SimType>
 DataRef<SimType>::DataRef(std::string identifier,
-                          RWType writeability):
+                          RWType writeability,
+                          bool share):
     m_data_ref(0),
     m_read_write(writeability)
 {
     try
     {
+        if (share)
+            shareDataRef(identifier);
         lookUp(identifier);
         checkDataType();
         checkWriteabilityIsValid();
@@ -233,6 +239,29 @@ void DataRef<SimType>::undo()
 {
     operator=(m_history);
 }
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename SimType>
+void DataRef<SimType>::shareDataRef(const std::string&)
+{
+    throw IncompatibleTypeException("No type defined for sharing data");
+}
+
+template<>
+void DataRef<int>::shareDataRef(const std::string&);
+template<>
+void DataRef<float>::shareDataRef(const std::string&);
+template<>
+void DataRef<double>::shareDataRef(const std::string&);
+template<>
+void DataRef<std::vector<int> >::shareDataRef(const std::string&);
+template<>
+void DataRef<std::vector<float> >::shareDataRef(const std::string&);
+template<>
+void DataRef<std::string>::shareDataRef(const std::string&);
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
