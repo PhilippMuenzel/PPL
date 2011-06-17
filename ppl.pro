@@ -65,7 +65,8 @@ HEADERS += \
     src/basics.h \
     src/menuitem.h \
     src/action.h \
-    src/smoothed.h
+    src/smoothed.h \
+    src/processor.h
 
 SOURCES += \
     src/pluginpath.cpp \
@@ -81,7 +82,8 @@ SOURCES += \
     src/log.cpp \
     src/logwriter.cpp \
     src/menuitem.cpp \
-    src/smoothed.cpp
+    src/smoothed.cpp \
+    src/processor.cpp
 
 withsound {
     HEADERS += \
