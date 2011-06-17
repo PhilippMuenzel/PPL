@@ -3,6 +3,8 @@
 // as published by the Free Software Foundation, Inc.
 
 #include <cstring>
+#include <cmath>
+#include <limits>
 
 #include "dataref.h"
 
@@ -164,5 +166,56 @@ basic_trait<std::vector<int> >::Basic DataRef<std::vector<int> >::operator[](std
 {
     std::vector<int> vi(*this);
     return vi[index];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+template <>
+bool DataRef<int>::hasChanged() const
+{
+    return m_history != operator int();
+}
+
+template <>
+bool DataRef<float>::hasChanged() const
+{
+    return (std::fabs(m_history - operator float()) > std::numeric_limits<float>::epsilon() );
+}
+
+template <>
+bool DataRef<double>::hasChanged() const
+{
+    return (std::fabs(m_history - operator double()) > std::numeric_limits<double>::epsilon() );
+}
+
+template <>
+bool DataRef<std::vector<int> >::hasChanged() const
+{
+    bool changed = false;
+    std::vector<int> actual = operator std::vector<int>();
+    for (std::size_t i = 0; i < actual.size() ; ++i)
+        if (actual[i] != m_history[i])
+            changed = true;
+    return changed;
+}
+
+template <>
+bool DataRef<std::vector<float> >::hasChanged() const
+{
+    bool changed = false;
+    std::vector<float> actual = operator std::vector<float>();
+    for (std::size_t i = 0; i < actual.size() ; ++i)
+        if (std::fabs(actual[i] - m_history[i]) > std::numeric_limits<float>::epsilon())
+            changed = true;
+    return changed;
+}
+
+template <>
+bool DataRef<std::string>::hasChanged() const
+{
+    return m_history != operator std::string();
 }
 

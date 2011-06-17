@@ -132,6 +132,12 @@ public:
       */
     const DataRef& operator=(const SimType&);
 
+    bool hasChanged() const;
+
+    void safe();
+
+    void undo();
+
     /**
       * read the current value from X-Plane and access element in vector data
       * @note is the same as operator SimType() for non-vector data
@@ -139,9 +145,8 @@ public:
       */
     typename basic_trait<SimType>::Basic operator[](std::size_t index) const;
 
-private:
 
-    //typedef typename  T;
+private:
 
     void lookUp(const std::string& identifier);
 
@@ -154,6 +159,7 @@ private:
 private:
     XPLMDataRef m_data_ref; //!< opaque handle to X-Plane's data
     RWType m_read_write;    //!< is the data required to be write- or readable
+    SimType m_history;      //!< stores the last value to detect changes
 };
 
 
@@ -172,7 +178,6 @@ DataRef<SimType>::DataRef(std::string identifier,
         lookUp(identifier);
         checkDataType();
         checkWriteabilityIsValid();
-
     } catch (LookupException& ex)
     {
         logErrorWithDataRef(ex.what(), identifier);
@@ -182,8 +187,56 @@ DataRef<SimType>::DataRef(std::string identifier,
     }
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+template <typename SimType>
+bool DataRef<SimType>::hasChanged() const
+{
+    return true;
+}
+
+template <>
+bool DataRef<int>::hasChanged() const;
+
+template <>
+bool DataRef<float>::hasChanged() const;
+
+template <>
+bool DataRef<double>::hasChanged() const;
+
+template <>
+bool DataRef<std::vector<int> >::hasChanged() const;
+
+template <>
+bool DataRef<std::vector<float> >::hasChanged() const;
+
+template <>
+bool DataRef<std::string>::hasChanged() const;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename SimType>
+void DataRef<SimType>::safe()
+{
+    m_history = operator SimType();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename SimType>
+void DataRef<SimType>::undo()
+{
+    operator=(m_history);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
 
 template <typename SimType>
 void DataRef<SimType>::lookUp(const std::string& identifier)
