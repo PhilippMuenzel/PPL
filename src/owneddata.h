@@ -10,6 +10,7 @@
 #include <stdexcept>
 
 #include "XPLMDataAccess.h"
+#include "XPLMPlugin.h"
 
 #include "dataref.h"
 
@@ -33,6 +34,9 @@ public:
     {}
 };
 
+const long MSG_ADD_DATAREF = 0x01000000;
+const char* const DRE_PLUGIN_SINATURE = "xplanesdk.examples.DataRefEditor";
+
 
 /**
   * Data owned by the plugin and published as a XPLM DataRef.
@@ -51,10 +55,12 @@ public:
       * Please consult the XP SDK naming conventions on how to name things right.
       * @param std::string& identifier
       * @param RWType set the dataref writeable to OTHER plugins
+      * @param publish_in_dre by default, a message is sent to the DataRefEditor plugin that exposes the dataref
       * @exception throws DataRefNotPublishedException if publishing in X-Plane fails
       */
     OwnedData(const std::string& identifier,
-              RWType read_write = ReadOnly):
+              RWType read_write = ReadOnly,
+              bool publish_in_dre = true):
         m_data_ref_identifier(identifier),
         m_data_ref(0),
         m_value(T())
@@ -70,6 +76,12 @@ public:
         case ReadWrite:
             registerReadWrite();
             break;
+        }
+        if (publish_in_dre)
+        {
+            XPLMPluginID PluginID = XPLMFindPluginBySignature(DRE_PLUGIN_SINATURE);
+            if (PluginID != XPLM_NO_PLUGIN_ID)
+                XPLMSendMessageToPlugin(PluginID, MSG_ADD_DATAREF, (void*)m_data_ref_identifier.c_str());
         }
     }
 
