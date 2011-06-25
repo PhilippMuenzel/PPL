@@ -135,7 +135,7 @@ public:
 
     bool hasChanged() const;
 
-    void safe();
+    void save();
 
     void undo();
 
@@ -226,7 +226,7 @@ bool DataRef<std::string>::hasChanged() const;
 ///////////////////////////////////////////////////////////////////////////////
 
 template <typename SimType>
-void DataRef<SimType>::safe()
+void DataRef<SimType>::save()
 {
     m_history = operator SimType();
 }

@@ -61,7 +61,7 @@ int TextureHolder::loadTexture(const std::string &filename)
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     } catch (std::runtime_error& ex) {
         std::string fn(filename);
-        fn.append(ex.what()).append("\n");
+        fn.append(" : ").append(ex.what()).append("\n");
         XPLMDebugString(fn.c_str());
     }
 

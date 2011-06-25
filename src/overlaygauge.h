@@ -61,7 +61,7 @@ private:
     DataRef<float> m_click_3d_y;
     DataRef<float> m_panel_coord_l;
     DataRef<float> m_panel_coord_t;
-    int m_texture_id_3d;
+    int m_panel_region_id_3d;
     unsigned int m_call_counter;
 };
 
