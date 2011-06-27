@@ -48,6 +48,8 @@ template <typename T>
 class OwnedData{
 public:
 
+    typedef void (*DataCallback_f)(const T&);
+
     /**
       * create owned date for sharing.
       * the identifier provided is the string identifier later used for the dataref.
@@ -56,14 +58,17 @@ public:
       * @param std::string& identifier
       * @param RWType set the dataref writeable to OTHER plugins
       * @param publish_in_dre by default, a message is sent to the DataRefEditor plugin that exposes the dataref
+      * @param callback optional callback function pointer to be called when other plugins write to the dataref
       * @exception throws DataRefNotPublishedException if publishing in X-Plane fails
       */
     OwnedData(const std::string& identifier,
               RWType read_write = ReadOnly,
-              bool publish_in_dre = true):
+              bool publish_in_dre = true,
+              DataCallback_f callback = 0):
         m_data_ref_identifier(identifier),
         m_data_ref(0),
-        m_value(T())
+        m_value(T()),
+        m_callback(callback)
     {
         switch(read_write)
         {
@@ -112,7 +117,12 @@ public:
       * set the value so all other monitors of the dataref get it
       * @param val
       */
-    void setValue(const T& val) { m_value = val; }
+    void setValue(const T& val)
+    {
+        m_value = val;
+        if (m_callback)
+            m_callback(val);
+    }
 
 
 private:
@@ -137,6 +147,7 @@ private:
     std::string m_data_ref_identifier;
     XPLMDataRef m_data_ref;
     T m_value;
+    DataCallback_f m_callback;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
