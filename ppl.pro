@@ -56,8 +56,7 @@ HEADERS += \
     src/owneddata.h \
     src/logichandler.h \
     src/settings.h \
-    src/bitmaploader.h \
-    src/textureholder.h \
+    src/texture.h \
     src/overlaygauge.h \
     src/xposd.h \
     src/log.h \
@@ -71,13 +70,12 @@ HEADERS += \
 SOURCES += \
     src/pluginpath.cpp \
     src/settings.cpp \
-    src/bitmaploader.cpp \
     src/dataref.cpp \
     src/messagewindow.cpp \
     src/onscreendisplay.cpp \
     src/owneddata.cpp \
     src/logichandler.cpp \
-    src/textureholder.cpp \
+    src/texture.cpp \
     src/overlaygauge.cpp \
     src/log.cpp \
     src/logwriter.cpp \
@@ -94,4 +92,19 @@ withsound {
         src/alsoundbuffer.cpp \
         src/alcontextmanager.cpp \
         src/alcontextchanger.cpp
+}
+
+withfreetype {
+    win32 {
+        INCLUDEPATH += include include/freetype2
+    }
+    unix:!macx {
+        INCLUDEPATH += /usr/include/freetype2
+    }
+    macx {
+        INCLUDEPATH += /usr/local/include/freetype2
+    }
+
+    HEADERS += src/font.h
+    SOURCES += src/font.cpp
 }
