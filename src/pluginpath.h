@@ -42,6 +42,15 @@ public:
     static std::string prependPluginPath(const std::string&);
 
     /**
+      * prepend the absolute path to the Resources subdirectory of the
+      * directory of the currently running plugin to the path
+      * @param path to which absolute path should be prepended
+      * @return the absolute path
+      * @exception PathSetupError is thrown if path conversion fails
+      */
+    static std::string prependPluginResourcesPath(const std::string&);
+
+    /**
       * prepend the absolute path to the directory of the currently loaded
       * user airplane to the path
       * @param path to which absolute path should be prepended

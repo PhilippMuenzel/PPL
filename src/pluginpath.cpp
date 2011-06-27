@@ -39,6 +39,14 @@ std::string PluginPath::prependPluginPath(const std::string& file)
     return absolute_path;
 }
 
+std::string PluginPath::prependPluginResourcesPath(const std::string& file)
+{
+    std::string res_path("Resources");
+    res_path.append(XPLMGetDirectorySeparator());
+    res_path.append(file);
+    return prependPluginPath(res_path);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
