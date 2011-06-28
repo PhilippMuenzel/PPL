@@ -22,8 +22,32 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
 {
     XPLMRegisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
     XPLMRegisterDrawCallback(draw3dCallback, xplm_Phase_Gauges, 0, this);
-    m_window2d_id = XPLMCreateWindow(left2d, top2d, left2d+width2d, top2d-height2d, is_visible2d, draw2dWindowCallback, handle2dKeyCallback, handle2dClickCallback, this);
-    m_window3d_id = XPLMCreateWindow(left3d, top3d, left3d+width3d, top3d-height3d, true, draw3dWindowCallback, handle3dKeyCallback, handle3dClickCallback, this);
+    XPLMCreateWindow_t win;
+    memset(&win, 0, sizeof(win));
+
+    win.structSize = sizeof(win);
+    win.left = left2d;
+    win.top = top2d;
+    win.right = left2d+width2d;
+    win.bottom = top2d-height2d;
+    win.visible = is_visible2d;
+    win.drawWindowFunc = draw2dWindowCallback;
+    win.handleKeyFunc = handle2dKeyCallback;
+    win.handleMouseClickFunc = handle2dClickCallback;
+    win.handleCursorFunc = handle2dCursorCallback;
+    win.refcon = this;
+    m_window2d_id = XPLMCreateWindowEx(&win);
+
+    win.left = left3d;
+    win.top = top3d;
+    win.right = left3d+width3d;
+    win.bottom = top3d-height3d;
+    win.visible = true;
+    win.drawWindowFunc = draw3dWindowCallback;
+    win.handleKeyFunc = handle3dKeyCallback;
+    win.handleMouseClickFunc = handle3dClickCallback;
+    win.handleCursorFunc = handle3dCursorCallback;
+    m_window3d_id = XPLMCreateWindowEx(&win);
 }
 
 OverlayGauge::~OverlayGauge()
@@ -121,15 +145,12 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
 
     /// Get the windows current position
     XPLMGetWindowGeometry(window_id, &Left, &Top, &Right, &Bottom);
-    //printf("window (%d,%d)(%d,%d)\n", Left, Top, Right, Bottom);
-    //x = static_cast<int>(round(x * 1024.0 / static_cast<double>(m_screen_width)));
-    //y = static_cast<int>(round(y *  768.0 / static_cast<double>(m_screen_height)));
-    float widthRatio = ( Right - Left )/256.f;
-    float heightRatio = ( Top - Bottom )/256.f;
+    int x_rel = (x-Left);
+    int y_rel = (y-Bottom);
     switch(mouse) {
     case xplm_MouseDown:
         /// Test for the mouse in the window
-        if (coordInRect(x, y, Left+50*widthRatio, Top, Right-50*widthRatio, Top-50*heightRatio))
+        if (coordInRect(x, y, Left+50, Top, Right-50, Top-50))
         {
             dX = (x - Left);
             dY = (y - Top);
@@ -137,22 +158,13 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
             Height = Bottom - Top;
             gDragging = 1;
         }
-        if (coordInRect(x, y, Right-50*widthRatio, Top, Right, Top-50*heightRatio))
+        if (coordInRect(x, y, Right-50, Top, Right, Top-50))
         {
             setVisible(!m_visible_2d);
         }
-        if (coordInRect(x, y, Left+50*widthRatio, Top-50*heightRatio, Right-50*widthRatio, Bottom+50*heightRatio))
+        if (coordInRect(x, y, Left, Top-50, Right, Bottom))
         {
-            handleNonDragClick(3);  // cheat
-        }
-        if (coordInRect(x, y, Left, Bottom+50*heightRatio, Left+80*widthRatio, Bottom)) {
-            handleNonDragClick(0); // step
-        }
-        if (coordInRect(x, y, Left+85*widthRatio, Bottom+50*heightRatio, Right-85*widthRatio, Bottom)) {
-            handleNonDragClick(2); // both
-        }
-        if (coordInRect(x, y, Right-80*widthRatio, Bottom+50*heightRatio, Right, Bottom)) {
-            handleNonDragClick(1); // lean find
+            handleNonDragClick(x_rel, y_rel);
         }
         break;
     case xplm_MouseDrag:
@@ -176,6 +188,16 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
 int OverlayGauge::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus)
 {
     return 0;
+}
+
+XPLMCursorStatus OverlayGauge::handle2dCursorCallback(XPLMWindowID, int, int)
+{
+    return xplm_CursorArrow;
+}
+
+XPLMCursorStatus OverlayGauge::handle3dCursorCallback(XPLMWindowID, int, int)
+{
+    return xplm_CursorDefault;
 }
 
 int OverlayGauge::draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon)
@@ -224,6 +246,18 @@ int OverlayGauge::handle3dClickCallback(XPLMWindowID window_id, int x, int y, XP
 {
     OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     return window->handle3dClickCallback(window_id, x, y, mouse);
+}
+
+XPLMCursorStatus OverlayGauge::handle2dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon)
+{
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
+    return window->handle2dCursorCallback(window_id, x, y);
+}
+
+XPLMCursorStatus OverlayGauge::handle3dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon)
+{
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
+    return window->handle3dCursorCallback(window_id, x, y);
 }
 
 bool OverlayGauge::coordInRect(float x, float y, float l, float t, float r, float b)

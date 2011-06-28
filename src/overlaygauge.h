@@ -32,8 +32,11 @@ public:
     int handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse);
     int handle3dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse);
 
+    XPLMCursorStatus handle2dCursorCallback(XPLMWindowID window_id, int x, int y);
+    XPLMCursorStatus handle3dCursorCallback(XPLMWindowID window_id, int x, int y);
+
     virtual void draw(int left, int top, int right, int bottom) = 0;
-    virtual void handleNonDragClick(int no) = 0;
+    virtual void handleNonDragClick(int x_rel, int y_rel) = 0;
 
     static int draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
@@ -46,9 +49,10 @@ public:
     static int handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon);
     static int handle3dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon);
 
+    static XPLMCursorStatus handle2dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon);
+    static XPLMCursorStatus handle3dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon);
 
-private:
-    bool coordInRect(float x, float y, float l, float t, float r, float b);
+    static bool coordInRect(float x, float y, float l, float t, float r, float b);
 
 private:
     XPLMWindowID m_window2d_id;
