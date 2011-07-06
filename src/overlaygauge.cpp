@@ -5,6 +5,7 @@
 #include "overlaygauge.h"
 #include "basics.h"
 #include <cstdio>
+#include <cstring>
 
 using namespace PPL;
 

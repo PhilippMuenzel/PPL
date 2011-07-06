@@ -66,7 +66,7 @@ void Font::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_ba
         }
     }
 
-    XPLMBindTexture2d(tex_base[ch], 0);
+    XPLMBindTexture2d(tex_base[(int)ch], 0);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height,
@@ -75,7 +75,7 @@ void Font::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_ba
     delete [] expanded_data;
 
     glNewList(list_base+ch,GL_COMPILE);
-    XPLMBindTexture2d(tex_base[ch], 0);
+    XPLMBindTexture2d(tex_base[(int)ch], 0);
 
     glPushMatrix();
 

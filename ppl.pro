@@ -44,7 +44,7 @@ win32 {
 
 unix:!macx {
     DEFINES += APL=0 IBM=0 LIN=1 HAVE_TR1
-    QMAKE_CXXFLAGS += -Werror -Wall -Wextra -Wshadow -Wfloat-equal -pedantic
+    QMAKE_CXXFLAGS += -Werror -Wall -Wextra -Wfloat-equal -pedantic
     QMAKE_CXXFLAGS += -fvisibility=hidden
 }
 

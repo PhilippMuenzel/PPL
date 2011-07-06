@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <stdexcept>
+#include <cstring>
 #include "texture.h"
 #include "XPLMUtilities.h"
 #include "XPLMGraphics.h"
