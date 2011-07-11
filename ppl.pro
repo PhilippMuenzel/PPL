@@ -3,7 +3,7 @@ TEMPLATE = lib
 # Static library without any Qt functionality
 QT -= gui core
 
-CONFIG += static exceptions release stl console
+CONFIG += static exceptions stl console
 CONFIG -= thread qt rtti warn_on
 
 VERSION = 1.0.0
@@ -18,6 +18,11 @@ DEFINES += XPLM200
 OBJECTS_DIR  = objects
 DESTDIR = lib
 TARGET = ppl
+
+standalone {
+    DEFINES += BUILD_FOR_STANDALONE
+    TARGET = pplstandalone
+}
 
 macx {
     DEFINES += APL=1 IBM=0 LIN=0

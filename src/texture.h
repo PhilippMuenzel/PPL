@@ -53,6 +53,7 @@ public:
 #pragma pack(pop, ident)
 
     Texture(const std::string& file_name);
+    ~Texture();
     int id() const;
     int width() const;
     int height() const;

@@ -4,6 +4,10 @@
 
 #include "font.h"
 
+#ifndef BUILD_FOR_STANDALONE
+#include "XPLMGraphics.h"
+#endif
+
 using namespace PPL;
 
 Font::Font(const std::string& fname, unsigned int height)
@@ -22,7 +26,11 @@ Font::Font(const std::string& fname, unsigned int height)
     FT_Set_Char_Size( face, height << 6, height << 6, 96, 96);
 
     list_base=glGenLists(128);
+#ifdef BUILD_FOR_STANDALONE
+    glGenTextures(128, textures);
+#else
     XPLMGenerateTextureNumbers((int*)textures, 128);
+#endif
 
     for(unsigned char i = 0 ; i < 128 ; i++)
         make_dlist(face,i,list_base,textures);
@@ -66,7 +74,11 @@ void Font::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_ba
         }
     }
 
+#ifdef BUILD_FOR_STANDALONE
+    glBindTexture(GL_TEXTURE_2D, tex_base[(int)ch]);
+#else
     XPLMBindTexture2d(tex_base[(int)ch], 0);
+#endif
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height,
@@ -75,7 +87,11 @@ void Font::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_ba
     delete [] expanded_data;
 
     glNewList(list_base+ch,GL_COMPILE);
+#ifdef BUILD_FOR_STANDALONE
+    glBindTexture(GL_TEXTURE_2D, tex_base[(int)ch]);
+#else
     XPLMBindTexture2d(tex_base[(int)ch], 0);
+#endif
 
     glPushMatrix();
 

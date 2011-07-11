@@ -19,6 +19,9 @@ std::string PluginPath::plugin_directory = "";
 
 std::string PluginPath::prependPluginPath(const std::string& file)
 {
+#ifdef BUILD_FOR_STANDALONE
+    return file;
+#else
     if (plugin_directory == "")
         throw PathSetupError("Critical error - no plugin name set - unable to create file in the right directory");
     char path[512];
@@ -37,14 +40,21 @@ std::string PluginPath::prependPluginPath(const std::string& file)
         throw PathSetupError("Critical error - cannot convert Mac-HFS-format path to unix-format path");
 #endif
     return absolute_path;
+#endif
 }
 
 std::string PluginPath::prependPluginResourcesPath(const std::string& file)
 {
     std::string res_path("Resources");
+#ifdef BUILD_FOR_STANDALONE
+    res_path.append("/");
+    res_path.append(file);
+    return res_path;
+#else
     res_path.append(XPLMGetDirectorySeparator());
     res_path.append(file);
     return prependPluginPath(res_path);
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -52,6 +62,9 @@ std::string PluginPath::prependPluginResourcesPath(const std::string& file)
 
 std::string PluginPath::prependPlanePath(const std::string& file)
 {
+#ifdef BUILD_FOR_STANDALONE
+    return file;
+#else
     char name[512];
     char path[512];
     XPLMGetNthAircraftModel(0, name, path);
@@ -67,7 +80,7 @@ std::string PluginPath::prependPlanePath(const std::string& file)
         throw PathSetupError("Critical error - cannot convert Mac-HFS-format path to unix-format path");
 #endif
     return absolute_path;
-
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////

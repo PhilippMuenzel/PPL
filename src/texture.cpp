@@ -6,8 +6,10 @@
 #include <stdexcept>
 #include <cstring>
 #include "texture.h"
+#ifndef BUILD_FOR_STANDALONE
 #include "XPLMUtilities.h"
 #include "XPLMGraphics.h"
+#endif
 
 #if IBM
 #define WIN32_LEAN_AND_MEAN
@@ -126,10 +128,16 @@ Texture::Texture(const std::string& file_name)
         swapRedBlue();
 
 
+#ifdef BUILD_FOR_STANDALONE
+        glGenTextures(1, (GLuint*)&m_id);
+        glBindTexture(GL_TEXTURE_2D, m_id);
+#else
         /// Do the opengl stuff using XPLM functions for a friendly Xplane existence.
         XPLMGenerateTextureNumbers(&m_id, 1);
-
         XPLMBindTexture2d(m_id, 0);
+#endif
+
+
         gluBuild2DMipmaps(GL_TEXTURE_2D, 3, m_imagedata.Width, m_imagedata.Height, GL_RGB, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]);
 
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
@@ -202,9 +210,14 @@ Texture::Texture(const std::string& file_name)
         {
             type=GL_RGB;                                        // If So Set The 'type' To GL_RGB
         }
+#ifdef BUILD_FOR_STANDALONE
+        glGenTextures(1, (GLuint*)&m_id);
+        glBindTexture(GL_TEXTURE_2D, m_id);
+#else
+        /// Do the opengl stuff using XPLM functions for a friendly Xplane existence.
         XPLMGenerateTextureNumbers(&m_id, 1);
-
         XPLMBindTexture2d(m_id, 0);
+#endif
         glTexImage2D(GL_TEXTURE_2D, 0, type, m_imagedata.Width, m_imagedata.Height, 0, type, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]);
 
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
@@ -212,6 +225,11 @@ Texture::Texture(const std::string& file_name)
     } else {
         throw std::runtime_error("The texture file is neither a BMP nor a TGA. Other fileformats are not supported.");
     }
+}
+
+Texture::~Texture()
+{
+    glDeleteTextures(1, (GLuint*)&m_id);
 }
 
 int Texture::id() const

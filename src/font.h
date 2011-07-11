@@ -27,8 +27,6 @@
 #include <GL/glu.h>
 #endif
 
-#include "XPLMGraphics.h"
-
 namespace PPL {
 
 class Font {
