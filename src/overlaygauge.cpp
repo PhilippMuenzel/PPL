@@ -6,6 +6,7 @@
 #include "basics.h"
 #include <cstdio>
 #include <cstring>
+#include "XPLMGraphics.h"
 
 using namespace PPL;
 
@@ -259,6 +260,16 @@ XPLMCursorStatus OverlayGauge::handle3dCursorCallback(XPLMWindowID window_id, in
 {
     OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     return window->handle3dCursorCallback(window_id, x, y);
+}
+
+void OverlayGauge::setDrawState(int inEnableFog, int inNumberTexUnits, int inEnableLighting, int inEnableAlphaTesting, int inEnableAlphaBlending, int inEnableDepthTesting, int inEnableDepthWriting)
+{
+    XPLMSetGraphicsState(inEnableFog, inNumberTexUnits, inEnableLighting, inEnableAlphaTesting, inEnableAlphaBlending, inEnableDepthTesting, inEnableDepthWriting);
+}
+
+void OverlayGauge::bindTex(int tex_id, int texture_unit)
+{
+    XPLMBindTexture2d(tex_id, texture_unit);
 }
 
 bool OverlayGauge::coordInRect(float x, float y, float l, float t, float r, float b)

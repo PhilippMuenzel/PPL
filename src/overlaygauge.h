@@ -52,6 +52,15 @@ public:
     static XPLMCursorStatus handle2dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon);
     static XPLMCursorStatus handle3dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon);
 
+    void setDrawState(int inEnableFog,
+                      int inNumberTexUnits,
+                      int inEnableLighting,
+                      int inEnableAlphaTesting,
+                      int inEnableAlphaBlending,
+                      int inEnableDepthTesting,
+                      int inEnableDepthWriting);
+    void bindTex(int tex_id, int texture_unit);
+
     static bool coordInRect(float x, float y, float l, float t, float r, float b);
 
 private:
