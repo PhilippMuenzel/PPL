@@ -19,6 +19,7 @@
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/glu.h>
 #elif IBM == 1
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <gl/gl.h>
 #include <gl/glu.h>
