@@ -10,8 +10,9 @@
 
 using namespace PPL;
 
-OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, int textureId3d, bool is_visible2d):
+OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, int textureId3d, bool is_visible2d, bool always_draw_3d):
     m_visible_2d(is_visible2d),
+    m_always_draw_3d(always_draw_3d),
     m_screen_width("sim/graphics/view/window_width"),
     m_screen_height("sim/graphics/view/window_height"),
     m_view_type("sim/graphics/view/view_type"),
@@ -60,12 +61,28 @@ OverlayGauge::~OverlayGauge()
     XPLMDestroyWindow(m_window3d_id);
 }
 
-void OverlayGauge::set3d(int left3d, int top3d, int width3d, int height3d, int texture_id)
+void OverlayGauge::set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d)
 {
     m_panel_region_id_3d = texture_id;
+    m_always_draw_3d = always_draw_3d;
     if (m_window3d_id != 0)
         XPLMDestroyWindow(m_window3d_id);
-    m_window3d_id = XPLMCreateWindow(left3d, top3d, left3d+width3d, top3d-height3d, true, draw3dWindowCallback, handle3dKeyCallback, handle3dClickCallback, this);
+
+    XPLMCreateWindow_t win;
+    memset(&win, 0, sizeof(win));
+
+    win.structSize = sizeof(win);
+
+    win.left = left3d;
+    win.top = top3d;
+    win.right = left3d+width3d;
+    win.bottom = top3d-height3d;
+    win.visible = true;
+    win.drawWindowFunc = draw3dWindowCallback;
+    win.handleKeyFunc = handle3dKeyCallback;
+    win.handleMouseClickFunc = handle3dClickCallback;
+    win.handleCursorFunc = handle3dCursorCallback;
+    m_window3d_id = XPLMCreateWindowEx(&win);
 }
 
 void OverlayGauge::disable3d()
@@ -102,7 +119,7 @@ void OverlayGauge::frame()
 
 int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 {
-    if (m_view_type == 1026)
+    if (m_view_type == 1026 || m_always_draw_3d)
     {
         /*float l = m_panel_coord_l;
         float t = m_panel_coord_t;*/
@@ -194,7 +211,10 @@ int OverlayGauge::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus)
 
 XPLMCursorStatus OverlayGauge::handle2dCursorCallback(XPLMWindowID, int, int)
 {
-    return xplm_CursorArrow;
+    if (m_visible_2d)
+        return xplm_CursorArrow;
+    else
+        return xplm_CursorDefault;
 }
 
 XPLMCursorStatus OverlayGauge::handle3dCursorCallback(XPLMWindowID, int, int)

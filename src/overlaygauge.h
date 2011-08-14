@@ -13,10 +13,10 @@ namespace PPL {
 class OverlayGauge
 {
 public:
-    OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, int textureId3d, bool is_visible2d = false);
+    OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, int textureId3d, bool is_visible2d = false, bool always_draw_3d = false);
     virtual ~OverlayGauge();
 
-    void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id);
+    void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d);
     void disable3d();
     bool isVisible() const;
     void setVisible(bool b);
@@ -67,6 +67,7 @@ private:
     XPLMWindowID m_window2d_id;
     XPLMWindowID m_window3d_id;
     bool m_visible_2d;
+    bool m_always_draw_3d;
     DataRef<int> m_screen_width;
     DataRef<int> m_screen_height;
     DataRef<int> m_view_type;
