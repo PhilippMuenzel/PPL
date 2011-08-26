@@ -32,7 +32,7 @@ macx {
     # The following line is only needed to build universal on PPC architectures.
     # QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
     # This line defines for which architectures we build.
-    CONFIG += x86 ppc
+    CONFIG += x86
 }
 
 win32 {
