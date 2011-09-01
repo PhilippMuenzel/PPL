@@ -53,6 +53,10 @@ unix:!macx {
     QMAKE_CXXFLAGS += -fvisibility=hidden
 }
 
+release {
+    DEFINES += NDEBUG
+}
+
 HEADERS += \
     src/dataref.h \
     src/messagewindow.h \
