@@ -229,7 +229,7 @@ Texture::Texture(const std::string& file_name)
 
 Texture::~Texture()
 {
-    // glDeleteTextures(1, (GLuint*)&m_id);
+    glDeleteTextures(1, (GLuint*)&m_id);
 }
 
 int Texture::id() const
