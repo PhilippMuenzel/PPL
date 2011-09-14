@@ -53,7 +53,9 @@ unix:!macx {
     QMAKE_CXXFLAGS += -fvisibility=hidden
 }
 
-release {
+CONFIG( debug, debug|release ) {
+    # debug settings go here
+} else {
     DEFINES += NDEBUG
 }
 
