@@ -119,3 +119,20 @@ withfreetype {
     HEADERS += src/font.h
     SOURCES += src/font.cpp
 }
+
+withserialization {
+    win32 {
+        INCLUDEPATH += C:\\Boost\\include\\boost-1_47
+    }
+    unix:!macx {
+        INCLUDEPATH += /usr/local/include/
+    }
+    macx {
+        INCLUDEPATH += /usr/local/include/
+    }
+
+    HEADERS += src/sharedobject.h
+    SOURCES += src/sharedobject.cpp
+
+}
+

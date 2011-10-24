@@ -113,7 +113,7 @@ public:
       * Sets up the dataref connection.
       * looks up the datarefs and stores handler locally, also checks for correct
       * type of data (sim-type) and correct read-/writeability
-      * @param identifier The identifier as in datarefs.txt as std::string (or implicitly convertable)
+      * @param identifier The identifier as in datarefs.txt as std::string
       * @param writeability the writeability as defined by RWType
       * @param share treat the dataref as a shared dataref, i.e. register the user as a shared dataref participant
       * @exception LookupException is thrown if one of the following happens
@@ -121,7 +121,7 @@ public:
       * b) Data type is invalid (trying to access an int DataRef through float functions
       * c) data was requested to be writeable, but X-Plane says it is read-only
       */
-    DataRef(std::string identifier, RWType writeability = ReadOnly, bool share = false);
+    DataRef(const std::string& identifier, RWType writeability = ReadOnly, bool share = false);
 
     /**
       * read the current value from X-Plane's plugin system
@@ -171,7 +171,7 @@ private:
 
 
 template <typename SimType>
-DataRef<SimType>::DataRef(std::string identifier,
+DataRef<SimType>::DataRef(const std::string& identifier,
                           RWType writeability,
                           bool share):
     m_data_ref(0),
