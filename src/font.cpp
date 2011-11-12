@@ -125,10 +125,8 @@ int Font::next_p2 (int a)
 
 
 
-void PPL::glPrint(const Font& ft_font, float x, float y, const std::string& text)
+void Font::glPrint(float x, float y, const std::string& text)
 {
-    GLuint font=ft_font.list_base;
-
     glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
 //    float color[4];
 //    glGetFloatv(GL_CURRENT_COLOR,color);
@@ -136,7 +134,7 @@ void PPL::glPrint(const Font& ft_font, float x, float y, const std::string& text
 //    XPLMSetGraphicsState(0,1,0,0,1,0,0);
 //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glListBase(font);
+    glListBase(list_base);
 
     float modelview_matrix[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);

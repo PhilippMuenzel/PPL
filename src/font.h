@@ -35,8 +35,8 @@ public:
     Font(const std::string& fname, unsigned int height);
     ~Font();
 
+    void glPrint(float x, float y, const std::string &text);
 private:
-    friend void glPrint(const Font &font, float x, float y, const std::string &text);
 
     void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base );
     int next_p2 ( int a );
@@ -46,9 +46,6 @@ private:
     GLuint  list_base;  //!< Holds the first display list id
 
 };
-
-
-void glPrint(const Font& font, float x, float y, const std::string& text);
 
 }
 
