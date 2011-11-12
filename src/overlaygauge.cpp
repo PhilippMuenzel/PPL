@@ -8,16 +8,34 @@
 #include <cstring>
 #include "XPLMGraphics.h"
 
+#if APL == 1
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/glu.h>
+#elif IBM == 1
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <gl/gl.h>
+#include <gl/glu.h>
+#elif LIN == 1
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
+
+
 using namespace PPL;
 
 OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, int textureId3d, bool is_visible2d, bool always_draw_3d):
+    left_3d_(left3d),
+    top_3d_(top3d),
+    width_3d_(width3d),
+    height_3d_(height3d),
     m_visible_2d(is_visible2d),
     m_always_draw_3d(always_draw_3d),
     m_screen_width("sim/graphics/view/window_width"),
     m_screen_height("sim/graphics/view/window_height"),
     m_view_type("sim/graphics/view/view_type"),
-    m_click_3d_x("sim/graphics/view/click_3d_x"),
-    m_click_3d_y("sim/graphics/view/click_3d_y"),
+    m_click_3d_x("sim/graphics/view/click_3d_x"),// click_3d_x_pixels
+    m_click_3d_y("sim/graphics/view/click_3d_y"),// click_3d_y_pixels
     m_panel_coord_l("sim/graphics/view/panel_total_pnl_l"),
     m_panel_coord_t("sim/graphics/view/panel_total_pnl_t"),
     m_panel_region_id_3d(textureId3d),
@@ -41,16 +59,16 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     win.refcon = this;
     m_window2d_id = XPLMCreateWindowEx(&win);
 
-    win.left = left3d;
-    win.top = top3d;
-    win.right = left3d+width3d;
-    win.bottom = top3d-height3d;
-    win.visible = true;
-    win.drawWindowFunc = draw3dWindowCallback;
-    win.handleKeyFunc = handle3dKeyCallback;
-    win.handleMouseClickFunc = handle3dClickCallback;
-    win.handleCursorFunc = handle3dCursorCallback;
-    m_window3d_id = XPLMCreateWindowEx(&win);
+    //    win.left = left3d;
+    //    win.top = top3d;
+    //    win.right = left3d+width3d;
+    //    win.bottom = top3d-height3d;
+    //    win.visible = true;
+    //    win.drawWindowFunc = draw3dWindowCallback;
+    //    win.handleKeyFunc = handle3dKeyCallback;
+    //    win.handleMouseClickFunc = handle3dClickCallback;
+    //    win.handleCursorFunc = handle3dCursorCallback;
+    //    m_window3d_id = XPLMCreateWindowEx(&win);
 }
 
 OverlayGauge::~OverlayGauge()
@@ -58,37 +76,43 @@ OverlayGauge::~OverlayGauge()
     XPLMUnregisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
     XPLMUnregisterDrawCallback(draw3dCallback, xplm_Phase_Gauges, 0, this);
     XPLMDestroyWindow(m_window2d_id);
-    XPLMDestroyWindow(m_window3d_id);
+    //    XPLMDestroyWindow(m_window3d_id);
 }
 
 void OverlayGauge::set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d)
 {
     m_panel_region_id_3d = texture_id;
     m_always_draw_3d = always_draw_3d;
-    if (m_window3d_id != 0)
-        XPLMDestroyWindow(m_window3d_id);
 
-    XPLMCreateWindow_t win;
-    memset(&win, 0, sizeof(win));
+    left_3d_ = left3d;
+    top_3d_ = top3d;
+    width_3d_ = width3d;
+    height_3d_ = height3d;
 
-    win.structSize = sizeof(win);
+    //    if (m_window3d_id != 0)
+    //        XPLMDestroyWindow(m_window3d_id);
 
-    win.left = left3d;
-    win.top = top3d;
-    win.right = left3d+width3d;
-    win.bottom = top3d-height3d;
-    win.visible = true;
-    win.drawWindowFunc = draw3dWindowCallback;
-    win.handleKeyFunc = handle3dKeyCallback;
-    win.handleMouseClickFunc = handle3dClickCallback;
-    win.handleCursorFunc = handle3dCursorCallback;
-    m_window3d_id = XPLMCreateWindowEx(&win);
+    //    XPLMCreateWindow_t win;
+    //    memset(&win, 0, sizeof(win));
+
+    //    win.structSize = sizeof(win);
+
+    //    win.left = left3d;
+    //    win.top = top3d;
+    //    win.right = left3d+width3d;
+    //    win.bottom = top3d-height3d;
+    //    win.visible = true;
+    //    win.drawWindowFunc = draw3dWindowCallback;
+    //    win.handleKeyFunc = handle3dKeyCallback;
+    //    win.handleMouseClickFunc = handle3dClickCallback;
+    //    win.handleCursorFunc = handle3dCursorCallback;
+    //    m_window3d_id = XPLMCreateWindowEx(&win);
 }
 
 void OverlayGauge::disable3d()
 {
-    XPLMDestroyWindow(m_window3d_id);
-    m_window3d_id = 0;
+    //    XPLMDestroyWindow(m_window3d_id);
+    //    m_window3d_id = 0;
 }
 
 void OverlayGauge::setVisible(bool b)
@@ -108,6 +132,7 @@ int OverlayGauge::draw2dCallback(XPLMDrawingPhase, int)
         int left, top, right, bottom;
         XPLMGetWindowGeometry(m_window2d_id, &left, &top, &right, &bottom);
         draw(left, top, right, bottom);
+        drawFrameTexture(left, top, right, bottom);
     }
     return 1;
 }
@@ -124,11 +149,11 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
         /*float l = m_panel_coord_l;
         float t = m_panel_coord_t;*/
         m_call_counter++;
-        if (m_window3d_id && (m_panel_region_id_3d == -1 || m_call_counter == static_cast<unsigned int>(m_panel_region_id_3d)))
+        if (/*m_window3d_id && */(m_panel_region_id_3d == -1 || m_call_counter == static_cast<unsigned int>(m_panel_region_id_3d)))
         {
-            int left, top, right, bottom;
-            XPLMGetWindowGeometry(m_window3d_id, &left, &top, &right, &bottom);
-            draw(left, top, right, bottom);
+            //int left, top, right, bottom;
+            //XPLMGetWindowGeometry(m_window3d_id, &left, &top, &right, &bottom);
+            draw(left_3d_, top_3d_, left_3d_+width_3d_, top_3d_ - height_3d_);
         }
     }
     return 1;
@@ -220,6 +245,29 @@ XPLMCursorStatus OverlayGauge::handle2dCursorCallback(XPLMWindowID, int, int)
 XPLMCursorStatus OverlayGauge::handle3dCursorCallback(XPLMWindowID, int, int)
 {
     return xplm_CursorDefault;
+}
+
+int OverlayGauge::frameTextureId() const
+{
+    return 0;
+}
+
+void OverlayGauge::drawFrameTexture(int left, int top, int right, int bottom)
+{
+    int tex_id = frameTextureId();
+    if (tex_id > 0)
+    {
+        setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
+        glColor4f(1,1,1,1);
+
+        bindTex(tex_id, 0);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 1);  glVertex2f(left, top);
+        glTexCoord2f(1, 1);  glVertex2f(right, top);
+        glTexCoord2f(1, 0);  glVertex2f(right, bottom);
+        glTexCoord2f(0, 0);  glVertex2f(left, bottom);
+        glEnd();
+    }
 }
 
 int OverlayGauge::draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon)

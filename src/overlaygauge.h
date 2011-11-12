@@ -37,6 +37,8 @@ public:
 
     virtual void draw(int left, int top, int right, int bottom) = 0;
     virtual void handleNonDragClick(int x_rel, int y_rel) = 0;
+    virtual int frameTextureId() const;
+    virtual void drawFrameTexture(int, int, int, int);
 
     static int draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
@@ -65,7 +67,11 @@ public:
 
 private:
     XPLMWindowID m_window2d_id;
-    XPLMWindowID m_window3d_id;
+    //XPLMWindowID m_window3d_id;
+    int left_3d_;
+    int top_3d_;
+    int width_3d_;
+    int height_3d_;
     bool m_visible_2d;
     bool m_always_draw_3d;
     DataRef<int> m_screen_width;
