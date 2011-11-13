@@ -82,7 +82,7 @@ public:
 
 private:
     XPLMWindowID m_window2d_id;
-    //XPLMWindowID m_window3d_id;
+    XPLMWindowID m_window3d_click_harcevester_id;
     int left_3d_;
     int top_3d_;
     int width_3d_;
