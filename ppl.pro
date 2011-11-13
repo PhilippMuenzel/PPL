@@ -45,6 +45,7 @@ win32 {
         QMAKE_CXXFLAGS += -wd4996
         DEFINES += NOMINMAX
     }
+    INCLUDEPATH += include
 }
 
 unix:!macx {
