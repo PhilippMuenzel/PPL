@@ -8,19 +8,6 @@
 #include <cstring>
 #include "XPLMGraphics.h"
 
-#if APL == 1
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/glu.h>
-#elif IBM == 1
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
-#elif LIN == 1
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
-
 
 using namespace PPL;
 
@@ -69,6 +56,46 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     //    win.handleMouseClickFunc = handle3dClickCallback;
     //    win.handleCursorFunc = handle3dCursorCallback;
     //    m_window3d_id = XPLMCreateWindowEx(&win);
+
+    XPLMGenerateTextureNumbers((int*)(&textureId), 1);
+    XPLMBindTexture2d(textureId, 0);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width3d, height3d, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+    XPLMBindTexture2d(0,0);
+
+    // create a renderbuffer object to store depth info
+    glGenRenderbuffersEXT(1, &rboId);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rboId);
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT,
+                             width3d, height3d);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+
+    // create a framebuffer object
+    glGenFramebuffersEXT(1, &fboId);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboId);
+
+    // attach the texture to FBO color attachment point
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
+                              GL_TEXTURE_2D, textureId, 0);
+
+    // attach the renderbuffer to depth attachment point
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
+                                 GL_RENDERBUFFER_EXT, rboId);
+
+    // check FBO status
+    status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+    if(status != GL_FRAMEBUFFER_COMPLETE_EXT)
+        fboUsed = false;
+
+    // switch back to window-system-provided framebuffer
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
 }
 
 OverlayGauge::~OverlayGauge()
@@ -131,7 +158,36 @@ int OverlayGauge::draw2dCallback(XPLMDrawingPhase, int)
     {
         int left, top, right, bottom;
         XPLMGetWindowGeometry(m_window2d_id, &left, &top, &right, &bottom);
-        draw(left, top, right, bottom);
+        // set rendering destination to FBO
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboId);
+
+        // clear buffers
+        glClearColor(0,0,0,1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // draw a scene to a texture directly
+        draw(0, height_3d_, width_3d_, 0);
+
+        // unbind FBO
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+        // trigger mipmaps generation explicitly
+        // NOTE: If GL_GENERATE_MIPMAP is set to GL_TRUE, then glCopyTexSubImage2D()
+        // triggers mipmap generation automatically. However, the texture attached
+        // onto a FBO should generate mipmaps manually via glGenerateMipmapEXT().
+        bindTex(textureId,0);
+        glGenerateMipmapEXT(GL_TEXTURE_2D);
+
+        setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
+        glColor4f(1,1,1,1);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 1);  glVertex2f(left, top);
+        glTexCoord2f(1, 1);  glVertex2f(right, top);
+        glTexCoord2f(1, 0);  glVertex2f(right, bottom);
+        glTexCoord2f(0, 0);  glVertex2f(left, bottom);
+        glEnd();
+
         drawFrameTexture(left, top, right, bottom);
     }
     return 1;

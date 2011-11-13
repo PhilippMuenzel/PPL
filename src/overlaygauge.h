@@ -8,6 +8,19 @@
 #include "XPLMDisplay.h"
 #include "dataref.h"
 
+#if APL == 1
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/glu.h>
+#elif IBM == 1
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <gl/gl.h>
+#include <gl/glu.h>
+#elif LIN == 1
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
+
 namespace PPL {
 
 class OverlayGauge
@@ -83,6 +96,11 @@ private:
     DataRef<float> m_panel_coord_t;
     int m_panel_region_id_3d;
     unsigned int m_call_counter;
+    GLuint textureId;
+    GLuint rboId;
+    GLuint fboId;
+    GLenum status;
+    bool fboUsed;
 };
 
 }
