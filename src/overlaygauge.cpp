@@ -306,16 +306,19 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
     return 1;
 }
 
-int OverlayGauge::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus)
+int OverlayGauge::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus mouse)
 {
     if (panel_region_id_3d_ != -1)
         return 0;
-    float x = click_3d_x_;
-    float y = click_3d_y_;
-    if (coordInRect(x, y, left_3d_, top_3d_, left_3d_+width_3d_, top_3d_-height_3d_))
+    if(mouse == xplm_MouseDown)
     {
-        visible_2d_ = !visible_2d_;
-        return 1;
+        float x = click_3d_x_;
+        float y = click_3d_y_;
+        if (coordInRect(x, y, left_3d_, top_3d_, left_3d_+width_3d_, top_3d_-height_3d_))
+        {
+            visible_2d_ = !visible_2d_;
+            return 1;
+        }
     }
     return 0;
 }
