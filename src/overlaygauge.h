@@ -98,6 +98,8 @@ private:
     DataRef<float> m_panel_coord_t;
     int m_panel_region_id_3d;
     unsigned int m_call_counter;
+    bool window_is_dragging_;
+    bool window_has_keyboard_focus_;
     GLuint textureId;
     GLuint rboId;
     GLuint fboId;

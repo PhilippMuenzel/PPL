@@ -26,7 +26,9 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     m_panel_coord_l("sim/graphics/view/panel_total_pnl_l"),
     m_panel_coord_t("sim/graphics/view/panel_total_pnl_t"),
     m_panel_region_id_3d(textureId3d),
-    m_call_counter(0)
+    m_call_counter(0),
+    window_is_dragging_(false),
+    window_has_keyboard_focus_(false)
 {
     //XPLMRegisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
     XPLMRegisterDrawCallback(draw3dCallback, xplm_Phase_Gauges, 0, this);
@@ -216,6 +218,13 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
         glEnd();
 
         drawFrameTexture(left, top, right, bottom);
+
+        if (window_has_keyboard_focus_)
+        {
+            static float color[] = { 1.f, 0.5f, 0.f};
+            static char str[] = "K";
+            XPLMDrawString(color, left + 20, top - 25, str, 0, xplmFont_Basic);
+        }
     }
 }
 
@@ -235,35 +244,42 @@ void OverlayGauge::handle3dKeyCallback(XPLMWindowID, char key, XPLMKeyFlags flag
 
 int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse)
 {
-    XPLMTakeKeyboardFocus(window_id);
     //printf("mouse (%d,%d)\n",x,y);
     static int dX = 0, dY = 0;
     static int Weight = 0, Height = 0;
     int Left, Top, Right, Bottom;
-
-    static int gDragging = 0;
 
     if (!m_visible_2d)
         return 0;
 
     /// Get the windows current position
     XPLMGetWindowGeometry(window_id, &Left, &Top, &Right, &Bottom);
-    int x_rel = (x-Left);
-    int y_rel = (y-Bottom);
+    int x_rel = x - Left;
+    int y_rel = y - Bottom;
     switch(mouse) {
     case xplm_MouseDown:
         /// Test for the mouse in the window
+        if (coordInRect(x, y, Left, Top, Left+50, Top-50))
+        {
+            if (window_has_keyboard_focus_)
+                XPLMTakeKeyboardFocus(0);
+            else
+                XPLMTakeKeyboardFocus(window_id);
+            window_has_keyboard_focus_ = !window_has_keyboard_focus_;
+        }
         if (coordInRect(x, y, Left+50, Top, Right-50, Top-50))
         {
-            dX = (x - Left);
-            dY = (y - Top);
+            dX = x - Left;
+            dY = y - Top;
             Weight = Right - Left;
             Height = Bottom - Top;
-            gDragging = 1;
+            window_is_dragging_ = true;
         }
         if (coordInRect(x, y, Right-50, Top, Right, Top-50))
         {
-            setVisible(!m_visible_2d);
+            XPLMTakeKeyboardFocus(0);
+            window_has_keyboard_focus_ = false;
+            setVisible(false);
         }
         if (coordInRect(x, y, Left, Top-50, Right, Bottom))
         {
@@ -272,7 +288,7 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
         break;
     case xplm_MouseDrag:
         /// We are dragging so update the window position
-        if (gDragging)
+        if (window_is_dragging_)
         {
             Left = (x - dX);
             Right = Left + Weight;
@@ -282,7 +298,7 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
         }
         break;
     case xplm_MouseUp:
-        gDragging = 0;
+        window_is_dragging_ = false;
         break;
     }
     return 1;
@@ -291,7 +307,6 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
 int OverlayGauge::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus)
 {
     printf("%f, %f\n", (float)m_click_3d_x, (float)m_click_3d_y);
-    XPLMTakeKeyboardFocus(0);
     return 0;
 }
 
