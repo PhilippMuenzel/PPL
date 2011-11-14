@@ -13,7 +13,7 @@
 using namespace PPL;
 
 OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
-                           int frameOffX, int frameOffY, int textureId3d, bool is_visible3d, bool is_visible2d, bool always_draw_3d):
+                           int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard, bool is_visible3d, bool is_visible2d, bool always_draw_3d):
     left_3d_(left3d),
     top_3d_(top3d),
     width_2d_(width2d),
@@ -25,6 +25,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     visible_2d_(is_visible2d),
     visible_3d_(is_visible3d),
     always_draw_3d_(always_draw_3d),
+    allow_keyboard_grab_(allow_keyboard),
     screen_width_("sim/graphics/view/window_width"),
     screen_height_("sim/graphics/view/window_height"),
     view_type_("sim/graphics/view/view_type"),
@@ -259,14 +260,17 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
         /// Test for the mouse in the window
         if (coordInRect(x, y, Left, Top, Left+50, Top-50))
         {
-            if (window_has_keyboard_focus_)
+            if (allow_keyboard_grab_)
             {
-                XPLMTakeKeyboardFocus(0);
-                window_has_keyboard_focus_ = false;
-            } else
-            {
-                XPLMTakeKeyboardFocus(window_id);
-                window_has_keyboard_focus_ = true;
+                if (window_has_keyboard_focus_)
+                {
+                    XPLMTakeKeyboardFocus(0);
+                    window_has_keyboard_focus_ = false;
+                } else
+                {
+                    XPLMTakeKeyboardFocus(window_id);
+                    window_has_keyboard_focus_ = true;
+                }
             }
         }
         if (coordInRect(x, y, Left+50, Top, Right-50, Top-50))
