@@ -7,31 +7,37 @@
 #include <cstdio>
 #include <cstring>
 #include "XPLMGraphics.h"
+#include "XPLMProcessing.h"
 
 
 using namespace PPL;
 
-OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, int textureId3d, bool is_visible2d, bool always_draw_3d):
+OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
+                           int frameOffX, int frameOffY, int textureId3d, bool is_visible3d, bool is_visible2d, bool always_draw_3d):
     left_3d_(left3d),
     top_3d_(top3d),
+    width_2d_(width2d),
+    height_2d_(height2d),
     width_3d_(width3d),
     height_3d_(height3d),
-    m_visible_2d(is_visible2d),
-    m_always_draw_3d(always_draw_3d),
-    m_screen_width("sim/graphics/view/window_width"),
-    m_screen_height("sim/graphics/view/window_height"),
-    m_view_type("sim/graphics/view/view_type"),
-    m_click_3d_x("sim/graphics/view/click_3d_x_pixels"),// click_3d_x_pixels
-    m_click_3d_y("sim/graphics/view/click_3d_y_pixels"),// click_3d_y_pixels
-    m_panel_coord_l("sim/graphics/view/panel_total_pnl_l"),
-    m_panel_coord_t("sim/graphics/view/panel_total_pnl_t"),
-    m_panel_region_id_3d(textureId3d),
-    m_call_counter(0),
+    frame_off_x_(frameOffX),
+    frame_off_y_(frameOffY),
+    visible_2d_(is_visible2d),
+    visible_3d_(is_visible3d),
+    always_draw_3d_(always_draw_3d),
+    screen_width_("sim/graphics/view/window_width"),
+    screen_height_("sim/graphics/view/window_height"),
+    view_type_("sim/graphics/view/view_type"),
+    click_3d_x_("sim/graphics/view/click_3d_x_pixels"),
+    click_3d_y_("sim/graphics/view/click_3d_y_pixels"),
+    panel_region_id_3d_(textureId3d),
+    region_draw_counter_(0),
     window_is_dragging_(false),
     window_has_keyboard_focus_(false)
 {
-    //XPLMRegisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
     XPLMRegisterDrawCallback(draw3dCallback, xplm_Phase_Gauges, 0, this);
+    XPLMRegisterFlightLoopCallback(frameCallback, -1, this);
+
     XPLMCreateWindow_t win;
     memset(&win, 0, sizeof(win));
 
@@ -46,21 +52,24 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     win.handleMouseClickFunc = handle2dClickCallback;
     win.handleCursorFunc = handle2dCursorCallback;
     win.refcon = this;
-    m_window2d_id = XPLMCreateWindowEx(&win);
+    window2d_id_ = XPLMCreateWindowEx(&win);
 
+    memset(&win, 0, sizeof(win));
+    win.structSize = sizeof(win);
     win.left = 0;
-    win.top = m_screen_height;
-    win.right = m_screen_width;
+    win.top = screen_height_;
+    win.right = screen_width_;
     win.bottom = 0;
     win.visible = true;
     win.drawWindowFunc = draw3dWindowCallback;
     win.handleKeyFunc = handle3dKeyCallback;
     win.handleMouseClickFunc = handle3dClickCallback;
     win.handleCursorFunc = handle3dCursorCallback;
-    m_window3d_click_harcevester_id = XPLMCreateWindowEx(&win);
+    win.refcon = this;
+    window3d_click_harcevester_id_ = XPLMCreateWindowEx(&win);
 
-    XPLMGenerateTextureNumbers((int*)(&textureId), 1);
-    XPLMBindTexture2d(textureId, 0);
+    generateTex((int*)(&gauge_texture_), 1);
+    bindTex(gauge_texture_, 0);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -69,31 +78,29 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width3d, height3d, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
-    XPLMBindTexture2d(0,0);
-
     // create a renderbuffer object to store depth info
-    glGenRenderbuffersEXT(1, &rboId);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rboId);
+    glGenRenderbuffersEXT(1, &rbo_);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rbo_);
     glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT,
                              width3d, height3d);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 
     // create a framebuffer object
-    glGenFramebuffersEXT(1, &fboId);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboId);
+    glGenFramebuffersEXT(1, &fbo_);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_);
 
     // attach the texture to FBO color attachment point
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
-                              GL_TEXTURE_2D, textureId, 0);
+                              GL_TEXTURE_2D, gauge_texture_, 0);
 
     // attach the renderbuffer to depth attachment point
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
-                                 GL_RENDERBUFFER_EXT, rboId);
+                                 GL_RENDERBUFFER_EXT, rbo_);
 
     // check FBO status
-    status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
-    if(status != GL_FRAMEBUFFER_COMPLETE_EXT)
-        fboUsed = false;
+    status_ = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+    if(status_ != GL_FRAMEBUFFER_COMPLETE_EXT)
+        fbo_used_ = false;
 
     // switch back to window-system-provided framebuffer
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
@@ -102,56 +109,38 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
 
 OverlayGauge::~OverlayGauge()
 {
-    XPLMUnregisterDrawCallback(draw2dCallback, xplm_Phase_LastCockpit, 0, this);
     XPLMUnregisterDrawCallback(draw3dCallback, xplm_Phase_Gauges, 0, this);
-    XPLMDestroyWindow(m_window2d_id);
-    //    XPLMDestroyWindow(m_window3d_id);
+    XPLMDestroyWindow(window2d_id_);
+    XPLMDestroyWindow(window3d_click_harcevester_id_);
+    XPLMUnregisterFlightLoopCallback(frameCallback, this);
 }
 
 void OverlayGauge::set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d)
 {
-    m_panel_region_id_3d = texture_id;
-    m_always_draw_3d = always_draw_3d;
+    panel_region_id_3d_ = texture_id;
+    always_draw_3d_ = always_draw_3d;
 
     left_3d_ = left3d;
     top_3d_ = top3d;
     width_3d_ = width3d;
     height_3d_ = height3d;
 
-    //    if (m_window3d_id != 0)
-    //        XPLMDestroyWindow(m_window3d_id);
-
-    //    XPLMCreateWindow_t win;
-    //    memset(&win, 0, sizeof(win));
-
-    //    win.structSize = sizeof(win);
-
-    //    win.left = left3d;
-    //    win.top = top3d;
-    //    win.right = left3d+width3d;
-    //    win.bottom = top3d-height3d;
-    //    win.visible = true;
-    //    win.drawWindowFunc = draw3dWindowCallback;
-    //    win.handleKeyFunc = handle3dKeyCallback;
-    //    win.handleMouseClickFunc = handle3dClickCallback;
-    //    win.handleCursorFunc = handle3dCursorCallback;
-    //    m_window3d_id = XPLMCreateWindowEx(&win);
+    visible_3d_ = true;
 }
 
 void OverlayGauge::disable3d()
 {
-    //    XPLMDestroyWindow(m_window3d_id);
-    //    m_window3d_id = 0;
+    visible_3d_ = false;
 }
 
 void OverlayGauge::setVisible(bool b)
 {
-    m_visible_2d = b;
+    visible_2d_ = b;
 }
 
 bool OverlayGauge::isVisible() const
 {
-    return m_visible_2d;
+    return visible_2d_;
 }
 
 int OverlayGauge::draw2dCallback(XPLMDrawingPhase, int)
@@ -161,21 +150,27 @@ int OverlayGauge::draw2dCallback(XPLMDrawingPhase, int)
 
 void OverlayGauge::frame()
 {
-    m_call_counter = 0;
+    region_draw_counter_ = 0;
 }
 
 int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 {
-    if (m_view_type == 1026 || m_always_draw_3d)
+    if (view_type_ == 1026 || always_draw_3d_)
     {
-        /*float l = m_panel_coord_l;
-        float t = m_panel_coord_t;*/
-        m_call_counter++;
-        if (/*m_window3d_id && */(m_panel_region_id_3d == -1 || m_call_counter == static_cast<unsigned int>(m_panel_region_id_3d)))
+        region_draw_counter_++;
+        if (visible_3d_ && (panel_region_id_3d_ == -1 || region_draw_counter_ == static_cast<unsigned int>(panel_region_id_3d_)))
         {
-            //int left, top, right, bottom;
-            //XPLMGetWindowGeometry(m_window3d_id, &left, &top, &right, &bottom);
-            draw(left_3d_, top_3d_, left_3d_+width_3d_, top_3d_ - height_3d_);
+            bindTex(gauge_texture_, 0);
+
+            setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
+            glColor4f(1,1,1,1);
+
+            glBegin(GL_QUADS);
+            glTexCoord2f(0, 1);  glVertex2f(left_3d_,           top_3d_);
+            glTexCoord2f(1, 1);  glVertex2f(left_3d_+width_3d_, top_3d_);
+            glTexCoord2f(1, 0);  glVertex2f(left_3d_+width_3d_, top_3d_ - height_3d_);
+            glTexCoord2f(0, 0);  glVertex2f(left_3d_,           top_3d_ - height_3d_);
+            glEnd();
         }
     }
     return 1;
@@ -183,38 +178,39 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 
 void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
 {
-    if (m_visible_2d)
+    // set rendering destination to FBO
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_);
+
+    // clear buffers
+    glClearColor(0,0,0,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // draw a scene to a texture directly
+    draw(0, height_3d_, width_3d_, 0);
+
+    // unbind FBO
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+    // trigger mipmaps generation explicitly
+    // NOTE: If GL_GENERATE_MIPMAP is set to GL_TRUE, then glCopyTexSubImage2D()
+    // triggers mipmap generation automatically. However, the texture attached
+    // onto a FBO should generate mipmaps manually via glGenerateMipmapEXT().
+    bindTex(gauge_texture_,0);
+    glGenerateMipmapEXT(GL_TEXTURE_2D);
+    if (visible_2d_)
     {
         int left, top, right, bottom;
-        XPLMGetWindowGeometry(m_window2d_id, &left, &top, &right, &bottom);
-        // set rendering destination to FBO
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboId);
+        XPLMGetWindowGeometry(window2d_id_, &left, &top, &right, &bottom);
 
-        // clear buffers
-        glClearColor(0,0,0,1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // draw a scene to a texture directly
-        draw(0, height_3d_, width_3d_, 0);
-
-        // unbind FBO
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-        // trigger mipmaps generation explicitly
-        // NOTE: If GL_GENERATE_MIPMAP is set to GL_TRUE, then glCopyTexSubImage2D()
-        // triggers mipmap generation automatically. However, the texture attached
-        // onto a FBO should generate mipmaps manually via glGenerateMipmapEXT().
-        bindTex(textureId,0);
-        glGenerateMipmapEXT(GL_TEXTURE_2D);
-
+        bindTex(gauge_texture_, 0);
         setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
         glColor4f(1,1,1,1);
 
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 1);  glVertex2f(left, top);
-        glTexCoord2f(1, 1);  glVertex2f(right, top);
-        glTexCoord2f(1, 0);  glVertex2f(right, bottom);
-        glTexCoord2f(0, 0);  glVertex2f(left, bottom);
+        glTexCoord2f(0, 1);  glVertex2f(left+frame_off_x_,           top-frame_off_y_);
+        glTexCoord2f(1, 1);  glVertex2f(left+frame_off_x_+width_3d_, top-frame_off_y_);
+        glTexCoord2f(1, 0);  glVertex2f(left+frame_off_x_+width_3d_, top-frame_off_y_-height_3d_);
+        glTexCoord2f(0, 0);  glVertex2f(left+frame_off_x_,           top-frame_off_y_-height_3d_);
         glEnd();
 
         drawFrameTexture(left, top, right, bottom);
@@ -234,12 +230,14 @@ void OverlayGauge::draw3dWindowCallback(XPLMWindowID)
 
 void OverlayGauge::handle2dKeyCallback(XPLMWindowID, char key, XPLMKeyFlags flags, char virtual_key, int losing_focus)
 {
+    if (losing_focus)
+        window_has_keyboard_focus_ = false;
     printf("2d key %c, flags %d, virtual_key %c, losing focus %d\n", key, flags, virtual_key, losing_focus);
+    handleKeyPress(key, flags, virtual_key);
 }
 
-void OverlayGauge::handle3dKeyCallback(XPLMWindowID, char key, XPLMKeyFlags flags, char virtual_key, int losing_focus)
+void OverlayGauge::handle3dKeyCallback(XPLMWindowID, char, XPLMKeyFlags, char, int)
 {
-    printf("3d key %c, flags %d, virtual_key %c, losing focus %d\n", key, flags, virtual_key, losing_focus);
 }
 
 int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse)
@@ -249,7 +247,7 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
     static int Weight = 0, Height = 0;
     int Left, Top, Right, Bottom;
 
-    if (!m_visible_2d)
+    if (!visible_2d_)
         return 0;
 
     /// Get the windows current position
@@ -262,10 +260,14 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
         if (coordInRect(x, y, Left, Top, Left+50, Top-50))
         {
             if (window_has_keyboard_focus_)
+            {
                 XPLMTakeKeyboardFocus(0);
-            else
+                window_has_keyboard_focus_ = false;
+            } else
+            {
                 XPLMTakeKeyboardFocus(window_id);
-            window_has_keyboard_focus_ = !window_has_keyboard_focus_;
+                window_has_keyboard_focus_ = true;
+            }
         }
         if (coordInRect(x, y, Left+50, Top, Right-50, Top-50))
         {
@@ -306,13 +308,21 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
 
 int OverlayGauge::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus)
 {
-    printf("%f, %f\n", (float)m_click_3d_x, (float)m_click_3d_y);
+    if (panel_region_id_3d_ != -1)
+        return 0;
+    float x = click_3d_x_;
+    float y = click_3d_y_;
+    if (coordInRect(x, y, left_3d_, top_3d_, left_3d_+width_3d_, top_3d_-height_3d_))
+    {
+        visible_2d_ = !visible_2d_;
+        return 1;
+    }
     return 0;
 }
 
 XPLMCursorStatus OverlayGauge::handle2dCursorCallback(XPLMWindowID, int, int)
 {
-    if (m_visible_2d)
+    if (visible_2d_)
         return xplm_CursorArrow;
     else
         return xplm_CursorDefault;
@@ -406,6 +416,13 @@ XPLMCursorStatus OverlayGauge::handle3dCursorCallback(XPLMWindowID window_id, in
     return window->handle3dCursorCallback(window_id, x, y);
 }
 
+float OverlayGauge::frameCallback(float, float, int, void* refcon)
+{
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
+    window->frame();
+    return -1;
+}
+
 void OverlayGauge::setDrawState(int inEnableFog, int inNumberTexUnits, int inEnableLighting, int inEnableAlphaTesting, int inEnableAlphaBlending, int inEnableDepthTesting, int inEnableDepthWriting)
 {
     XPLMSetGraphicsState(inEnableFog, inNumberTexUnits, inEnableLighting, inEnableAlphaTesting, inEnableAlphaBlending, inEnableDepthTesting, inEnableDepthWriting);
@@ -414,6 +431,11 @@ void OverlayGauge::setDrawState(int inEnableFog, int inNumberTexUnits, int inEna
 void OverlayGauge::bindTex(int tex_id, int texture_unit)
 {
     XPLMBindTexture2d(tex_id, texture_unit);
+}
+
+void OverlayGauge::generateTex(int* tex_ids, int number_of_textures)
+{
+    XPLMGenerateTextureNumbers(tex_ids, number_of_textures);
 }
 
 bool OverlayGauge::coordInRect(float x, float y, float l, float t, float r, float b)

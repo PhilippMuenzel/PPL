@@ -28,7 +28,8 @@ namespace PPL {
 class OverlayGauge
 {
 public:
-    OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d, int textureId3d, bool is_visible2d = false, bool always_draw_3d = false);
+    OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
+                 int frameOffX, int frameOffY, int textureId3d, bool is_visible3d = true, bool is_visible2d = false, bool always_draw_3d = false);
     virtual ~OverlayGauge();
 
     void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d);
@@ -52,6 +53,7 @@ public:
 
     virtual void draw(int left, int top, int right, int bottom) = 0;
     virtual void handleNonDragClick(int x_rel, int y_rel) = 0;
+    virtual void handleKeyPress(char key, XPLMKeyFlags flags, char virtual_key) = 0;
     virtual int frameTextureId() const;
     virtual void drawFrameTexture(int, int, int, int);
 
@@ -69,6 +71,8 @@ public:
     static XPLMCursorStatus handle2dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon);
     static XPLMCursorStatus handle3dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon);
 
+    static float frameCallback(float, float, int, void* refcon);
+
     void setDrawState(int inEnableFog,
                       int inNumberTexUnits,
                       int inEnableLighting,
@@ -77,34 +81,38 @@ public:
                       int inEnableDepthTesting,
                       int inEnableDepthWriting);
     void bindTex(int tex_id, int texture_unit);
+    void generateTex(int* tex_id, int number_of_textures);
 
     static bool coordInRect(float x, float y, float l, float t, float r, float b);
 
 private:
-    XPLMWindowID m_window2d_id;
-    XPLMWindowID m_window3d_click_harcevester_id;
+    XPLMWindowID window2d_id_;
+    XPLMWindowID window3d_click_harcevester_id_;
     int left_3d_;
     int top_3d_;
+    int width_2d_;
+    int height_2d_;
     int width_3d_;
     int height_3d_;
-    bool m_visible_2d;
-    bool m_always_draw_3d;
-    DataRef<int> m_screen_width;
-    DataRef<int> m_screen_height;
-    DataRef<int> m_view_type;
-    DataRef<float> m_click_3d_x;
-    DataRef<float> m_click_3d_y;
-    DataRef<float> m_panel_coord_l;
-    DataRef<float> m_panel_coord_t;
-    int m_panel_region_id_3d;
-    unsigned int m_call_counter;
+    int frame_off_x_;
+    int frame_off_y_;
+    bool visible_2d_;
+    bool visible_3d_;
+    bool always_draw_3d_;
+    DataRef<int> screen_width_;
+    DataRef<int> screen_height_;
+    DataRef<int> view_type_;
+    DataRef<float> click_3d_x_;
+    DataRef<float> click_3d_y_;
+    int panel_region_id_3d_;
+    unsigned int region_draw_counter_;
     bool window_is_dragging_;
     bool window_has_keyboard_focus_;
-    GLuint textureId;
-    GLuint rboId;
-    GLuint fboId;
-    GLenum status;
-    bool fboUsed;
+    GLuint gauge_texture_;
+    GLuint rbo_;
+    GLuint fbo_;
+    GLenum status_;
+    bool fbo_used_;
 };
 
 }
