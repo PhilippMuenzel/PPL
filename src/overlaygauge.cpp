@@ -314,6 +314,8 @@ int OverlayGauge::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus 
 {
     if (panel_region_id_3d_ != -1)
         return 0;
+    if (!visible_3d_)
+        return 0;
     if(mouse == xplm_MouseDown)
     {
         float x = click_3d_x_;
