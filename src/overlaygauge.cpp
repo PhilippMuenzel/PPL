@@ -305,9 +305,17 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
         break;
     case xplm_MouseUp:
         window_is_dragging_ = false;
+        if (coordInRect(x, y, Left, Top-50, Right, Bottom))
+        {
+            handleNonDragClickRelease(x_rel, y_rel);
+        }
         break;
     }
     return 1;
+}
+
+void OverlayGauge::handleNonDragClickRelease(int, int)
+{
 }
 
 int OverlayGauge::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus mouse)
