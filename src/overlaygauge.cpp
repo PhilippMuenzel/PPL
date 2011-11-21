@@ -231,10 +231,13 @@ void OverlayGauge::draw3dWindowCallback(XPLMWindowID)
 
 void OverlayGauge::handle2dKeyCallback(XPLMWindowID, char key, XPLMKeyFlags flags, char virtual_key, int losing_focus)
 {
-    if (losing_focus)
+    if (losing_focus) {
         window_has_keyboard_focus_ = false;
-    printf("2d key %c, flags %d, virtual_key %c, losing focus %d\n", key, flags, virtual_key, losing_focus);
-    handleKeyPress(key, flags, virtual_key);
+    } else
+    {
+        handleKeyPress(key, flags, virtual_key);
+    }
+
 }
 
 void OverlayGauge::handle3dKeyCallback(XPLMWindowID, char, XPLMKeyFlags, char, int)
