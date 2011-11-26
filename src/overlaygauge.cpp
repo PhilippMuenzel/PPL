@@ -179,18 +179,21 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 
 void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
 {
-    // set rendering destination to FBO
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_);
+    if (wantRedraw())
+    {
+        // set rendering destination to FBO
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_);
 
-    // clear buffers
-    glClearColor(0,0,0,1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // clear buffers
+        glClearColor(0,0,0,1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // draw a scene to a texture directly
-    draw(0, height_3d_, width_3d_, 0);
+        // draw a scene to a texture directly
+        draw(0, height_3d_, width_3d_, 0);
 
-    // unbind FBO
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        // unbind FBO
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    }
 
     // trigger mipmaps generation explicitly
     // NOTE: If GL_GENERATE_MIPMAP is set to GL_TRUE, then glCopyTexSubImage2D()
@@ -351,6 +354,11 @@ XPLMCursorStatus OverlayGauge::handle2dCursorCallback(XPLMWindowID, int, int)
 XPLMCursorStatus OverlayGauge::handle3dCursorCallback(XPLMWindowID, int, int)
 {
     return xplm_CursorDefault;
+}
+
+bool OverlayGauge::wantRedraw()
+{
+    return true;
 }
 
 int OverlayGauge::frameTextureId() const

@@ -51,6 +51,7 @@ public:
     XPLMCursorStatus handle2dCursorCallback(XPLMWindowID window_id, int x, int y);
     XPLMCursorStatus handle3dCursorCallback(XPLMWindowID window_id, int x, int y);
 
+    virtual bool wantRedraw();
     virtual void draw(int left, int top, int right, int bottom) = 0;
     virtual void handleNonDragClick(int x_rel, int y_rel) = 0;
     virtual void handleNonDragClickRelease(int x_rel, int y_rel);
