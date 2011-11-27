@@ -38,7 +38,7 @@ Font::Font(const std::string& fname, unsigned int height)
     XPLMGenerateTextureNumbers((int*)textures, num_glyphs_);
 #endif
 
-    for(wchar_t i = 0 ; i < 65536 ; i++)
+    for(wchar_t i = 0 ; i < 62475 ; i++)
         if (FT_Get_Char_Index( face, i ) > 0)
             make_dlist(face,i,list_base,textures);
 
