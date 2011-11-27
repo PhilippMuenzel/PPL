@@ -9,11 +9,11 @@
 #include <string>
 #include <stdexcept>
 
-#include <ft2build.h>
-#include <freetype/freetype.h>
-#include <freetype/ftglyph.h>
-#include <freetype/ftoutln.h>
-#include <freetype/fttrigon.h>
+#include "ft2build.h"
+#include "freetype/freetype.h"
+#include "freetype/ftglyph.h"
+#include "freetype/ftoutln.h"
+#include "freetype/fttrigon.h"
 
 #if APL == 1
 #include <OpenGL/OpenGL.h>
@@ -35,16 +35,16 @@ public:
     Font(const std::string& fname, unsigned int height);
     ~Font();
 
-    void glPrint(float x, float y, const std::string &text);
+    void glPrint(float x, float y, const std::wstring &text);
 private:
 
-    void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base );
+    void make_dlist ( FT_Face face, wchar_t ch, GLuint list_base, GLuint * tex_base );
     int next_p2 ( int a );
 
     float h;            //!< Holds the height of the font.
     GLuint* textures;   //!< Holds the texture ids
     GLuint  list_base;  //!< Holds the first display list id
-
+    int num_glyphs_;
 };
 
 }

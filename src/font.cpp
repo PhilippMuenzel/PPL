@@ -12,8 +12,6 @@ using namespace PPL;
 
 Font::Font(const std::string& fname, unsigned int height)
 {
-    textures = new GLuint[128];
-    h = height;
 
     FT_Library library;
     if (FT_Init_FreeType( &library ))
@@ -23,17 +21,26 @@ Font::Font(const std::string& fname, unsigned int height)
     if (FT_New_Face( library, fname.c_str(), 0, &face ))
         throw std::runtime_error("FT_New_Face failed (there is probably a problem with your font file)");
 
-    FT_Set_Char_Size( face, height << 6, height << 6, 96, 96);
 
-    list_base=glGenLists(128);
+    FT_Set_Char_Size( face, height << 6, height << 6, 96, 96);
+    FT_Select_Charmap(
+                face,               /* target face object */
+                FT_ENCODING_UNICODE );
+
+    num_glyphs_ = face->num_glyphs;
+    textures = new GLuint[num_glyphs_];
+    h = height;
+
+    list_base=glGenLists(65536);
 #ifdef BUILD_FOR_STANDALONE
-    glGenTextures(128, textures);
+    glGenTextures(num_glyphs_, textures);
 #else
-    XPLMGenerateTextureNumbers((int*)textures, 128);
+    XPLMGenerateTextureNumbers((int*)textures, num_glyphs_);
 #endif
 
-    for(unsigned char i = 0 ; i < 128 ; i++)
-        make_dlist(face,i,list_base,textures);
+    for(wchar_t i = 0 ; i < 65536 ; i++)
+        if (FT_Get_Char_Index( face, i ) > 0)
+            make_dlist(face,i,list_base,textures);
 
     FT_Done_Face(face);
     FT_Done_FreeType(library);
@@ -41,19 +48,21 @@ Font::Font(const std::string& fname, unsigned int height)
 
 Font::~Font()
 {
-    glDeleteLists(list_base,128);
-    glDeleteTextures(128,textures);
+    glDeleteLists(list_base,65536);
+    glDeleteTextures(num_glyphs_,textures);
     delete [] textures;
 }
 
-void Font::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base )
+void Font::make_dlist ( FT_Face face, wchar_t ch, GLuint list_base, GLuint * tex_base )
 {
-    if(FT_Load_Glyph( face, FT_Get_Char_Index( face, ch ), FT_LOAD_DEFAULT ))
+    int index = FT_Get_Char_Index( face, ch );
+    if(FT_Load_Glyph( face, index, FT_LOAD_DEFAULT ))
         throw std::runtime_error("FT_Load_Glyph failed");
 
     FT_Glyph glyph;
     if(FT_Get_Glyph( face->glyph, &glyph ))
         throw std::runtime_error("FT_Get_Glyph failed");
+
 
     FT_Glyph_To_Bitmap( &glyph, ft_render_mode_normal, 0, 1 );
     FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)glyph;
@@ -75,9 +84,9 @@ void Font::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_ba
     }
 
 #ifdef BUILD_FOR_STANDALONE
-    glBindTexture(GL_TEXTURE_2D, tex_base[(int)ch]);
+    glBindTexture(GL_TEXTURE_2D, tex_base[index]);
 #else
-    XPLMBindTexture2d(tex_base[(int)ch], 0);
+    XPLMBindTexture2d(tex_base[index], 0);
 #endif
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
@@ -88,9 +97,9 @@ void Font::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_ba
 
     glNewList(list_base+ch,GL_COMPILE);
 #ifdef BUILD_FOR_STANDALONE
-    glBindTexture(GL_TEXTURE_2D, tex_base[(int)ch]);
+    glBindTexture(GL_TEXTURE_2D, tex_base[index]);
 #else
-    XPLMBindTexture2d(tex_base[(int)ch], 0);
+    XPLMBindTexture2d(tex_base[index], 0);
 #endif
 
     glPushMatrix();
@@ -125,7 +134,7 @@ int Font::next_p2 (int a)
 
 
 
-void Font::glPrint(float x, float y, const std::string& text)
+void Font::glPrint(float x, float y, const std::wstring& text)
 {
     glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
 //    float color[4];
@@ -144,7 +153,7 @@ void Font::glPrint(float x, float y, const std::string& text)
 //    glColor4fv(color);
     glTranslatef(x,y,0);
     glMultMatrixf(modelview_matrix);
-    glCallLists(text.size(), GL_UNSIGNED_BYTE, text.c_str());
+    glCallLists(text.size(), GL_UNSIGNED_SHORT, text.c_str());
     glPopMatrix();
 
     glPopAttrib();
