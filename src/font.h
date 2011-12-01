@@ -32,11 +32,16 @@ namespace PPL {
 
 class Font {
 public:
-    Font(const std::string& fname, unsigned int height);
+    Font(const std::string& fname, unsigned int height, int try_unicode_to = 62475);
     ~Font();
 
-    void glPrint(float x, float y, const std::wstring &text);
+    template<typename T>
+    void glPrint(float x, float y, const std::basic_string<T>& text);
+
 private:
+
+    template<typename T>
+    void callList(const std::basic_string<T>& text);
 
     void make_dlist ( FT_Face face, wchar_t ch, GLuint list_base, GLuint * tex_base );
     int next_p2 ( int a );
@@ -46,6 +51,33 @@ private:
     GLuint  list_base;  //!< Holds the first display list id
     int num_glyphs_;
 };
+
+template<>
+void Font::callList<char>(const std::string& text);
+
+template<>
+void Font::callList<wchar_t>(const std::wstring& text);
+
+template<typename T>
+void Font::glPrint(float x, float y, const std::basic_string<T>& text)
+{
+    glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
+
+    glListBase(list_base);
+
+    float modelview_matrix[16];
+    glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
+
+    glPushMatrix();
+    glLoadIdentity();
+    //    glColor4fv(color);
+    glTranslatef(x,y,0);
+    glMultMatrixf(modelview_matrix);
+    callList(text);
+    glPopMatrix();
+
+    glPopAttrib();
+}
 
 }
 

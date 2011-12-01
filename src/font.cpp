@@ -10,7 +10,7 @@
 
 using namespace PPL;
 
-Font::Font(const std::string& fname, unsigned int height)
+Font::Font(const std::string& fname, unsigned int height, int try_unicode_to)
 {
 
     FT_Library library;
@@ -38,7 +38,7 @@ Font::Font(const std::string& fname, unsigned int height)
     XPLMGenerateTextureNumbers((int*)textures, num_glyphs_);
 #endif
 
-    for(wchar_t i = 0 ; i < 62475 ; i++)
+    for(wchar_t i = 0 ; i < try_unicode_to ; i++)
         if (FT_Get_Char_Index( face, i ) > 0)
             make_dlist(face,i,list_base,textures);
 
@@ -74,14 +74,14 @@ void Font::make_dlist ( FT_Face face, wchar_t ch, GLuint list_base, GLuint * tex
 
     GLubyte* expanded_data = new GLubyte[ 2 * width * height];
 
-    for(int j=0; j <height;j++) {
+    //for(int j=0; j <height;j++) {
         for(int j=0; j < height;j++) for(int i=0; i < width; i++) {
             expanded_data[2*(i+j*width)] = 255;
             expanded_data[2*(i+j*width)+1] =
                     (i>=bitmap.width || j>=bitmap.rows) ?
                         0 : bitmap.buffer[i + bitmap.width*j];
         }
-    }
+    //}
 
 #ifdef BUILD_FOR_STANDALONE
     glBindTexture(GL_TEXTURE_2D, tex_base[index]);
@@ -132,30 +132,14 @@ int Font::next_p2 (int a)
     return rval;
 }
 
-
-
-void Font::glPrint(float x, float y, const std::wstring& text)
+template<>
+void Font::callList<char>(const std::string& text)
 {
-    glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
-//    float color[4];
-//    glGetFloatv(GL_CURRENT_COLOR,color);
-
-//    XPLMSetGraphicsState(0,1,0,0,1,0,0);
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glListBase(list_base);
-
-    float modelview_matrix[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
-
-    glPushMatrix();
-    glLoadIdentity();
-//    glColor4fv(color);
-    glTranslatef(x,y,0);
-    glMultMatrixf(modelview_matrix);
-    glCallLists(text.size(), GL_UNSIGNED_SHORT, text.c_str());
-    glPopMatrix();
-
-    glPopAttrib();
+    glCallLists(text.size(), GL_UNSIGNED_BYTE, text.c_str());
 }
 
+template<>
+void Font::callList<wchar_t>(const std::wstring& text)
+{
+    glCallLists(text.size(), GL_UNSIGNED_SHORT, text.c_str());
+}
