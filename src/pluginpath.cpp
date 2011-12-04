@@ -28,9 +28,8 @@ std::string PluginPath::prependPluginPath(const std::string& file)
     XPLMGetSystemPath(path);
     std::string absolute_path(path);
     absolute_path.
-            append("Resources").append(XPLMGetDirectorySeparator()).
-            append("plugins").append(XPLMGetDirectorySeparator()).
-            append(plugin_directory).append(XPLMGetDirectorySeparator()).
+            append("Resources/plugins/").
+            append(plugin_directory).append("/").
             append(file);
 #if APL && __MACH__
     int result = ConvertPath(absolute_path.c_str(), path, 512);
@@ -45,14 +44,11 @@ std::string PluginPath::prependPluginPath(const std::string& file)
 
 std::string PluginPath::prependPluginResourcesPath(const std::string& file)
 {
-    std::string res_path("Resources");
-#ifdef BUILD_FOR_STANDALONE
-    res_path.append("/");
+    std::string res_path("Resources/");
     res_path.append(file);
+#ifdef BUILD_FOR_STANDALONE
     return res_path;
 #else
-    res_path.append(XPLMGetDirectorySeparator());
-    res_path.append(file);
     return prependPluginPath(res_path);
 #endif
 }
@@ -71,14 +67,14 @@ std::string PluginPath::prependPlanePath(const std::string& file)
     std::string absolute_path(path);
     std::size_t pos = absolute_path.find(name);
     absolute_path = absolute_path.substr(0, pos);
-    absolute_path.append(file);
 #if APL && __MACH__
     int result = ConvertPath(absolute_path.c_str(), path, 512);
     if (result == 0)
-        return std::string(path);
+        absolute_path = std::string(path);
     else
         throw PathSetupError("Critical error - cannot convert Mac-HFS-format path to unix-format path");
 #endif
+    absolute_path.append(file);
     return absolute_path;
 #endif
 }
