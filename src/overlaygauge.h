@@ -29,7 +29,7 @@ class OverlayGauge
 {
 public:
     OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
-                 int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard = true, bool is_visible3d = true, bool is_visible2d = false, bool always_draw_3d = false);
+                 int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard = true, bool is_visible3d = true, bool is_visible2d = false, bool always_draw_3d = false, bool allow_3d_click = true, float scale_3d = 1.0f);
     virtual ~OverlayGauge();
 
     void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d);
@@ -102,6 +102,8 @@ private:
     bool visible_3d_;
     bool always_draw_3d_;
     bool allow_keyboard_grab_;
+    bool allow_3d_click_;
+    float scale_3d_;
     DataRef<int> screen_width_;
     DataRef<int> screen_height_;
     DataRef<int> view_type_;

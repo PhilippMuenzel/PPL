@@ -13,7 +13,7 @@
 using namespace PPL;
 
 OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
-                           int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard, bool is_visible3d, bool is_visible2d, bool always_draw_3d):
+                           int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard, bool is_visible3d, bool is_visible2d, bool always_draw_3d, bool allow_3d_click, float scale_3d):
     left_3d_(left3d),
     top_3d_(top3d),
     width_2d_(width2d),
@@ -26,6 +26,8 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     visible_3d_(is_visible3d),
     always_draw_3d_(always_draw_3d),
     allow_keyboard_grab_(allow_keyboard),
+    allow_3d_click_(allow_3d_click),
+    scale_3d_(scale_3d),
     screen_width_("sim/graphics/view/window_width"),
     screen_height_("sim/graphics/view/window_height"),
     view_type_("sim/graphics/view/view_type"),
@@ -137,6 +139,11 @@ void OverlayGauge::disable3d()
 void OverlayGauge::setVisible(bool b)
 {
     visible_2d_ = b;
+    if (!b)
+    {
+        XPLMTakeKeyboardFocus(0);
+        window_has_keyboard_focus_ = false;
+    }
 }
 
 bool OverlayGauge::isVisible() const
@@ -168,9 +175,9 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 
             glBegin(GL_QUADS);
             glTexCoord2f(0, 1);  glVertex2f(left_3d_,           top_3d_);
-            glTexCoord2f(1, 1);  glVertex2f(left_3d_+width_3d_, top_3d_);
-            glTexCoord2f(1, 0);  glVertex2f(left_3d_+width_3d_, top_3d_ - height_3d_);
-            glTexCoord2f(0, 0);  glVertex2f(left_3d_,           top_3d_ - height_3d_);
+            glTexCoord2f(1, 1);  glVertex2f(left_3d_+width_3d_*scale_3d_, top_3d_);
+            glTexCoord2f(1, 0);  glVertex2f(left_3d_+width_3d_*scale_3d_, top_3d_ - height_3d_*scale_3d_);
+            glTexCoord2f(0, 0);  glVertex2f(left_3d_,           top_3d_ - height_3d_*scale_3d_);
             glEnd();
         }
     }
@@ -326,6 +333,8 @@ void OverlayGauge::handleNonDragClickRelease(int, int)
 
 int OverlayGauge::handle3dClickCallback(XPLMWindowID, int, int, XPLMMouseStatus mouse)
 {
+    if (!allow_3d_click_)
+        return 0;
     if (panel_region_id_3d_ != -1)
         return 0;
     if (!visible_3d_)
