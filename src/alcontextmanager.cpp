@@ -89,7 +89,7 @@ ALContextManager::~ALContextManager()
 
 ALSoundBuffer* ALContextManager::findSoundById(int id) throw(SoundNotFoundError)
 {
-    std::map<int, ALSoundBuffer*>::iterator it;
+    boost::ptr_map<int, ALSoundBuffer>::iterator it;
     it = m_sounds.find(id);
     if (it != m_sounds.end())
     {
@@ -107,7 +107,7 @@ ALSoundBuffer* ALContextManager::findSoundById(int id) throw(SoundNotFoundError)
 
 int ALContextManager::addSoundFromFile(const std::string& filename) throw(SoundLoadError)
 {
-    std::pair<std::map<int, ALSoundBuffer*>::iterator, bool> return_value;
+    std::pair<boost::ptr_map<int, ALSoundBuffer>::iterator, bool> return_value;
     m_internal_counter++;
     ALContextChanger cc(m_my_context);
     // object cc is not used, but it changes context, and since cc is on the stack,
@@ -115,9 +115,7 @@ int ALContextManager::addSoundFromFile(const std::string& filename) throw(SoundL
     // this is known as the RAII idiom
     try
     {
-        return_value = m_sounds.insert( std::pair<int, ALSoundBuffer*>( m_internal_counter,
-                                                                        new ALSoundBuffer(filename)
-                                                                        ));
+        return_value = m_sounds.insert(m_internal_counter, new ALSoundBuffer(filename));
     } catch (ALSoundBuffer::SoundPlayingError& ex)
     {
         std::stringstream stream;
@@ -221,12 +219,11 @@ void ALContextManager::unLoopSound(int id) throw (SoundNotFoundError)
 
 void ALContextManager::removeSound(int id) throw (SoundNotFoundError)
 {
-    std::map<int, ALSoundBuffer*>::iterator it;
+    boost::ptr_map<int, ALSoundBuffer>::iterator it;
     it = m_sounds.find(id);
     if (it != m_sounds.end())
     {
         ALContextChanger cc(m_my_context);
-        delete m_sounds.at(id);
         m_sounds.erase(it);
     } else
     {
@@ -242,10 +239,7 @@ void ALContextManager::removeSound(int id) throw (SoundNotFoundError)
 void ALContextManager::deleteAllSounds()
 {
     ALContextChanger cc(m_my_context);
-    for (std::map<int, ALSoundBuffer*>::iterator it = m_sounds.begin (); it!= m_sounds.end() ; it++)
-    {
+    for (boost::ptr_map<int, ALSoundBuffer>::iterator it = m_sounds.begin() ; it != m_sounds.end(); ++it)
         it->second->stop();
-        delete it->second;
-        m_sounds.erase ( it );
-    }
+    m_sounds.erase(m_sounds.begin(),m_sounds.end());
 }

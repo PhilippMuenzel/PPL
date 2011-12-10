@@ -5,10 +5,10 @@
 #ifndef ALCONTEXTMANAGER_H
 #define ALCONTEXTMANAGER_H
 
-#include <map>
 #include <string>
 
 #include <boost/noncopyable.hpp>
+#include <boost/ptr_container/ptr_map.hpp>
 
 #if APL == 1
 #include <OpenAL/al.h>
@@ -123,7 +123,7 @@ private:
     void deleteAllSounds();
 
 private:
-    std::map<int, ALSoundBuffer*> m_sounds;
+    boost::ptr_map<int, ALSoundBuffer> m_sounds;
     int m_internal_counter;
     ALCdevice* m_device;
     ALCcontext* m_my_context;
