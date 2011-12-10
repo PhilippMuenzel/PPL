@@ -6,10 +6,12 @@
 
 using namespace PPL;
 
-ALContextChanger::ALContextChanger(ALCcontext* own_context)
+ALContextChanger::ALContextChanger(ALCcontext* own_context):
+    m_other_context(0)
 {
     m_other_context = alcGetCurrentContext();
-    alcMakeContextCurrent(own_context);
+    if (own_context && m_other_context != own_context)
+        alcMakeContextCurrent(own_context);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,5 +19,6 @@ ALContextChanger::ALContextChanger(ALCcontext* own_context)
 
 ALContextChanger::~ALContextChanger()
 {
-    alcMakeContextCurrent( m_other_context );
+    if (m_other_context && m_other_context != alcGetCurrentContext())
+        alcMakeContextCurrent( m_other_context );
 }

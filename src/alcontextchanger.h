@@ -5,8 +5,18 @@
 #ifndef ALCONTEXTCHANGER_H
 #define ALCONTEXTCHANGER_H
 
+#if APL == 1
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
+#elif IBM == 1
 #include <AL/al.h>
 #include <AL/alc.h>
+#elif LIN == 1
+#include <AL/al.h>
+#include <AL/alc.h>
+#else
+#error "No platform defined"
+#endif
 
 #include <boost/noncopyable.hpp>
 
@@ -17,7 +27,7 @@ namespace PPL {
   * ensure the old context is restored on destruction.
   *
   * @author (c) 2009-2011 by Philipp Muenzel, Technische Universitaet Darmstadt, Department of Mathematics
-  * @version 0.4
+  * @version 0.5
   * @file alcontextchanger.h
   */
 class ALContextChanger : boost::noncopyable

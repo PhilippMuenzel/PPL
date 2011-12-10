@@ -10,9 +10,18 @@
 
 #include <boost/noncopyable.hpp>
 
+#if APL == 1
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
+#elif IBM == 1
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <AL/alut.h>
+#elif LIN == 1
+#include <AL/al.h>
+#include <AL/alc.h>
+#else
+#error "No platform defined"
+#endif
 
 #include "alsoundbuffer.h"
 

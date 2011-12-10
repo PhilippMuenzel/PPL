@@ -4,20 +4,70 @@
 
 #include <sstream>
 
+#include "XPLMUtilities.h"
 #include "alcontextmanager.h"
 #include "alcontextchanger.h"
 
 using namespace PPL;
 
 ALContextManager::ALContextManager():
-        m_internal_counter(0)
+    m_internal_counter(0),
+    m_device(0),
+    m_my_context(0),
+    m_current_context(0)
 {
+    ALCcontext * old_ctx = alcGetCurrentContext();
+
     m_device = alcOpenDevice(0);
+
+    std::ostringstream os;
+    if (alcIsExtensionPresent (NULL, (const ALCchar *) "ALC_ENUMERATION_EXT") == AL_TRUE)
+    {
+        const char *s = (const char *) alcGetString(NULL, ALC_DEVICE_SPECIFIER);
+        while (*s != '\0')
+        {
+            os << "OpenAL available device: " << s << std::endl;
+            while (*s++ != '\0');
+        }
+    }
+    else
+    {
+        os << "OpenAL device enumeration isn't available." << std::endl;
+    }
+
+    // Print default device name
+    os << "OpenAL default device: "
+              << (const char *)alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER)
+              << std::endl;
+
+    // Print current device name
+    if (m_device)
+    {
+        os << "OpenAL current device: "
+                  << (const char *)alcGetString(m_device, ALC_DEVICE_SPECIFIER)
+                  << std::endl;
+    }
+
+    XPLMDebugString(os.str().c_str());
+
+    if (!m_device || alGetError() != AL_NO_ERROR)
+        throw ALContextManager::SoundLoadError("Can't open device");
+
     m_my_context = alcCreateContext(m_device, 0);
-    // Note that owned context is not set active
-    alGetError();
-    alutInitWithoutContext(NULL, 0);
-    alutGetError();
+
+    if(m_my_context == NULL)
+    {
+        if(old_ctx)
+            alcMakeContextCurrent(old_ctx);
+        alcCloseDevice(m_device);
+        m_device = NULL;
+        throw ALContextManager::SoundLoadError("Could not create a context.");
+    }
+
+
+    if (alGetError() != AL_NO_ERROR)
+        throw ALContextManager::SoundLoadError("Error after creating context");
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,7 +76,7 @@ ALContextManager::ALContextManager():
 ALContextManager::~ALContextManager()
 {
     deleteAllSounds();
-    alutExit();
+
     m_current_context = alcGetCurrentContext();
     if (m_current_context == m_my_context)
         alcMakeContextCurrent(NULL);
@@ -72,7 +122,7 @@ int ALContextManager::addSoundFromFile(const std::string& filename) throw(SoundL
     {
         std::stringstream stream;
         stream << "Failure inserting soundfile " << filename << " AL error: "
-                << ex.what();
+               << ex.what();
         throw SoundLoadError(stream.str());
     }
     if (return_value.second == false) {
@@ -98,7 +148,7 @@ bool ALContextManager::playSound(int id) throw (SoundNotFoundError, SoundPlayErr
         {
             std::stringstream stream;
             stream << "Sound number " << id << " failed to play with message: "
-                    << ex.what();
+                   << ex.what();
             throw SoundPlayError(stream.str());
         }
     } catch (SoundNotFoundError&)
@@ -191,10 +241,11 @@ void ALContextManager::removeSound(int id) throw (SoundNotFoundError)
 
 void ALContextManager::deleteAllSounds()
 {
+    ALContextChanger cc(m_my_context);
     for (std::map<int, ALSoundBuffer*>::iterator it = m_sounds.begin (); it!= m_sounds.end() ; it++)
     {
-        int id = it->first;
-        delete m_sounds.at(id);
+        it->second->stop();
+        delete it->second;
         m_sounds.erase ( it );
     }
 }

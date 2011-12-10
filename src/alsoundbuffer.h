@@ -10,9 +10,18 @@
 
 #include <boost/noncopyable.hpp>
 
+#if APL == 1
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
+#elif IBM == 1
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <AL/alut.h>
+#elif LIN == 1
+#include <AL/al.h>
+#include <AL/alc.h>
+#else
+#error "No platform defined"
+#endif
 
 namespace PPL {
 
@@ -20,7 +29,7 @@ namespace PPL {
 /**
   * This class encapsulates openALs buffers and sources, does the resource handling
   * and provides the listener setup.
-  * @version 0.4
+  * @version 0.5
   * @author (c) 2009-2011 by Philipp Muenzel
   */
 class ALSoundBuffer: boost::noncopyable
@@ -97,6 +106,8 @@ private:
     ALuint m_source;
     ALboolean m_loop;
 };
+
+ALuint LoadWav(const std::string& fileName);
 
 }
 
