@@ -27,7 +27,8 @@ ALContextManager::ALContextManager():
         while (*s != '\0')
         {
             os << "OpenAL available device: " << s << std::endl;
-            while (*s++ != '\0');
+            while (*s++ != '\0')
+                ;
         }
     }
     else
