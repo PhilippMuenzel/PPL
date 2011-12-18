@@ -9,8 +9,8 @@ CONFIG -= thread qt rtti warn_on
 VERSION = 1.0.0
 
 INCLUDEPATH += include/simpleini
-INCLUDEPATH += ../../SDK/CHeaders/XPLM
-INCLUDEPATH += ../../SDK/CHeaders/Widgets
+INCLUDEPATH += ../SDK/CHeaders/XPLM
+INCLUDEPATH += ../SDK/CHeaders/Widgets
 
 # Defined to use X-Plane SDK 2.0 capabilities - no backward compatibility before 9.0
 DEFINES += XPLM200
