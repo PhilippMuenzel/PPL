@@ -36,7 +36,9 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     panel_region_id_3d_(textureId3d),
     region_draw_counter_(0),
     window_is_dragging_(false),
-    window_has_keyboard_focus_(false)
+    window_has_keyboard_focus_(false),
+    copy_left_3d_(-1),
+    copy_top_3d_(-1)
 {
     XPLMRegisterDrawCallback(draw3dCallback, xplm_Phase_Gauges, 0, this);
     XPLMRegisterFlightLoopCallback(frameCallback, -1, this);
@@ -131,6 +133,12 @@ void OverlayGauge::set3d(int left3d, int top3d, int width3d, int height3d, int t
     visible_3d_ = true;
 }
 
+void OverlayGauge::setCopy3d(int left3dcopy, int top3dcopy)
+{
+    copy_left_3d_ = left3dcopy;
+    copy_top_3d_ = top3dcopy;
+}
+
 void OverlayGauge::disable3d()
 {
     visible_3d_ = false;
@@ -179,6 +187,15 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
             glTexCoord2f(1, 0);  glVertex2f(left_3d_+width_3d_*scale_3d_, top_3d_ - height_3d_*scale_3d_);
             glTexCoord2f(0, 0);  glVertex2f(left_3d_,           top_3d_ - height_3d_*scale_3d_);
             glEnd();
+            if (copy_top_3d_ > -1 && copy_left_3d_ > -1)
+            {
+                glBegin(GL_QUADS);
+                glTexCoord2f(0, 1);  glVertex2f(copy_left_3d_,           copy_top_3d_);
+                glTexCoord2f(1, 1);  glVertex2f(copy_left_3d_+width_3d_*scale_3d_, copy_top_3d_);
+                glTexCoord2f(1, 0);  glVertex2f(copy_left_3d_+width_3d_*scale_3d_, copy_top_3d_ - height_3d_*scale_3d_);
+                glTexCoord2f(0, 0);  glVertex2f(copy_left_3d_,           copy_top_3d_ - height_3d_*scale_3d_);
+                glEnd();
+            }
         }
     }
     return 1;

@@ -33,6 +33,7 @@ public:
     virtual ~OverlayGauge();
 
     void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d);
+    void setCopy3d(int left3dcopy, int top3dcopy);
     void disable3d();
     bool isVisible() const;
     void setVisible(bool b);
@@ -118,6 +119,8 @@ private:
     GLuint fbo_;
     GLenum status_;
     bool fbo_used_;
+    int copy_left_3d_;
+    int copy_top_3d_;
 };
 
 }
