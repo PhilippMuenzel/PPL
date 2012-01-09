@@ -38,15 +38,15 @@ ALContextManager::ALContextManager():
 
     // Print default device name
     os << "OpenAL default device: "
-              << (const char *)alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER)
-              << std::endl;
+       << (const char *)alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER)
+       << std::endl;
 
     // Print current device name
     if (m_device)
     {
         os << "OpenAL current device: "
-                  << (const char *)alcGetString(m_device, ALC_DEVICE_SPECIFIER)
-                  << std::endl;
+           << (const char *)alcGetString(m_device, ALC_DEVICE_SPECIFIER)
+           << std::endl;
     }
 
     XPLMDebugString(os.str().c_str());
@@ -81,8 +81,25 @@ ALContextManager::~ALContextManager()
     m_current_context = alcGetCurrentContext();
     if (m_current_context == m_my_context)
         alcMakeContextCurrent(NULL);
-    alcDestroyContext(m_my_context);
-    alcCloseDevice(m_device);
+    alcSuspendContext(m_my_context);
+    /*
+         * FIXME
+         * Technically you're supposed to detach and destroy the
+         * current context with these two lines, but it deadlocks.
+         * As a not-quite-as-clean shortcut, if we skip this step
+         * and just close the device, OpenAL theoretically
+         * destroys the context associated with that device.
+         *
+         * alcDestroyContext(m_my_context);
+         */
+    /*
+         * FIXME
+         * Technically you're supposed to close the device, but
+         * the OpenAL sound thread crashes if we do this manually.
+         * The device seems to be closed automagically anyway.
+         *
+         *  alcCloseDevice(m_device);
+         */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
