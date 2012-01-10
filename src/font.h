@@ -21,11 +21,9 @@
 #elif IBM == 1
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include <gl/glew.h>
 #elif LIN == 1
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include <GL/glew.h>
 #endif
 
 namespace PPL {
