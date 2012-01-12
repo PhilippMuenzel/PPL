@@ -32,6 +32,9 @@ public:
         {}
     };
 
+
+    static std::string prependXPlanePath(const std::string&);
+
     /**
       * prepend the absolute path to the directory of the currently running plugin
       * to the path

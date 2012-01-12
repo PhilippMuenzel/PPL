@@ -17,6 +17,22 @@ std::string PluginPath::plugin_directory = "";
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+std::string PluginPath::prependXPlanePath(const std::string& file)
+{
+    char path[512];
+    XPLMGetSystemPath(path);
+    std::string absolute_path(path);
+#if APL && __MACH__
+    int result = ConvertPath(absolute_path.c_str(), path, 512);
+    if (result == 0)
+        absolute_path = std::string(path);
+    else
+        throw PathSetupError("Critical error - cannot convert Mac-HFS-format path to unix-format path");
+#endif
+    absolute_path.append(file);
+    return absolute_path;
+}
+
 std::string PluginPath::prependPluginPath(const std::string& file)
 {
 #ifdef BUILD_FOR_STANDALONE
