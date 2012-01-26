@@ -18,6 +18,9 @@
 #error "No platform defined"
 #endif
 
+#ifdef CRJ
+#define boost crjboost
+#endif
 #include <boost/noncopyable.hpp>
 
 namespace PPL {

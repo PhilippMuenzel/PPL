@@ -8,6 +8,9 @@
 #include <string>
 #include <stdexcept>
 
+#ifdef CRJ
+#define boost crjboost
+#endif
 #include <boost/noncopyable.hpp>
 
 #if APL == 1
