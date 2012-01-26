@@ -9,9 +9,6 @@
 #include <stdexcept>
 
 #include <boost/noncopyable.hpp>
-#ifdef CRJBoost
-namespace boost = crjboost;
-#endif
 
 #if APL == 1
 #include <OpenAL/al.h>

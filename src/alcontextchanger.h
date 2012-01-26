@@ -19,9 +19,6 @@
 #endif
 
 #include <boost/noncopyable.hpp>
-#ifdef CRJBoost
-namespace boost = crjboost;
-#endif
 
 namespace PPL {
 
