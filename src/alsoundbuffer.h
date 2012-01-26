@@ -8,10 +8,10 @@
 #include <string>
 #include <stdexcept>
 
-#ifdef CRJ
-#define boost crjboost
-#endif
 #include <boost/noncopyable.hpp>
+#ifdef CRJBoost
+namespace boost = crjboost;
+#endif
 
 #if APL == 1
 #include <OpenAL/al.h>
