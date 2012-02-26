@@ -38,23 +38,9 @@ std::string PluginPath::prependPluginPath(const std::string& file)
 #ifdef BUILD_FOR_STANDALONE
     return file;
 #else
-    if (plugin_directory == "")
-        throw PathSetupError("Critical error - no plugin name set - unable to create file in the right directory");
-    char path[512];
-    XPLMGetSystemPath(path);
-    std::string absolute_path(path);
-    absolute_path.
-            append("Resources/plugins/").
-            append(plugin_directory).append("/").
-            append(file);
-#if APL && __MACH__
-    int result = ConvertPath(absolute_path.c_str(), path, 512);
-    if (result == 0)
-        return std::string(path);
-    else
-        throw PathSetupError("Critical error - cannot convert Mac-HFS-format path to unix-format path");
-#endif
-    return absolute_path;
+    std::string path = "/Resources/plugins/";
+    path.append(plugin_directory).append("/").append(file);
+    return prependXPlanePath(path);
 #endif
 }
 
