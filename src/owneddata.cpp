@@ -232,10 +232,11 @@ void PPL::writeFuncStr(void* inRefCon, void* inValue, int inOffset, long inMaxLe
 
 long PPL::readFuncVF(void* inRefCon, float* outValues, int inOffset, int inMaxLength)
 {
+    std::size_t max_length = static_cast<unsigned int>(inMaxLength);
     OwnedData<std::vector<float> >* p_owned_data = static_cast<OwnedData<std::vector<float> >*>(inRefCon);
     if (outValues == NULL)
         return p_owned_data->value().size();
-    int end = (p_owned_data->value().size() < static_cast<unsigned int>(inMaxLength))?(p_owned_data->value().size()):inMaxLength;
+    int end = (p_owned_data->value().size() < max_length) ? p_owned_data->value().size() : max_length;
     memcpy(outValues, &p_owned_data->value()[inOffset], sizeof(float)*end);
     return end;
 }
