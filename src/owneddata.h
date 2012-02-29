@@ -34,7 +34,7 @@ public:
     {}
 };
 
-const long MSG_ADD_DATAREF = 0x01000000;
+const long DRE_MSG_ADD_DATAREF = 0x01000000;
 const char* const DRE_PLUGIN_SINATURE = "xplanesdk.examples.DataRefEditor";
 
 
