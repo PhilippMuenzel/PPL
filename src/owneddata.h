@@ -86,7 +86,7 @@ public:
         {
             XPLMPluginID PluginID = XPLMFindPluginBySignature(DRE_PLUGIN_SINATURE);
             if (PluginID != XPLM_NO_PLUGIN_ID)
-                XPLMSendMessageToPlugin(PluginID, MSG_ADD_DATAREF, (void*)m_data_ref_identifier.c_str());
+                XPLMSendMessageToPlugin(PluginID, DRE_MSG_ADD_DATAREF, (void*)m_data_ref_identifier.c_str());
         }
     }
 
