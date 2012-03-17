@@ -13,7 +13,9 @@
 #endif
 #endif
 
-namespace PPL {
+#include "namespaces.h"
+
+namespace PPLNAMESPACE {
 
 /**
   * PluginPath provides a platform-independant absolute path to directory

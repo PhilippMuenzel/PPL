@@ -22,8 +22,9 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 class OverlayGauge
 {

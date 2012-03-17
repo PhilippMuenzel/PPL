@@ -9,7 +9,7 @@
 #include "logichandler.h"
 #include "log.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 float HandlerCallbackInit(float, float, int, void* inRefCon)
 {

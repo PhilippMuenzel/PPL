@@ -6,7 +6,7 @@
 #include "action.h"
 #include <iostream>
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 MenuItem::MenuItem(const std::string& title)
 {

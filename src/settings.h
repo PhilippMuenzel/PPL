@@ -9,8 +9,9 @@
 
 #define SI_CONVERT_GENERIC
 #include "SimpleIni.h"
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 /**
   * Convenient access to ini-Files.

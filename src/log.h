@@ -8,8 +8,9 @@
 #include <string>
 #include <ctime>
 #include <sstream>
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 class LogWriter;
 

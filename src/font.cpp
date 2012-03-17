@@ -8,7 +8,7 @@
 #include "XPLMGraphics.h"
 #endif
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 Font::Font(const std::string& fname, unsigned int height, int try_unicode_to)
 {
@@ -74,14 +74,14 @@ void Font::make_dlist ( FT_Face face, wchar_t ch, GLuint list_base, GLuint * tex
 
     GLubyte* expanded_data = new GLubyte[ 2 * width * height];
 
-    //for(int j=0; j <height;j++) {
-        for(int j=0; j < height;j++) for(int i=0; i < width; i++) {
+    for(int j=0; j < height;j++)
+        for(int i=0; i < width; i++)
+        {
             expanded_data[2*(i+j*width)] = 255;
             expanded_data[2*(i+j*width)+1] =
                     (i>=bitmap.width || j>=bitmap.rows) ?
                         0 : bitmap.buffer[i + bitmap.width*j];
         }
-    //}
 
 #ifdef BUILD_FOR_STANDALONE
     glBindTexture(GL_TEXTURE_2D, tex_base[index]);

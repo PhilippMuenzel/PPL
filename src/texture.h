@@ -7,8 +7,9 @@
 
 #include <string>
 #include <vector>
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 class Texture
 {

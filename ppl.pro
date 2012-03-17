@@ -77,7 +77,8 @@ HEADERS += \
     src/menuitem.h \
     src/action.h \
     src/smoothed.h \
-    src/processor.h
+    src/processor.h \
+    src/namespaces.h
 
 SOURCES += \
     src/pluginpath.cpp \

@@ -7,8 +7,9 @@
 
 #include <fstream>
 #include "log.h"
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 /**
   * @brief Logger implementation that logs to file.

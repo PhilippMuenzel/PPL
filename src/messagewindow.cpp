@@ -6,7 +6,7 @@
 
 #include "messagewindow.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 MessageWindow::MessageWindow(int width, int height, const std::string& title, const std::string& message, bool quit):
         m_is_displayed(false),

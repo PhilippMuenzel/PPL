@@ -10,7 +10,7 @@
 #include "XPLMProcessing.h"
 
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
                            int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard, bool is_visible3d, bool is_visible2d, bool always_draw_3d, bool allow_3d_click, float scale_3d):

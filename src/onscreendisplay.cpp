@@ -7,7 +7,7 @@
 
 #include "onscreendisplay.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 OnScreenDisplay::OnScreenDisplay(int width, int height, const std::string& title):
     screen_w_("sim/graphics/view/window_width"),

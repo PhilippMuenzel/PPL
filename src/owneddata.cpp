@@ -6,7 +6,7 @@
 
 #include "owneddata.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 template <>
 void OwnedData<int>::registerRead()

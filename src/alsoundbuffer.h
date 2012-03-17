@@ -23,8 +23,10 @@
 #error "No platform defined"
 #endif
 
-namespace PPL {
+#include "namespaces.h"
 
+
+namespace PPLNAMESPACE {
 
 /**
   * This class encapsulates openALs buffers and sources, does the resource handling

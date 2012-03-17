@@ -22,7 +22,10 @@
 #endif
 #include <cmath>
 
-namespace PPL {
+#include "namespaces.h"
+
+
+namespace PPLNAMESPACE {
 
 template <typename T>
 T round(T r)

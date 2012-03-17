@@ -7,8 +7,9 @@
 
 #include "XPWidgetDefs.h"
 #include "dataref.h"
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 class OnScreenDisplay {
 public:

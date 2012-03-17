@@ -5,7 +5,7 @@
 #include "processor.h"
 #include "XPLMProcessing.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 Processor::Processor(float time_to_start)
 {

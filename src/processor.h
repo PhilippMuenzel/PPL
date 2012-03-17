@@ -4,8 +4,9 @@
 
 #ifndef PROCESSOR_H
 #define PROCESSOR_H
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 class Processor
 {

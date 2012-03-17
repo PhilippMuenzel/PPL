@@ -7,7 +7,7 @@
 #include "log.h"
 #include "logwriter.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 Log::Log():
         m_severity(L_UNSPEC),

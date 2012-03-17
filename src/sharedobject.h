@@ -5,8 +5,9 @@
 #include <boost/serialization/serialization.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 template <typename T>
 class SharedObject

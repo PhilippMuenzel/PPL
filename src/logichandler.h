@@ -7,8 +7,9 @@
 
 #include <vector>
 #include <string>
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 /**
   * abstract class for all kinds of processing that takes values from XP,

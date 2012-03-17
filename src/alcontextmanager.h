@@ -24,8 +24,9 @@
 #endif
 
 #include "alsoundbuffer.h"
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 /**
   * Encapsulates all openAL and alut related stuff for looking up devices, handling different

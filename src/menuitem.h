@@ -12,8 +12,9 @@
 #include "XPLMMenus.h"
 #include "XPWidgets.h"
 #include "XPStandardWidgets.h"
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 class Action;
 

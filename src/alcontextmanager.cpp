@@ -8,7 +8,7 @@
 #include "alcontextmanager.h"
 #include "alcontextchanger.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 ALContextManager::ALContextManager():
     m_internal_counter(0),

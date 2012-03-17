@@ -19,8 +19,9 @@
 #endif
 
 #include <boost/noncopyable.hpp>
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 /**
   * @brief RAII class to change the openal context on construction and

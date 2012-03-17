@@ -6,8 +6,9 @@
 #define ACTION_H
 
 #include <string>
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 class Action {
 public:

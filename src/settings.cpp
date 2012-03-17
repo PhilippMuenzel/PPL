@@ -5,7 +5,7 @@
 #include "settings.h"
 #include "log.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 Settings::Settings(const std::string& filename, bool create_if_not_exists, bool write_new_file):
         m_config_file_name(filename),

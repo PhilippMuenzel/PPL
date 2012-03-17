@@ -4,7 +4,7 @@
 
 #include "alcontextchanger.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 ALContextChanger::ALContextChanger(ALCcontext* own_context):
     m_other_context(0)

@@ -8,8 +8,7 @@
 
 #include "dataref.h"
 
-using namespace PPL;
-
+using namespace PPLNAMESPACE;
 
 
 template<>

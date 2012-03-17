@@ -8,7 +8,7 @@
 
 #include "alsoundbuffer.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 ALSoundBuffer::ALSoundBuffer(const std::string& filename) throw(SoundPlayingError):
     m_name(filename)
@@ -136,7 +136,7 @@ bool ALSoundBuffer::isPlaying() const
     return (state == AL_PLAYING);
 }
 
-namespace PPL {
+namespace PPLNAMESPACE {
 static unsigned short readByte16(const unsigned char buffer[2]) {
 #if APL && defined(__ppc__)
     return (buffer[0] << 8) + buffer[1];

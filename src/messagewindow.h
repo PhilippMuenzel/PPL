@@ -13,8 +13,9 @@
 #include "XPStandardWidgets.h"
 
 #include "dataref.h"
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 /**
   * A convenient way to display a message box with a title and a longer text message

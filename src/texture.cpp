@@ -29,7 +29,7 @@
 #endif
 #endif
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 #if APL && defined(__ppc__)
 short Endian(short Data)

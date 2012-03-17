@@ -13,8 +13,9 @@
 #include "XPLMPlugin.h"
 
 #include "dataref.h"
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 template <typename T>
 T readFunc(void*);

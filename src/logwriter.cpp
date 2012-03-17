@@ -6,7 +6,7 @@
 #include <iostream>
 #include <cstdlib>
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 LogWriter::LogWriter()
 {

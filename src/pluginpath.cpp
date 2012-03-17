@@ -10,7 +10,7 @@
 
 #include "pluginpath.h"
 
-using namespace PPL;
+using namespace PPLNAMESPACE;
 
 std::string PluginPath::plugin_directory = "";
 

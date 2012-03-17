@@ -26,7 +26,9 @@
 #include <GL/glew.h>
 #endif
 
-namespace PPL {
+#include "namespaces.h"
+
+namespace PPLNAMESPACE {
 
 class Font {
 public:

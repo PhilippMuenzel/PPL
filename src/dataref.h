@@ -12,8 +12,9 @@
 #include "XPLMDataAccess.h"
 
 #include "log.h"
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 /**
   * @brief RWType distinguishes the three types of acess to datarefs.

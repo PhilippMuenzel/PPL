@@ -2,8 +2,9 @@
 #define SMOOTHED_H
 
 #include <cstring>
+#include "namespaces.h"
 
-namespace PPL {
+namespace PPLNAMESPACE {
 
 template <typename T, int n>
 class Smoothed
