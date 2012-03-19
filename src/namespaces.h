@@ -9,7 +9,9 @@
 #error you didnt define your private name. Please read the forum.
 #endif
 
-#define PPLNAMESPACE PPL ## PRIVATENAMESPACE
+#define PASTER(x,y) x ## y
+#define EVALUATOR(x,y)  PASTER(x,y)
+#define PPLNAMESPACE EVALUATOR(PPL, PRIVATENAMESPACE)
 
 
 namespace PPLNAMESPACE{} namespace PPL = PPLNAMESPACE;
