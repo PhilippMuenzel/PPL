@@ -27,7 +27,7 @@ MenuItem::~MenuItem()
 
 void MenuItem::menuHandler(void *iRef)
 {
-    int menu_item = reinterpret_cast<int>(iRef);
+    intptr_t menu_item = reinterpret_cast<intptr_t>(iRef);
     m_actions[menu_item]->doAction();
 }
 
