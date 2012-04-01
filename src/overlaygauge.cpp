@@ -176,9 +176,9 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
         region_draw_counter_++;
         if (visible_3d_ && (panel_region_id_3d_ == -1 || region_draw_counter_ == static_cast<unsigned int>(panel_region_id_3d_)))
         {
-            bindTex(gauge_texture_, 0);
-
             setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
+            bindTex(gauge_texture_, 0);
+            glPushMatrix();
             glColor4f(1,1,1,1);
 
             glBegin(GL_QUADS);
@@ -196,6 +196,7 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
                 glTexCoord2f(0, 0);  glVertex2f(copy_left_3d_,           copy_top_3d_ - height_3d_*scale_3d_);
                 glEnd();
             }
+            glPopMatrix();
         }
     }
     return 1;
@@ -230,8 +231,9 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
         int left, top, right, bottom;
         XPLMGetWindowGeometry(window2d_id_, &left, &top, &right, &bottom);
 
-        bindTex(gauge_texture_, 0);
         setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
+        bindTex(gauge_texture_, 0);
+        glPushMatrix();
         glColor4f(1,1,1,1);
 
         glBegin(GL_QUADS);
@@ -240,6 +242,7 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
         glTexCoord2f(1, 0);  glVertex2f(left+frame_off_x_+width_3d_, top-frame_off_y_-height_3d_);
         glTexCoord2f(0, 0);  glVertex2f(left+frame_off_x_,           top-frame_off_y_-height_3d_);
         glEnd();
+        glPopMatrix();
 
         drawFrameTexture(left, top, right, bottom);
 
@@ -398,6 +401,7 @@ void OverlayGauge::drawFrameTexture(int left, int top, int right, int bottom)
     if (tex_id > 0)
     {
         setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
+        glPushMatrix();
         glColor4f(1,1,1,1);
 
         bindTex(tex_id, 0);
@@ -407,6 +411,7 @@ void OverlayGauge::drawFrameTexture(int left, int top, int right, int bottom)
         glTexCoord2f(1, 0);  glVertex2f(right, bottom);
         glTexCoord2f(0, 0);  glVertex2f(left, bottom);
         glEnd();
+        glPopMatrix();
     }
 }
 
