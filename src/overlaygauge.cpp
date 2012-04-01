@@ -210,7 +210,10 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_);
 
         // clear buffers
-        glClearColor(0,0,0,1);
+        if (wantClearTexture())
+            glClearColor(0,0,0,0);
+        else
+            glClearColor(0,0,0,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // draw a scene to a texture directly
@@ -413,6 +416,11 @@ void OverlayGauge::drawFrameTexture(int left, int top, int right, int bottom)
         glEnd();
         glPopMatrix();
     }
+}
+
+bool OverlayGauge::wantClearTexture()
+{
+    return false;
 }
 
 int OverlayGauge::draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon)

@@ -58,8 +58,9 @@ public:
     virtual void handleNonDragClick(int x_rel, int y_rel) = 0;
     virtual void handleNonDragClickRelease(int x_rel, int y_rel);
     virtual void handleKeyPress(char key, XPLMKeyFlags flags, char virtual_key) = 0;
-    virtual int frameTextureId() const;
+    virtual int  frameTextureId() const;
     virtual void drawFrameTexture(int, int, int, int);
+    virtual bool wantClearTexture();
 
     static int draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
