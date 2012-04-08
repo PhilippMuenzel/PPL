@@ -22,10 +22,10 @@ T readFunc(void*);
 template <typename T>
 void writeFunc(void*, T);
 
-long readFuncStr(void*, void*, int, long);
-void writeFuncStr(void*, void*, int, long);
+int readFuncStr(void*, void*, int, int);
+void writeFuncStr(void*, void*, int, int);
 
-long readFuncVF(void*, float*, int, int);
+int readFuncVF(void*, float*, int, int);
 void writeFuncVF(void*, float*, int, int);
 
 class DataRefNotPublishedException : public std::runtime_error {

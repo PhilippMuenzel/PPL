@@ -206,7 +206,7 @@ void OwnedData<std::vector<float> >::registerReadWrite()
 ///////////////////////////////////////////////////////////////////////////////
 
 
-long PPL::readFuncStr(void* inRefCon, void* outValue, int inOffset, long inMaxLength)
+int PPL::readFuncStr(void* inRefCon, void* outValue, int inOffset, int inMaxLength)
 {
     OwnedData<std::string>* p_owned_data = static_cast<OwnedData<std::string>*>(inRefCon);
     long length = p_owned_data->value().length();
@@ -220,7 +220,7 @@ long PPL::readFuncStr(void* inRefCon, void* outValue, int inOffset, long inMaxLe
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void PPL::writeFuncStr(void* inRefCon, void* inValue, int inOffset, long inMaxLength)
+void PPL::writeFuncStr(void* inRefCon, void* inValue, int inOffset, int inMaxLength)
 {
     OwnedData<std::string>* p_owned_data = static_cast<OwnedData<std::string>*>(inRefCon);
     char* str = static_cast<char*>(inValue);
@@ -230,7 +230,7 @@ void PPL::writeFuncStr(void* inRefCon, void* inValue, int inOffset, long inMaxLe
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-long PPL::readFuncVF(void* inRefCon, float* outValues, int inOffset, int inMaxLength)
+int PPL::readFuncVF(void* inRefCon, float* outValues, int inOffset, int inMaxLength)
 {
     std::size_t max_length = static_cast<unsigned int>(inMaxLength);
     OwnedData<std::vector<float> >* p_owned_data = static_cast<OwnedData<std::vector<float> >*>(inRefCon);

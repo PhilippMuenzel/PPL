@@ -155,7 +155,7 @@ bool MessageWindow::isDisplayed()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int MessageWindow::processMessages(XPWidgetMessage inMessage, long, long)
+int MessageWindow::processMessages(XPWidgetMessage inMessage, intptr_t, intptr_t)
 {
     if (inMessage == xpMessage_CloseButtonPushed)
     {
@@ -176,7 +176,7 @@ int MessageWindow::processMessages(XPWidgetMessage inMessage, long, long)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int MessageWindow::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, long param1, long param2)
+int MessageWindow::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t param1, intptr_t param2)
 {
     MessageWindow* widget = reinterpret_cast<MessageWindow *>(XPGetWidgetProperty(inWidget, xpProperty_Object, NULL));
     if (widget)

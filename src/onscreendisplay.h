@@ -17,9 +17,9 @@ public:
 
     ~OnScreenDisplay();
 
-    int processMessages(XPWidgetMessage inMessage, long, long);
+    int processMessages(XPWidgetMessage inMessage, intptr_t, intptr_t);
 
-    static int widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, long param1, long param2);
+    static int widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t param1, intptr_t param2);
 
 private:
     DataRef<int> screen_w_;

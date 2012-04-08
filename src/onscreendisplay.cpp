@@ -45,7 +45,7 @@ OnScreenDisplay::~OnScreenDisplay()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int OnScreenDisplay::processMessages(XPWidgetMessage inMessage, long, long)
+int OnScreenDisplay::processMessages(XPWidgetMessage inMessage, intptr_t, intptr_t)
 {
     if (inMessage == xpMessage_CloseButtonPushed)
     {
@@ -58,7 +58,7 @@ int OnScreenDisplay::processMessages(XPWidgetMessage inMessage, long, long)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int OnScreenDisplay::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, long param1, long param2)
+int OnScreenDisplay::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t param1, intptr_t param2)
 {
     OnScreenDisplay* display = reinterpret_cast<OnScreenDisplay*>(XPGetWidgetProperty(inWidget, xpProperty_Object, 0));
     if (display)

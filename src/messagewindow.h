@@ -97,13 +97,13 @@ public:
       * @param param1
       * @param param2
       */
-    int processMessages(XPWidgetMessage, long, long);
+    int processMessages(XPWidgetMessage, intptr_t, intptr_t);
 
     /**
       * static widget callback to register in X-Plane's widget logic
       * retrieves the instance via a pointer-to-object stored in the widget struct
       */
-    static int widgetCallback(XPWidgetMessage, XPWidgetID, long, long);
+    static int widgetCallback(XPWidgetMessage, XPWidgetID, intptr_t, intptr_t);
 
 private:
 
