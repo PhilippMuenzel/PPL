@@ -45,7 +45,7 @@ win32 {
         QMAKE_CXXFLAGS += -wd4996
         DEFINES += NOMINMAX
     }
-    INCLUDEPATH += include C:\\Boost\\include\\boost-1_47 openALsoft/include
+    INCLUDEPATH += include C:\\Boost\\include\\boost-1_48 openALsoft/include
 }
 
 unix:!macx {
