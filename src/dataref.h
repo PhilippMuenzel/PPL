@@ -273,7 +273,7 @@ void DataRef<SimType>::lookUp(const std::string& identifier)
 {
     m_data_ref = XPLMFindDataRef(identifier.c_str());
     if(!m_data_ref)
-        throw NotFoundException("not found in X-Plane's available Datarefs.");
+        throw NotFoundException(identifier+" not found in X-Plane's available Datarefs.");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
