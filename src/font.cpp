@@ -110,12 +110,29 @@ void Font::make_dlist ( FT_Face face, wchar_t ch, GLuint list_base, GLuint * tex
     float x = bitmap.width / static_cast<float>(width);
     float y = bitmap.rows  / static_cast<float>(height);
 
-    glBegin(GL_QUADS);
+    GLfloat vertices[] = {0, 0,
+                         0, bitmap.rows,
+                         bitmap.width, bitmap.rows,
+                         bitmap.width, 0};
+    GLfloat texture_coords[] = {0, y,
+                                0, 0,
+                                x, 0,
+                                x, y};
+    GLubyte indices[] = {2,1,0,2,3,1};
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glVertexPointer(2, GL_FLOAT, 0, vertices);
+    glTexCoordPointer(2, GL_FLOAT, 0, texture_coords);
+    glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_BYTE, indices);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    /*glBegin(GL_QUADS);
     glTexCoord2d(0,y); glVertex2f(0,0);
     glTexCoord2d(0,0); glVertex2f(0,bitmap.rows);
     glTexCoord2d(x,0); glVertex2f(bitmap.width,bitmap.rows);
     glTexCoord2d(x,y); glVertex2f(bitmap.width,0);
-    glEnd();
+    glEnd();*/
     glPopMatrix();
 
     glTranslatef(face->glyph->advance.x >> 6 ,0,0);

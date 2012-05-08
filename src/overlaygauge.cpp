@@ -405,15 +405,33 @@ void OverlayGauge::drawFrameTexture(int left, int top, int right, int bottom)
     {
         setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
         glPushMatrix();
-        glColor4f(1,1,1,1);
+
+        GLfloat vertices[] = { left, top,
+                             right, top,
+                             right, bottom,
+                             left, bottom };
+        GLfloat colors[] = { 1,1,1,1,
+                           1,1,1,1,
+                           1,1,1,1,
+                           1,1,1,1 };
+        GLfloat tex_coords[] = { 0, 1,
+                               1, 1,
+                               1, 0,
+                               0, 0 };
+        GLubyte indices[] = {2, 1, 0, 2, 3, 1};
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glVertexPointer(2, GL_FLOAT, 0, vertices);
+        glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
+        glColorPointer(4, GL_FLOAT, 0, colors);
 
         bindTex(tex_id, 0);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 1);  glVertex2f(left, top);
-        glTexCoord2f(1, 1);  glVertex2f(right, top);
-        glTexCoord2f(1, 0);  glVertex2f(right, bottom);
-        glTexCoord2f(0, 0);  glVertex2f(left, bottom);
-        glEnd();
+        glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_BYTE, indices);
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glPopMatrix();
     }
 }
