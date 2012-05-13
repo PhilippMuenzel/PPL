@@ -13,7 +13,7 @@
 using namespace PPLNAMESPACE;
 
 OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
-                           int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard, bool is_visible3d, bool is_visible2d, bool always_draw_3d, bool allow_3d_click, float scale_3d):
+                           int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard, bool is_visible3d, bool is_visible2d, bool always_draw_3d, bool allow_3d_click, float scale_3d, bool double_size):
     left_3d_(left3d),
     top_3d_(top3d),
     width_2d_(width2d),
@@ -28,6 +28,9 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     allow_keyboard_grab_(allow_keyboard),
     allow_3d_click_(allow_3d_click),
     scale_3d_(scale_3d),
+    doubled_size_(double_size),
+    width_view_3d_(width3d),
+    height_view_3d_(height3d),
     screen_width_("sim/graphics/view/window_width"),
     screen_height_("sim/graphics/view/window_height"),
     view_type_("sim/graphics/view/view_type"),
@@ -40,6 +43,11 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     copy_left_3d_(-1),
     copy_top_3d_(-1)
 {
+    if (double_size)
+    {
+        width_3d_ *= 2;
+        height_3d_ *= 2;
+    }
     XPLMRegisterDrawCallback(draw3dCallback, xplm_Phase_Gauges, 0, this);
     XPLMRegisterFlightLoopCallback(frameCallback, -1, this);
 
@@ -76,18 +84,18 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     generateTex((int*)(&gauge_texture_), 1);
     bindTex(gauge_texture_, 0);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width3d, height3d, 0,
+    //glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_3d_, height_3d_, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
     // create a renderbuffer object to store depth info
     glGenRenderbuffersEXT(1, &rbo_);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rbo_);
     glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT,
-                             width3d, height3d);
+                             width_3d_, height_3d_);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 
     // create a framebuffer object
@@ -103,9 +111,9 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
                                  GL_RENDERBUFFER_EXT, rbo_);
 
     // check FBO status
-    status_ = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+    GLenum status_ = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if(status_ != GL_FRAMEBUFFER_COMPLETE_EXT)
-        fbo_used_ = false;
+        throw std::runtime_error("No possible FBO, sorry");
 
     // switch back to window-system-provided framebuffer
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
@@ -127,8 +135,11 @@ void OverlayGauge::set3d(int left3d, int top3d, int width3d, int height3d, int t
 
     left_3d_ = left3d;
     top_3d_ = top3d;
-    width_3d_ = width3d;
-    height_3d_ = height3d;
+
+    width_3d_ = (doubled_size_ ? 2*width3d : width3d);
+    height_3d_ = (doubled_size_ ? 2*height3d : height3d);
+    width_view_3d_ = width3d;
+    height_view_3d_ = height3d;
 
     visible_3d_ = true;
 }
@@ -169,6 +180,36 @@ void OverlayGauge::frame()
     region_draw_counter_ = 0;
 }
 
+void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bottom)
+{
+    GLfloat vertices[] = { left, top,
+                         right, top,
+                         right, bottom,
+                         left, bottom };
+    GLfloat colors[] = { 1,1,1,1,
+                       1,1,1,1,
+                       1,1,1,1,
+                       1,1,1,1 };
+    GLfloat tex_coords[] = { 0, 1,
+                           1, 1,
+                           1, 0,
+                           0, 0 };
+    GLubyte indices[] = {2, 1, 0, 2, 3, 1};
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glVertexPointer(2, GL_FLOAT, 0, vertices);
+    glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
+    glColorPointer(4, GL_FLOAT, 0, colors);
+
+    bindTex(tex_id, 0);
+    glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_BYTE, indices);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+}
+
 int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 {
     if (view_type_ == 1026 || always_draw_3d_)
@@ -177,26 +218,13 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
         if (visible_3d_ && (panel_region_id_3d_ == -1 || region_draw_counter_ == static_cast<unsigned int>(panel_region_id_3d_)))
         {
             setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
-            bindTex(gauge_texture_, 0);
-            glPushMatrix();
-            glColor4f(1,1,1,1);
 
-            glBegin(GL_QUADS);
-            glTexCoord2f(0, 1);  glVertex2f(left_3d_,           top_3d_);
-            glTexCoord2f(1, 1);  glVertex2f(left_3d_+width_3d_*scale_3d_, top_3d_);
-            glTexCoord2f(1, 0);  glVertex2f(left_3d_+width_3d_*scale_3d_, top_3d_ - height_3d_*scale_3d_);
-            glTexCoord2f(0, 0);  glVertex2f(left_3d_,           top_3d_ - height_3d_*scale_3d_);
-            glEnd();
+            drawTexture(gauge_texture_, left_3d_, top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_);
+
             if (copy_top_3d_ > -1 && copy_left_3d_ > -1)
             {
-                glBegin(GL_QUADS);
-                glTexCoord2f(0, 1);  glVertex2f(copy_left_3d_,           copy_top_3d_);
-                glTexCoord2f(1, 1);  glVertex2f(copy_left_3d_+width_3d_*scale_3d_, copy_top_3d_);
-                glTexCoord2f(1, 0);  glVertex2f(copy_left_3d_+width_3d_*scale_3d_, copy_top_3d_ - height_3d_*scale_3d_);
-                glTexCoord2f(0, 0);  glVertex2f(copy_left_3d_,           copy_top_3d_ - height_3d_*scale_3d_);
-                glEnd();
+                drawTexture(gauge_texture_, copy_left_3d_, copy_top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_);
             }
-            glPopMatrix();
         }
     }
     return 1;
@@ -208,6 +236,15 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
     {
         // set rendering destination to FBO
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_);
+        glPushAttrib(GL_VIEWPORT_BIT);
+        glViewport(0,0,width_3d_, height_3d_);
+        glMatrixMode (GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0,width_3d_, 0, height_3d_, 0, 1);
+        glMatrixMode (GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
 
         // clear buffers
         if (wantClearTexture())
@@ -220,6 +257,12 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
         draw(0, height_3d_, width_3d_, 0);
 
         // unbind FBO
+
+        glPopMatrix();
+        glMatrixMode (GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glPopAttrib();
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
@@ -228,24 +271,14 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
     // triggers mipmap generation automatically. However, the texture attached
     // onto a FBO should generate mipmaps manually via glGenerateMipmapEXT().
     bindTex(gauge_texture_,0);
-    glGenerateMipmapEXT(GL_TEXTURE_2D);
+    //glGenerateMipmapEXT(GL_TEXTURE_2D);
     if (visible_2d_)
     {
         int left, top, right, bottom;
         XPLMGetWindowGeometry(window2d_id_, &left, &top, &right, &bottom);
 
         setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
-        bindTex(gauge_texture_, 0);
-        glPushMatrix();
-        glColor4f(1,1,1,1);
-
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 1);  glVertex2f(left+frame_off_x_,           top-frame_off_y_);
-        glTexCoord2f(1, 1);  glVertex2f(left+frame_off_x_+width_3d_, top-frame_off_y_);
-        glTexCoord2f(1, 0);  glVertex2f(left+frame_off_x_+width_3d_, top-frame_off_y_-height_3d_);
-        glTexCoord2f(0, 0);  glVertex2f(left+frame_off_x_,           top-frame_off_y_-height_3d_);
-        glEnd();
-        glPopMatrix();
+        drawTexture(gauge_texture_, left+frame_off_x_, top-frame_off_y_, left+frame_off_x_+width_view_3d_, top -frame_off_y_-height_view_3d_);
 
         drawFrameTexture(left, top, right, bottom);
 
@@ -404,35 +437,7 @@ void OverlayGauge::drawFrameTexture(int left, int top, int right, int bottom)
     if (tex_id > 0)
     {
         setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
-        glPushMatrix();
-
-        GLfloat vertices[] = { left, top,
-                             right, top,
-                             right, bottom,
-                             left, bottom };
-        GLfloat colors[] = { 1,1,1,1,
-                           1,1,1,1,
-                           1,1,1,1,
-                           1,1,1,1 };
-        GLfloat tex_coords[] = { 0, 1,
-                               1, 1,
-                               1, 0,
-                               0, 0 };
-        GLubyte indices[] = {2, 1, 0, 2, 3, 1};
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_COLOR_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glVertexPointer(2, GL_FLOAT, 0, vertices);
-        glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
-        glColorPointer(4, GL_FLOAT, 0, colors);
-
-        bindTex(tex_id, 0);
-        glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_BYTE, indices);
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_COLOR_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        glPopMatrix();
+        drawTexture(tex_id, left, top, right, bottom);
     }
 }
 

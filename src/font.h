@@ -65,14 +65,14 @@ void Font::glPrint(float x, float y, const std::basic_string<T>& text)
 
     glListBase(list_base);
 
-    float modelview_matrix[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
+    //float modelview_matrix[16];
+    //glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
 
     glPushMatrix();
-    glLoadIdentity();
+    //glLoadIdentity();
     //    glColor4fv(color);
     glTranslatef(x,y,0);
-    glMultMatrixf(modelview_matrix);
+    //glMultMatrixf(modelview_matrix);
     callList(text);
     glPopMatrix();
 

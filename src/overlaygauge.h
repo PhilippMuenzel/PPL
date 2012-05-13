@@ -30,7 +30,7 @@ class OverlayGauge
 {
 public:
     OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
-                 int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard = true, bool is_visible3d = true, bool is_visible2d = false, bool always_draw_3d = false, bool allow_3d_click = true, float scale_3d = 1.0f);
+                 int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard = true, bool is_visible3d = true, bool is_visible2d = false, bool always_draw_3d = false, bool allow_3d_click = true, float scale_3d = 1.0f, bool double_size = false);
     virtual ~OverlayGauge();
 
     void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d);
@@ -89,6 +89,7 @@ public:
     void generateTex(int* tex_id, int number_of_textures);
 
     static bool coordInRect(float x, float y, float l, float t, float r, float b);
+    void drawTexture(int tex_id, int left, int top, int right, int bottom);
 
 private:
     XPLMWindowID window2d_id_;
@@ -107,6 +108,9 @@ private:
     bool allow_keyboard_grab_;
     bool allow_3d_click_;
     float scale_3d_;
+    bool doubled_size_;
+    int width_view_3d_;
+    int height_view_3d_;
     DataRef<int> screen_width_;
     DataRef<int> screen_height_;
     DataRef<int> view_type_;
@@ -119,8 +123,6 @@ private:
     GLuint gauge_texture_;
     GLuint rbo_;
     GLuint fbo_;
-    GLenum status_;
-    bool fbo_used_;
     int copy_left_3d_;
     int copy_top_3d_;
 };
