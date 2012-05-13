@@ -266,12 +266,8 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
-    // trigger mipmaps generation explicitly
-    // NOTE: If GL_GENERATE_MIPMAP is set to GL_TRUE, then glCopyTexSubImage2D()
-    // triggers mipmap generation automatically. However, the texture attached
-    // onto a FBO should generate mipmaps manually via glGenerateMipmapEXT().
     bindTex(gauge_texture_,0);
-    //glGenerateMipmapEXT(GL_TEXTURE_2D);
+
     if (visible_2d_)
     {
         int left, top, right, bottom;

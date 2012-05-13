@@ -120,8 +120,8 @@ withfreetype {
         INCLUDEPATH += /usr/local/include/freetype2
     }
 
-    HEADERS += src/font.h
-    SOURCES += src/font.cpp
+    HEADERS += src/fontmgr.h
+    SOURCES += src/fontmgr.cpp
 }
 
 withserialization {
