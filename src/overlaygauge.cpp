@@ -182,6 +182,7 @@ void OverlayGauge::frame()
 
 void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bottom)
 {
+    setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 1/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
     GLfloat vertices[] = { left, top,
                          right, top,
                          right, bottom,
@@ -217,8 +218,6 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
         region_draw_counter_++;
         if (visible_3d_ && (panel_region_id_3d_ == -1 || region_draw_counter_ == static_cast<unsigned int>(panel_region_id_3d_)))
         {
-            setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
-
             drawTexture(gauge_texture_, left_3d_, top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_);
 
             if (copy_top_3d_ > -1 && copy_left_3d_ > -1)
@@ -266,17 +265,16 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
-    bindTex(gauge_texture_,0);
-
     if (visible_2d_)
     {
         int left, top, right, bottom;
         XPLMGetWindowGeometry(window2d_id_, &left, &top, &right, &bottom);
 
-        setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
+        if (frameIsBackground())
+            drawFrameTexture(left, top, right, bottom);
         drawTexture(gauge_texture_, left+frame_off_x_, top-frame_off_y_, left+frame_off_x_+width_view_3d_, top -frame_off_y_-height_view_3d_);
-
-        drawFrameTexture(left, top, right, bottom);
+        if (!frameIsBackground())
+            drawFrameTexture(left, top, right, bottom);
 
         if (window_has_keyboard_focus_)
         {
@@ -432,12 +430,16 @@ void OverlayGauge::drawFrameTexture(int left, int top, int right, int bottom)
     int tex_id = frameTextureId();
     if (tex_id > 0)
     {
-        setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
         drawTexture(tex_id, left, top, right, bottom);
     }
 }
 
 bool OverlayGauge::wantClearTexture()
+{
+    return false;
+}
+
+bool OverlayGauge::frameIsBackground()
 {
     return false;
 }

@@ -61,6 +61,7 @@ public:
     virtual int  frameTextureId() const;
     virtual void drawFrameTexture(int, int, int, int);
     virtual bool wantClearTexture();
+    virtual bool frameIsBackground();
 
     static int draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
