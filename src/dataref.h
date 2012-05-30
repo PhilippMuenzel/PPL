@@ -124,6 +124,12 @@ public:
       */
     DataRef(const std::string& identifier, RWType writeability = ReadOnly, bool share = false);
 
+
+    /**
+     * unshare dataref if it was created as shared
+     */
+    ~DataRef();
+
     /**
       * read the current value from X-Plane's plugin system
       */
@@ -152,6 +158,8 @@ private:
 
     void shareDataRef(const std::string& identifier);
 
+    void unshareData();
+
     void lookUp(const std::string& identifier);
 
     void checkWriteabilityIsValid();
@@ -164,6 +172,8 @@ private:
     XPLMDataRef m_data_ref; //!< opaque handle to X-Plane's data
     RWType m_read_write;    //!< is the data required to be write- or readable
     SimType m_history;      //!< stores the last value to detect changes
+    bool shared_;
+    std::string identifier_;
 };
 
 
@@ -176,11 +186,13 @@ DataRef<SimType>::DataRef(const std::string& identifier,
                           RWType writeability,
                           bool share):
     m_data_ref(0),
-    m_read_write(writeability)
+    m_read_write(writeability),
+    shared_(false),
+    identifier_(identifier)
 {
     try
     {
-        if (share)
+        if (share && XPLMFindDataRef(identifier.c_str()) == 0)
             shareDataRef(identifier);
         lookUp(identifier);
         checkDataType();
@@ -194,6 +206,13 @@ DataRef<SimType>::DataRef(const std::string& identifier,
     }
 }
 
+
+template <typename SimType>
+DataRef<SimType>::~DataRef()
+{
+    if (shared_)
+        unshareData();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -262,6 +281,25 @@ template<>
 void DataRef<std::vector<float> >::shareDataRef(const std::string&);
 template<>
 void DataRef<std::string>::shareDataRef(const std::string&);
+
+template <typename SimType>
+void DataRef<SimType>::unshareData()
+{
+    throw IncompatibleTypeException("No type defined for sharing data");
+}
+
+template<>
+void DataRef<int>::unshareData();
+template<>
+void DataRef<float>::unshareData();
+template<>
+void DataRef<double>::unshareData();
+template<>
+void DataRef<std::vector<int> >::unshareData();
+template<>
+void DataRef<std::vector<float> >::unshareData();
+template<>
+void DataRef<std::string>::unshareData();
 
 
 ///////////////////////////////////////////////////////////////////////////////

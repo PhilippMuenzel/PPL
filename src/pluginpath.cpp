@@ -5,6 +5,12 @@
 #include <string>
 #include <cstring>
 
+#if APL
+#if defined(__MACH__)
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+#endif
+
 #include "XPLMUtilities.h"
 #include "XPLMPlanes.h"
 

@@ -7,11 +7,6 @@
 
 #include <string>
 #include <stdexcept>
-#if APL
-#if defined(__MACH__)
-#include <CoreFoundation/CoreFoundation.h>
-#endif
-#endif
 
 #include "namespaces.h"
 

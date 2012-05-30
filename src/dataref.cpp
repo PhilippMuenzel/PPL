@@ -17,6 +17,7 @@ void DataRef<int>::shareDataRef(const std::string& identifier)
     int success = XPLMShareData(identifier.c_str(), xplmType_Int, 0, 0);
     if (!success)
         throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
+    shared_ = true;
 }
 
 template<>
@@ -25,6 +26,7 @@ void DataRef<float>::shareDataRef(const std::string& identifier)
     int success = XPLMShareData(identifier.c_str(), xplmType_Float, 0, 0);
     if (!success)
         throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
+    shared_ = true;
 }
 
 template<>
@@ -33,6 +35,7 @@ void DataRef<double>::shareDataRef(const std::string& identifier)
     int success = XPLMShareData(identifier.c_str(), xplmType_Double, 0, 0);
     if (!success)
         throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
+    shared_ = true;
 }
 
 template<>
@@ -41,6 +44,7 @@ void DataRef<std::vector<int> >::shareDataRef(const std::string& identifier)
     int success = XPLMShareData(identifier.c_str(), xplmType_IntArray, 0, 0);
     if (!success)
         throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
+    shared_ = true;
 }
 
 template<>
@@ -49,6 +53,7 @@ void DataRef<std::vector<float> >::shareDataRef(const std::string& identifier)
     int success = XPLMShareData(identifier.c_str(), xplmType_FloatArray, 0, 0);
     if (!success)
         throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
+    shared_ = true;
 }
 
 template<>
@@ -57,7 +62,45 @@ void DataRef<std::string>::shareDataRef(const std::string& identifier)
     int success = XPLMShareData(identifier.c_str(), xplmType_Data, 0, 0);
     if (!success)
         throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
+    shared_ = true;
 }
+
+template<>
+void DataRef<int>::unshareData()
+{
+    XPLMUnshareData(identifier_.c_str(), xplmType_Int, 0, 0);
+}
+
+template<>
+void DataRef<float>::unshareData()
+{
+    XPLMUnshareData(identifier_.c_str(), xplmType_Float, 0, 0);
+}
+
+template<>
+void DataRef<double>::unshareData()
+{
+    XPLMUnshareData(identifier_.c_str(), xplmType_Double, 0, 0);
+}
+
+template<>
+void DataRef<std::vector<int> >::unshareData()
+{
+    XPLMUnshareData(identifier_.c_str(), xplmType_IntArray, 0, 0);
+}
+
+template<>
+void DataRef<std::vector<float> >::unshareData()
+{
+    XPLMUnshareData(identifier_.c_str(), xplmType_FloatArray, 0, 0);
+}
+
+template<>
+void DataRef<std::string>::unshareData()
+{
+    XPLMUnshareData(identifier_.c_str(), xplmType_Data, 0, 0);
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
