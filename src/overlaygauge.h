@@ -90,7 +90,7 @@ public:
     void generateTex(int* tex_id, int number_of_textures);
 
     static bool coordInRect(float x, float y, float l, float t, float r, float b);
-    void drawTexture(int tex_id, int left, int top, int right, int bottom);
+    void drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha = 1);
 
 private:
     XPLMWindowID window2d_id_;
@@ -117,6 +117,8 @@ private:
     DataRef<int> view_type_;
     DataRef<float> click_3d_x_;
     DataRef<float> click_3d_y_;
+    DataRef<std::vector<float> > instrument_brightness_;
+    float alpha_;
     int panel_region_id_3d_;
     unsigned int region_draw_counter_;
     bool window_is_dragging_;

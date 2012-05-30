@@ -36,6 +36,8 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     view_type_("sim/graphics/view/view_type"),
     click_3d_x_("sim/graphics/view/click_3d_x_pixels"),
     click_3d_y_("sim/graphics/view/click_3d_y_pixels"),
+    instrument_brightness_("sim/cockpit2/switches/instrument_brightness_ratio"),
+    alpha_(1),
     panel_region_id_3d_(textureId3d),
     region_draw_counter_(0),
     window_is_dragging_(false),
@@ -180,17 +182,17 @@ void OverlayGauge::frame()
     region_draw_counter_ = 0;
 }
 
-void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bottom)
+void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha)
 {
     setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 1/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
     GLfloat vertices[] = { left, top,
                          right, top,
                          right, bottom,
                          left, bottom };
-    GLfloat colors[] = { 1,1,1,1,
-                       1,1,1,1,
-                       1,1,1,1,
-                       1,1,1,1 };
+    GLfloat colors[] = { 1,1,1,alpha,
+                       1,1,1,alpha,
+                       1,1,1,alpha,
+                       1,1,1,alpha };
     GLfloat tex_coords[] = { 0, 1,
                            1, 1,
                            1, 0,
@@ -218,11 +220,11 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
         region_draw_counter_++;
         if (visible_3d_ && (panel_region_id_3d_ == -1 || region_draw_counter_ == static_cast<unsigned int>(panel_region_id_3d_)))
         {
-            drawTexture(gauge_texture_, left_3d_, top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_);
+            drawTexture(gauge_texture_, left_3d_, top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_, alpha_);
 
             if (copy_top_3d_ > -1 && copy_left_3d_ > -1)
             {
-                drawTexture(gauge_texture_, copy_left_3d_, copy_top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_);
+                drawTexture(gauge_texture_, copy_left_3d_, copy_top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_, alpha_);
             }
         }
     }
@@ -231,6 +233,7 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 
 void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
 {
+    alpha_ = instrument_brightness_[0];
     if (wantRedraw())
     {
         // set rendering destination to FBO
@@ -272,7 +275,7 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
 
         if (frameIsBackground())
             drawFrameTexture(left, top, right, bottom);
-        drawTexture(gauge_texture_, left+frame_off_x_, top-frame_off_y_, left+frame_off_x_+width_view_3d_, top -frame_off_y_-height_view_3d_);
+        drawTexture(gauge_texture_, left+frame_off_x_, top-frame_off_y_, left+frame_off_x_+width_view_3d_, top -frame_off_y_-height_view_3d_, alpha_);
         if (!frameIsBackground())
             drawFrameTexture(left, top, right, bottom);
 
