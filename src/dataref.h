@@ -138,12 +138,26 @@ public:
     /**
       * write value to X-Plane
       */
-    const DataRef& operator=(const SimType&);
+    const DataRef& operator=(const SimType& rhs);
 
+    /**
+      * read value from other dataref and write it to this dataref
+      */
+    const DataRef& operator=(const DataRef& rhs);
+
+    /**
+     * @return does the actual value differ from the last history value
+     */
     bool hasChanged() const;
 
+    /**
+     * save the actual value to the history
+     */
     void save();
 
+    /**
+     * overwrite the actual value with the last history value
+     */
     void undo();
 
     /**
@@ -212,6 +226,12 @@ DataRef<SimType>::~DataRef()
 {
     if (shared_)
         unshareData();
+}
+
+template <typename SimType>
+const DataRef<SimType>& DataRef<SimType>::operator=(const DataRef<SimType>& rhs)
+{
+    operator=(SimType(rhs));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
