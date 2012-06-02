@@ -10,11 +10,17 @@
 #include <stdexcept>
 
 #include "XPLMDataAccess.h"
+#include "XPLMPlugin.h"
 
 #include "log.h"
 #include "namespaces.h"
 
 namespace PPLNAMESPACE {
+
+
+const long DRE_MSG_ADD_DATAREF = 0x01000000;
+const char* const DRE_PLUGIN_SINATURE = "xplanesdk.examples.DataRefEditor";
+
 
 /**
   * @brief RWType distinguishes the three types of acess to datarefs.
@@ -122,7 +128,7 @@ public:
       * b) Data type is invalid (trying to access an int DataRef through float functions
       * c) data was requested to be writeable, but X-Plane says it is read-only
       */
-    DataRef(const std::string& identifier, RWType writeability = ReadOnly, bool share = false);
+    DataRef(const std::string& identifier, RWType writeability = ReadOnly, bool share = false, bool publish_in_dre = false);
 
 
     /**
@@ -170,7 +176,9 @@ public:
 
 private:
 
-    void shareDataRef(const std::string& identifier);
+    void shareDataRef(const std::string& identifier, bool publish_in_dre);
+
+    void publishInDRE();
 
     void unshareData();
 
@@ -198,7 +206,8 @@ private:
 template <typename SimType>
 DataRef<SimType>::DataRef(const std::string& identifier,
                           RWType writeability,
-                          bool share):
+                          bool share,
+                          bool publish_in_dre):
     m_data_ref(0),
     m_read_write(writeability),
     shared_(false),
@@ -207,7 +216,7 @@ DataRef<SimType>::DataRef(const std::string& identifier,
     try
     {
         if (share && XPLMFindDataRef(identifier.c_str()) == 0)
-            shareDataRef(identifier);
+            shareDataRef(identifier, publish_in_dre);
         lookUp(identifier);
         checkDataType();
         checkWriteabilityIsValid();
@@ -284,23 +293,23 @@ void DataRef<SimType>::undo()
 ///////////////////////////////////////////////////////////////////////////////
 
 template <typename SimType>
-void DataRef<SimType>::shareDataRef(const std::string&)
+void DataRef<SimType>::shareDataRef(const std::string&, bool)
 {
     throw IncompatibleTypeException("No type defined for sharing data");
 }
 
 template<>
-void DataRef<int>::shareDataRef(const std::string&);
+void DataRef<int>::shareDataRef(const std::string&, bool publish_in_dre);
 template<>
-void DataRef<float>::shareDataRef(const std::string&);
+void DataRef<float>::shareDataRef(const std::string&, bool publish_in_dre);
 template<>
-void DataRef<double>::shareDataRef(const std::string&);
+void DataRef<double>::shareDataRef(const std::string&, bool publish_in_dre);
 template<>
-void DataRef<std::vector<int> >::shareDataRef(const std::string&);
+void DataRef<std::vector<int> >::shareDataRef(const std::string&, bool publish_in_dre);
 template<>
-void DataRef<std::vector<float> >::shareDataRef(const std::string&);
+void DataRef<std::vector<float> >::shareDataRef(const std::string&, bool publish_in_dre);
 template<>
-void DataRef<std::string>::shareDataRef(const std::string&);
+void DataRef<std::string>::shareDataRef(const std::string&, bool publish_in_dre);
 
 template <typename SimType>
 void DataRef<SimType>::unshareData()
@@ -320,6 +329,14 @@ template<>
 void DataRef<std::vector<float> >::unshareData();
 template<>
 void DataRef<std::string>::unshareData();
+
+template <typename SimType>
+void DataRef<SimType>::publishInDRE()
+{
+    XPLMPluginID PluginID = XPLMFindPluginBySignature(DRE_PLUGIN_SINATURE);
+    if (PluginID != XPLM_NO_PLUGIN_ID)
+        XPLMSendMessageToPlugin(PluginID, DRE_MSG_ADD_DATAREF, (void*)identifier_.c_str());
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////

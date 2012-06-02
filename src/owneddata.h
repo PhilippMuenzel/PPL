@@ -10,7 +10,6 @@
 #include <stdexcept>
 
 #include "XPLMDataAccess.h"
-#include "XPLMPlugin.h"
 
 #include "dataref.h"
 #include "namespaces.h"
@@ -34,10 +33,6 @@ public:
         std::runtime_error(msg)
     {}
 };
-
-const long DRE_MSG_ADD_DATAREF = 0x01000000;
-const char* const DRE_PLUGIN_SINATURE = "xplanesdk.examples.DataRefEditor";
-
 
 /**
   * Data owned by the plugin and published as a XPLM DataRef.
