@@ -21,7 +21,7 @@
  *
  */
 
-#include "FontMgr.h"
+#include "fontmgr.h"
 #include <math.h>
 #include <cassert>
 
@@ -161,7 +161,7 @@ FontMgr::~FontMgr()
     assert(!FT_Done_FreeType(library_));
 }
 
-FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, const char * inEndMem, unsigned int inSizePx, bool require_exact)
+FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, const char * /*inEndMem*/, unsigned int inSizePx, bool require_exact)
 {
     // First see if we've used this font before
     if(tex_map_.count(inFontPath))
@@ -293,9 +293,9 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     // Ben sez: use nearest neighbor for exact-size fonts...pixel accurate!
     // Use linear for scaled fonts....less artifacts when we scale.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, require_exact ? GL_NEAREST : GL_LINEAR);
-    int error = glGetError();
+    /*int error = */glGetError();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, require_exact ? GL_NEAREST : GL_LINEAR_MIPMAP_LINEAR);
-    error = glGetError();
+    /*error = */glGetError();
 
     delete[] textureData;
 
