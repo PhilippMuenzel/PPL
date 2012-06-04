@@ -21,7 +21,7 @@
  *
  */
 
-#include "FontMgr.h"
+#include "fontmgr.h"
 #include <math.h>
 #include <cassert>
 
@@ -148,7 +148,8 @@ FontMgr::FontMgr()
 {
 
     // Start an instance of the FreeType Library
-    assert(!FT_Init_FreeType(&library_));
+    int test = !FT_Init_FreeType(&library_);
+    assert(test);
 }
 
 FontMgr::~FontMgr()
@@ -158,7 +159,8 @@ FontMgr::~FontMgr()
         unloadFont((*(tex_map_.begin())).second);
 
     // Shutdown freetype now
-    assert(!FT_Done_FreeType(library_));
+    int test = !FT_Done_FreeType(library_);
+    assert(test);
 }
 
 FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, const char * inEndMem, unsigned int inSizePx, bool require_exact)
@@ -189,9 +191,18 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     FontHandle		info = new FontInfo_t;
     FT_GlyphSlot	glyph;
 
-    if (inStartMem)	assert(!FT_New_Memory_Face(library_, (const FT_Byte*) inStartMem, inEndMem - inStartMem, FM_DEFAULT_FACE_INDEX, &face));
-    else			assert(!FT_New_Face(library_, inFontPath, FM_DEFAULT_FACE_INDEX, &face));
-    assert(!FT_Set_Char_Size(face, 0, inSizePx * 64, FM_DEVICE_RES_H, FM_DEVICE_RES_V));
+    if (inStartMem)
+    {
+        int test = !FT_New_Memory_Face(library_, (const FT_Byte*) inStartMem, inEndMem - inStartMem, FM_DEFAULT_FACE_INDEX, &face);
+        assert(test);
+    }
+    else
+    {
+        int test = !FT_New_Face(library_, inFontPath, FM_DEFAULT_FACE_INDEX, &face);
+        assert(test);
+    }
+    int test = !FT_Set_Char_Size(face, 0, inSizePx * 64, FM_DEVICE_RES_H, FM_DEVICE_RES_V);
+    assert(test);
 
     CalcTexSize(&face, &info->tex_height, &info->tex_width);
 
@@ -231,8 +242,10 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
         float width  = glyph->metrics.width  / 64.0;
         float height = glyph->metrics.height / 64.0;
 
-        assert(!(glyph->metrics.width % 64));
-        assert(!(glyph->metrics.height % 64));
+        int test = !(glyph->metrics.width % 64);
+        assert(test);
+        test = !(glyph->metrics.height % 64);
+        assert(test);
 
         if(height > maxHeight)
             maxHeight = height;
@@ -293,9 +306,9 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     // Ben sez: use nearest neighbor for exact-size fonts...pixel accurate!
     // Use linear for scaled fonts....less artifacts when we scale.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, require_exact ? GL_NEAREST : GL_LINEAR);
-    int error = glGetError();
+    /*int error = */glGetError();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, require_exact ? GL_NEAREST : GL_LINEAR_MIPMAP_LINEAR);
-    error = glGetError();
+    /*error = */glGetError();
 
     delete[] textureData;
 
