@@ -240,7 +240,7 @@ DataRef<SimType>::~DataRef()
 template <typename SimType>
 const DataRef<SimType>& DataRef<SimType>::operator=(const DataRef<SimType>& rhs)
 {
-    operator=(SimType(rhs));
+    return operator=(SimType(rhs));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
