@@ -230,7 +230,9 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     float maxHeight = 0;
     float x_off	  = FM_PIX_PADDING / 2.0, y_off	= FM_PIX_PADDING / 2.0;
 
-    for(int n = FM_BASE_ASCII_RANGE; n <= FM_PEAK_ASCII_RANGE; ++n)
+    // PHILIPP SEZ: The range of ARINC739 characters starts 4 characters before the 
+    // ASCII range, and they are needed in X-Plane to display special stuff on the CDU.
+    for(int n = FM_BASE_ASCII_RANGE-4; n <= FM_PEAK_ASCII_RANGE; ++n)
     {
         // If there's no glyph for this font, we have nothing to do
         if(FT_Load_Char(face, n, FT_LOAD_RENDER))
