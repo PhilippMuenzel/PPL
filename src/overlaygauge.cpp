@@ -8,7 +8,7 @@
 #include <cstring>
 #include "XPLMGraphics.h"
 #include "XPLMProcessing.h"
-
+#include "XPLMUtilities.h"
 
 using namespace PPLNAMESPACE;
 
@@ -45,6 +45,11 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     copy_left_3d_(-1),
     copy_top_3d_(-1)
 {
+    int xplm_version;
+    XPLMHostApplicationID host_app;
+    XPLMGetVersions(&xplane_version_, &xplm_version, &host_app);
+    printf("version %d\n", xplane_version_);
+
     if (double_size)
     {
         width_3d_ *= 2;
@@ -89,16 +94,20 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    //glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_3d_, height_3d_, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+    // store whatever rbo and fbo X-Plane is using right now
+    GLint xp_rbo, xp_fbo;
+    glGetIntegerv(GL_RENDERBUFFER_BINDING, &xp_rbo);
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &xp_fbo);
 
     // create a renderbuffer object to store depth info
     glGenRenderbuffersEXT(1, &rbo_);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rbo_);
     glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT,
                              width_3d_, height_3d_);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, xp_rbo);
 
     // create a framebuffer object
     glGenFramebuffersEXT(1, &fbo_);
@@ -118,7 +127,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
         throw std::runtime_error("No possible FBO, sorry");
 
     // switch back to window-system-provided framebuffer
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, xp_fbo);
 
 }
 
@@ -184,7 +193,8 @@ void OverlayGauge::frame()
 
 void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha)
 {
-    setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 1/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
+    setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
+    bindTex(tex_id, 0);
     GLfloat vertices[] = { left, top,
                          right, top,
                          right, bottom,
@@ -197,18 +207,18 @@ void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bot
                            1, 1,
                            1, 0,
                            0, 0 };
-    GLubyte indices[] = {2, 1, 0, 2, 3, 1};
 
-    glEnableClientState(GL_VERTEX_ARRAY);
+    if (xplane_version_ < 10000)
+        glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glVertexPointer(2, GL_FLOAT, 0, vertices);
     glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
     glColorPointer(4, GL_FLOAT, 0, colors);
 
-    bindTex(tex_id, 0);
-    glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_BYTE, indices);
-    glDisableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_QUADS, 0, 4);
+    if (xplane_version_ < 10000)
+        glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
@@ -236,6 +246,8 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
     alpha_ = instrument_brightness_[0];
     if (wantRedraw())
     {
+        GLint xp_fbo;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &xp_fbo);
         // set rendering destination to FBO
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_);
         glPushAttrib(GL_VIEWPORT_BIT);
@@ -256,7 +268,11 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // draw a scene to a texture directly
+        if (xplane_version_ > 10000)
+            glDisableClientState(GL_VERTEX_ARRAY);
         draw(0, height_3d_, width_3d_, 0);
+        if (xplane_version_ > 10000)
+            glEnableClientState(GL_VERTEX_ARRAY);
 
         // unbind FBO
 
@@ -265,7 +281,7 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
         glPopAttrib();
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, xp_fbo);
     }
 
     if (visible_2d_)

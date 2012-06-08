@@ -128,6 +128,7 @@ private:
     GLuint fbo_;
     int copy_left_3d_;
     int copy_top_3d_;
+    int xplane_version_;
 };
 
 }
