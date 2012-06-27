@@ -48,7 +48,6 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     int xplm_version;
     XPLMHostApplicationID host_app;
     XPLMGetVersions(&xplane_version_, &xplm_version, &host_app);
-    printf("version %d\n", xplane_version_);
 
     if (double_size)
     {
