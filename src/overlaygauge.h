@@ -90,7 +90,7 @@ public:
     void generateTex(int* tex_id, int number_of_textures);
 
     static bool coordInRect(float x, float y, float l, float t, float r, float b);
-    void drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha = 1);
+    void drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha = 1, int blend = 1);
 
 private:
     XPLMWindowID window2d_id_;

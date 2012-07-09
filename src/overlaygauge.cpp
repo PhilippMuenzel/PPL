@@ -190,9 +190,9 @@ void OverlayGauge::frame()
     region_draw_counter_ = 0;
 }
 
-void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha)
+void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha, int blend)
 {
-    setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, 1/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
+    setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, blend/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
     bindTex(tex_id, 0);
     GLfloat vertices[] = { left, top,
                          right, top,
@@ -290,7 +290,7 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
 
         if (frameIsBackground())
             drawFrameTexture(left, top, right, bottom);
-        drawTexture(gauge_texture_, left+frame_off_x_, top-frame_off_y_, left+frame_off_x_+width_view_3d_, top -frame_off_y_-height_view_3d_, alpha_);
+        drawTexture(gauge_texture_, left+frame_off_x_, top-frame_off_y_, left+frame_off_x_+width_view_3d_, top -frame_off_y_-height_view_3d_, alpha_, (frameIsBackground() || wantClearTexture()));
         if (!frameIsBackground())
             drawFrameTexture(left, top, right, bottom);
 
