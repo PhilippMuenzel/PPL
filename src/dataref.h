@@ -82,23 +82,26 @@ public:
 };
 
 template <typename T>
-struct basic_trait {
-    typedef T Basic;
+struct dataref_trait {
+    typedef T BasicType;
 };
 
 template<>
-struct basic_trait<std::vector<float> > {
-    typedef float Basic;
+struct dataref_trait<std::vector<float> > {
+    typedef float BasicType;
+    mutable std::vector<float> cache_;
 };
 
 template<>
-struct basic_trait<std::vector<int> > {
-    typedef int Basic;
+struct dataref_trait<std::vector<int> > {
+    typedef int BasicType;
+    mutable std::vector<int> cache_;
 };
 
 template<>
-struct basic_trait<std::string> {
-    typedef char Basic;
+struct dataref_trait<std::string> {
+    typedef char BasicType;
+    mutable std::vector<char> cache_;
 };
 
 /**
@@ -112,7 +115,7 @@ struct basic_trait<std::string> {
  * @version 2.0
  */
 template <typename SimType>
-class DataRef
+class DataRef : public dataref_trait<SimType>
 {
 public:
 
@@ -171,7 +174,7 @@ public:
       * @note is the same as operator SimType() for non-vector data
       * @todo is there a more elegant way to do this?
       */
-    typename basic_trait<SimType>::Basic operator[](std::size_t index) const;
+    typename dataref_trait<SimType>::BasicType operator[](std::size_t index) const;
 
 
 private:
@@ -448,16 +451,16 @@ const DataRef<std::string>& DataRef<std::string>::operator=(const std::string&);
 ///////////////////////////////////////////////////////////////////////////////
 
 template <typename SimType>
-typename basic_trait<SimType>::Basic DataRef<SimType>::operator[](std::size_t) const
+typename dataref_trait<SimType>::BasicType DataRef<SimType>::operator[](std::size_t) const
 {
-    return basic_trait<SimType>::Basic(*this);
+    return dataref_trait<SimType>::BasicType(*this);
 }
 
 template<>
-basic_trait<std::vector<float> >::Basic DataRef<std::vector<float> >::operator[](std::size_t index) const;
+dataref_trait<std::vector<float> >::BasicType DataRef<std::vector<float> >::operator[](std::size_t index) const;
 
 template<>
-basic_trait<std::vector<int> >::Basic DataRef<std::vector<int> >::operator[](std::size_t index) const;
+dataref_trait<std::vector<int> >::BasicType DataRef<std::vector<int> >::operator[](std::size_t index) const;
 
 }
 

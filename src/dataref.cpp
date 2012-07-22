@@ -185,26 +185,25 @@ DataRef<double>::operator double() const
 template <>
 DataRef<std::vector<float> >::operator std::vector<float>() const
 {
-    std::vector<float> values(XPLMGetDatavf(m_data_ref, NULL, 0, 0));
-    XPLMGetDatavf(m_data_ref, &values[0], 0, values.size());
-    return values;
+    cache_.resize(XPLMGetDatavf(m_data_ref, NULL, 0, 0));
+    XPLMGetDatavf(m_data_ref, &cache_[0], 0, cache_.size());
+    return cache_;
 }
 
 template <>
 DataRef<std::vector<int> >::operator std::vector<int>() const
 {
-    std::vector<int> values(XPLMGetDatavi(m_data_ref, NULL, 0, 0));
-    XPLMGetDatavi(m_data_ref, &values[0], 0, values.size());
-    return values;
+    cache_.resize(XPLMGetDatavi(m_data_ref, NULL, 0, 0));
+    XPLMGetDatavi(m_data_ref, &cache_[0], 0, cache_.size());
+    return cache_;
 }
 
 template <>
 DataRef<std::string>::operator std::string() const
 {
-    long n = XPLMGetDatab(m_data_ref, NULL, 0, 0);
-    std::vector<char> out_string(n);
-    XPLMGetDatab(m_data_ref, &out_string[0], 0, n);
-    return std::string(out_string.begin(), out_string.end());
+    cache_.resize(XPLMGetDatab(m_data_ref, NULL, 0, 0));
+    XPLMGetDatab(m_data_ref, &cache_[0], 0, cache_.size());
+    return std::string(cache_.begin(), cache_.end());
 }
 
 
@@ -264,14 +263,14 @@ const DataRef<std::string>& DataRef<std::string>::operator=(const std::string& v
 ///////////////////////////////////////////////////////////////////////////////
 
 template<>
-basic_trait<std::vector<float> >::Basic DataRef<std::vector<float> >::operator[](std::size_t index) const
+dataref_trait<std::vector<float> >::BasicType DataRef<std::vector<float> >::operator[](std::size_t index) const
 {
     std::vector<float> vf(*this);
     return vf[index];
 }
 
 template<>
-basic_trait<std::vector<int> >::Basic DataRef<std::vector<int> >::operator[](std::size_t index) const
+dataref_trait<std::vector<int> >::BasicType DataRef<std::vector<int> >::operator[](std::size_t index) const
 {
     std::vector<int> vi(*this);
     return vi[index];
