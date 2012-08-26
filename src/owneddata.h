@@ -59,7 +59,7 @@ public:
       */
     OwnedData(const std::string& identifier,
               RWType read_write = ReadOnly,
-              bool publish_in_dre = true,
+              bool publish_in_dre = false,
               DataCallback_f callback = 0):
         m_data_ref_identifier(identifier),
         m_data_ref(0),
@@ -80,7 +80,7 @@ public:
         }
         if (publish_in_dre)
         {
-            XPLMPluginID PluginID = XPLMFindPluginBySignature(DRE_PLUGIN_SINATURE);
+            XPLMPluginID PluginID = XPLMFindPluginBySignature("xplanesdk.examples.DataRefEditor");
             if (PluginID != XPLM_NO_PLUGIN_ID)
                 XPLMSendMessageToPlugin(PluginID, DRE_MSG_ADD_DATAREF, (void*)m_data_ref_identifier.c_str());
         }
