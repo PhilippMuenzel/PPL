@@ -45,6 +45,12 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     copy_left_3d_(-1),
     copy_top_3d_(-1)
 {
+    // sim/graphics/view/panel_render_type
+    // debug/texture_browser
+    // panel texture
+    // 0 - 0 = Attr_cockpit
+    // atr_cockpit_Region albedo
+    //  attr_cockpit_Region emissive
     int xplm_version;
     XPLMHostApplicationID host_app;
     XPLMGetVersions(&xplane_version_, &xplm_version, &host_app);

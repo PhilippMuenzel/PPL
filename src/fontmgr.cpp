@@ -150,6 +150,7 @@ FontMgr::FontMgr()
     // Start an instance of the FreeType Library
     int test = !FT_Init_FreeType(&library_);
     assert(test);
+    (void)test;
 }
 
 FontMgr::~FontMgr()
@@ -161,6 +162,7 @@ FontMgr::~FontMgr()
     // Shutdown freetype now
     int test = !FT_Done_FreeType(library_);
     assert(test);
+    (void)test;
 }
 
 FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, const char * inEndMem, unsigned int inSizePx, bool require_exact)
@@ -195,14 +197,17 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     {
         int test = !FT_New_Memory_Face(library_, (const FT_Byte*) inStartMem, inEndMem - inStartMem, FM_DEFAULT_FACE_INDEX, &face);
         assert(test);
+        (void)test;
     }
     else
     {
         int test = !FT_New_Face(library_, inFontPath, FM_DEFAULT_FACE_INDEX, &face);
         assert(test);
+        (void)test;
     }
     int test = !FT_Set_Char_Size(face, 0, inSizePx * 64, FM_DEVICE_RES_H, FM_DEVICE_RES_V);
     assert(test);
+    (void)test;
 
     CalcTexSize(&face, &info->tex_height, &info->tex_width);
 
@@ -230,7 +235,7 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     float maxHeight = 0;
     float x_off	  = FM_PIX_PADDING / 2.0, y_off	= FM_PIX_PADDING / 2.0;
 
-    // PHILIPP SEZ: The range of ARINC739 characters starts 4 characters before the 
+    // PHILIPP SEZ: The range of ARINC739 characters starts 4 characters before the
     // ASCII range, and they are needed in X-Plane to display special stuff on the CDU.
     for(int n = FM_BASE_ASCII_RANGE-4; n <= FM_PEAK_ASCII_RANGE; ++n)
     {
