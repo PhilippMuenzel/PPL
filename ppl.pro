@@ -52,8 +52,8 @@ win32 {
 
 unix:!macx {
     DEFINES += APL=0 IBM=0 LIN=1 HAVE_TR1
-    QMAKE_CXXFLAGS += -Werror -Wall -Wextra -Wfloat-equal -pedantic
-    QMAKE_CXXFLAGS += -fvisibility=hidden
+    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -pedantic
+    QMAKE_CXXFLAGS += -fvisibility=hidden -fno-stack-protector
 }
 
 CONFIG( debug, debug|release ) {
@@ -114,7 +114,7 @@ withfreetype {
         INCLUDEPATH += include include/freetype2
     }
     unix:!macx {
-        INCLUDEPATH += /usr/include/freetype2
+        INCLUDEPATH += /usr/local/include/freetype2
     }
     macx {
         INCLUDEPATH += /usr/local/include/freetype2
