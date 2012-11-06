@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <cstdio>
+#include <stdint.h>
 
 #include "alsoundbuffer.h"
 
@@ -137,14 +138,14 @@ bool ALSoundBuffer::isPlaying() const
 }
 
 namespace PPLNAMESPACE {
-static unsigned short readByte16(const unsigned char buffer[2]) {
+static uint16_t readByte16(const unsigned char buffer[2]) {
 #if APL && defined(__ppc__)
     return (buffer[0] << 8) + buffer[1];
 #else
     return (buffer[1] << 8) + buffer[0];
 #endif
 }
-static unsigned long readByte32(const unsigned char buffer[4]) {
+static uint32_t readByte32(const unsigned char buffer[4]) {
 #if APL && defined(__ppc__)
     return (buffer[0] << 24) + (buffer[1] << 16) + (buffer[2] << 8) + buffer[3];
 #else
@@ -211,26 +212,26 @@ ALuint PPL::LoadWav(const std::string& fileName) {
         // read (1)'s size
         if(fread(buffer32,4,1,f) != 1)
             throw ALSoundBuffer::SoundBufferError("LoadWav: Cannot read wav file "+ fileName );
-        unsigned long subChunk1Size = readByte32(buffer32);
+        uint32_t subChunk1Size = readByte32(buffer32);
         if (subChunk1Size < 16)
             throw ALSoundBuffer::SoundBufferError("Wrong wav file format. This file is not a .wav file ('fmt ' chunk too small, truncated file?): "+ fileName );
 
         // check PCM audio format
         if(fread(buffer16,2,1,f) != 1)
             throw ALSoundBuffer::SoundBufferError("LoadWav: Cannot read wav file "+ fileName );
-        unsigned short audioFormat = readByte16(buffer16);
+        uint16_t audioFormat = readByte16(buffer16);
         if (audioFormat != 1)
             throw ALSoundBuffer::SoundBufferError("LoadWav: Wrong wav file format. This file is not a .wav file (audio format is not PCM): "+ fileName );
 
         // read number of channels
         if(fread(buffer16,2,1,f) != 1)
             throw ALSoundBuffer::SoundBufferError("LoadWav: Cannot read wav file "+ fileName );
-        unsigned short channels = readByte16(buffer16);
+        uint16_t channels = readByte16(buffer16);
 
         // read frequency (sample rate)
         if (fread(buffer32,4,1,f) != 1)
             throw ALSoundBuffer::SoundBufferError("LoadWav: Cannot read wav file "+ fileName );
-        unsigned long frequency = readByte32(buffer32);
+        uint32_t frequency = readByte32(buffer32);
 
         // skip 6 bytes (Byte rate (4), Block align (2))
         fseek(f,6,SEEK_CUR);
@@ -238,7 +239,7 @@ ALuint PPL::LoadWav(const std::string& fileName) {
         // read bits per sample
         if(fread(buffer16,2,1,f) != 1)
             throw ALSoundBuffer::SoundBufferError("LoadWav: Cannot read wav file "+ fileName );
-        unsigned short bps = readByte16(buffer16);
+        uint16_t bps = readByte16(buffer16);
 
         if (channels == 1)
             format = (bps == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
@@ -253,7 +254,7 @@ ALuint PPL::LoadWav(const std::string& fileName) {
 
         if(fread(buffer32,4,1,f) != 1)
             throw ALSoundBuffer::SoundBufferError("LoadWav: Cannot read wav file "+ fileName );
-        unsigned long subChunk2Size = readByte32(buffer32);
+        uint32_t subChunk2Size = readByte32(buffer32);
 
         // The frequency of the sampling rate
         freq = frequency;
