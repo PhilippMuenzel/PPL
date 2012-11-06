@@ -251,6 +251,7 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
 
         int test = !(glyph->metrics.width % 64);
         assert(test);
+        (void)test;
         test = !(glyph->metrics.height % 64);
         assert(test);
 
