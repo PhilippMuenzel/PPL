@@ -14,103 +14,74 @@ using namespace PPLNAMESPACE;
 template<>
 void DataRef<int>::shareDataRef(const std::string& identifier, bool publish_in_dre)
 {
-    int success = XPLMShareData(identifier.c_str(), xplmType_Int, 0, 0);
-    if (!success)
-        throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
-    shared_ = true;
-    if (publish_in_dre)
-        publishInDRE();
+    share(XPLMShareData(identifier.c_str(), xplmType_Int, NotifactionFunc, this), publish_in_dre);
 }
 
 template<>
 void DataRef<float>::shareDataRef(const std::string& identifier, bool publish_in_dre)
 {
-    int success = XPLMShareData(identifier.c_str(), xplmType_Float, 0, 0);
-    if (!success)
-        throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
-    shared_ = true;
-    if (publish_in_dre)
-        publishInDRE();
+   share(XPLMShareData(identifier.c_str(), xplmType_Float, NotifactionFunc, this), publish_in_dre);
+
 }
 
 template<>
 void DataRef<double>::shareDataRef(const std::string& identifier, bool publish_in_dre)
 {
-    int success = XPLMShareData(identifier.c_str(), xplmType_Double, 0, 0);
-    if (!success)
-        throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
-    shared_ = true;
-    if (publish_in_dre)
-        publishInDRE();
+    share(XPLMShareData(identifier.c_str(), xplmType_Double, NotifactionFunc, this), publish_in_dre);
 }
 
 template<>
 void DataRef<std::vector<int> >::shareDataRef(const std::string& identifier, bool publish_in_dre)
 {
-    int success = XPLMShareData(identifier.c_str(), xplmType_IntArray, 0, 0);
-    if (!success)
-        throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
-    shared_ = true;
-    if (publish_in_dre)
-        publishInDRE();
+    share(XPLMShareData(identifier.c_str(), xplmType_IntArray, NotifactionFunc, this), publish_in_dre);
 }
 
 template<>
 void DataRef<std::vector<float> >::shareDataRef(const std::string& identifier, bool publish_in_dre)
 {
-    int success = XPLMShareData(identifier.c_str(), xplmType_FloatArray, 0, 0);
-    if (!success)
-        throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
-    shared_ = true;
-    if (publish_in_dre)
-        publishInDRE();
+    share(XPLMShareData(identifier.c_str(), xplmType_FloatArray, NotifactionFunc, this), publish_in_dre);
 }
 
 template<>
 void DataRef<std::string>::shareDataRef(const std::string& identifier, bool publish_in_dre)
 {
-    int success = XPLMShareData(identifier.c_str(), xplmType_Data, 0, 0);
-    if (!success)
-        throw IncompatibleTypeException("Could not share data, type mismatch with already existing data");
-    shared_ = true;
-    if (publish_in_dre)
-        publishInDRE();
+    share(XPLMShareData(identifier.c_str(), xplmType_Data, NotifactionFunc, this), publish_in_dre);
 }
 
 template<>
 void DataRef<int>::unshareData()
 {
-    XPLMUnshareData(identifier_.c_str(), xplmType_Int, 0, 0);
+    XPLMUnshareData(identifier_.c_str(), xplmType_Int, NotifactionFunc, this);
 }
 
 template<>
 void DataRef<float>::unshareData()
 {
-    XPLMUnshareData(identifier_.c_str(), xplmType_Float, 0, 0);
+    XPLMUnshareData(identifier_.c_str(), xplmType_Float, NotifactionFunc, this);
 }
 
 template<>
 void DataRef<double>::unshareData()
 {
-    XPLMUnshareData(identifier_.c_str(), xplmType_Double, 0, 0);
+    XPLMUnshareData(identifier_.c_str(), xplmType_Double, NotifactionFunc, this);
 }
 
 template<>
 void DataRef<std::vector<int> >::unshareData()
 {
-    XPLMUnshareData(identifier_.c_str(), xplmType_IntArray, 0, 0);
+    XPLMUnshareData(identifier_.c_str(), xplmType_IntArray, NotifactionFunc, this);
 }
 
 template<>
 void DataRef<std::vector<float> >::unshareData()
 {
-    XPLMUnshareData(identifier_.c_str(), xplmType_FloatArray, 0, 0);
+    XPLMUnshareData(identifier_.c_str(), xplmType_FloatArray, NotifactionFunc, this);
 }
 
 template<>
 void DataRef<std::string>::unshareData()
 {
-    XPLMUnshareData(identifier_.c_str(), xplmType_Data, 0, 0);
+    XPLMUnshareData(identifier_.c_str(), xplmType_Data, NotifactionFunc, this);
 }
 
 
@@ -123,42 +94,42 @@ template <>
 void DataRef<int>::checkDataType()
 {
     if ( XPLMGetDataRefTypes(m_data_ref) != xplmType_Int )
-        throw IncompatibleTypeException("Declared to be int, but isn't.");
+        throw IncompatibleTypeException(identifier_ + "declared to be int, but isn't.");
 }
 
 template <>
 void DataRef<float>::checkDataType()
 {
     if ( XPLMGetDataRefTypes(m_data_ref) != xplmType_Float )
-        throw IncompatibleTypeException("Declared to be float, but isn't.");
+        throw IncompatibleTypeException(identifier_ + "declared to be float, but isn't.");
 }
 
 template <>
 void DataRef<double>::checkDataType()
 {
     if ( XPLMGetDataRefTypes(m_data_ref) != (xplmType_Float | xplmType_Double) )
-        throw IncompatibleTypeException("Declared to be double, but isn't.");
+        throw IncompatibleTypeException(identifier_ + "declared to be double, but isn't.");
 }
 
 template <>
 void DataRef<std::vector<float> >::checkDataType()
 {
     if (XPLMGetDataRefTypes(m_data_ref) != xplmType_FloatArray)
-        throw IncompatibleTypeException("Declared to be a float array, but isn't.");
+        throw IncompatibleTypeException(identifier_ + "declared to be a float array, but isn't.");
 }
 
 template <>
 void DataRef<std::vector<int> >::checkDataType()
 {
     if (XPLMGetDataRefTypes(m_data_ref) != xplmType_IntArray)
-        throw IncompatibleTypeException("Declared to be a int array, but isn't.");
+        throw IncompatibleTypeException(identifier_ + "declared to be a int array, but isn't.");
 }
 
 template <>
 void DataRef<std::string>::checkDataType()
 {
     if (XPLMGetDataRefTypes(m_data_ref) != xplmType_Data)
-        throw IncompatibleTypeException("Declared to be a byte array, but isn't.");
+        throw IncompatibleTypeException(identifier_ + "declared to be a byte array, but isn't.");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
