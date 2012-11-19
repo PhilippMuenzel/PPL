@@ -28,7 +28,7 @@ standalone {
 
 macx {
     DEFINES += APL=1 IBM=0 LIN=0
-    QMAKE_CXXFLAGS += -Werror -Wall -Wextra -Wfloat-equal -pedantic
+    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -pedantic
 
     # Build for multiple architectures.
     # The following line is only needed to build universal on PPC architectures.
@@ -126,7 +126,7 @@ withfreetype {
 
 withserialization {
     win32 {
-        INCLUDEPATH += C:\\Boost\\include\\boost-1_47
+        INCLUDEPATH += C:\\Boost\\include\\boost-1_52
     }
     unix:!macx {
         INCLUDEPATH += /usr/local/include/
@@ -139,4 +139,3 @@ withserialization {
     SOURCES += src/sharedobject.cpp
 
 }
-

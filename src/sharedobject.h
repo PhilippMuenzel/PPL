@@ -34,7 +34,7 @@ public:
     void load()
     {
         try {
-            std::istringstream in_stream(std::string(dataref_));
+            std::istringstream in_stream(dataref_);
             boost::archive::binary_iarchive in_archive(in_stream);
             in_archive >> BOOST_SERIALIZATION_NVP(object_);
         } catch (boost::archive::archive_exception&ex) {
