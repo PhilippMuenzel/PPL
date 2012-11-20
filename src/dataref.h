@@ -137,7 +137,7 @@ public:
     /**
      * unshare dataref if it was created as shared
      */
-    ~DataRef();
+    virtual ~DataRef();
 
     /**
       * read the current value from X-Plane's plugin system
