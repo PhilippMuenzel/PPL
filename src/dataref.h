@@ -115,7 +115,7 @@ struct dataref_trait<std::string> {
  * @version 2.0
  */
 template <typename SimType>
-class DataRef : public dataref_trait<SimType>
+class DataRef : private dataref_trait<SimType>
 {
 public:
 
@@ -137,7 +137,7 @@ public:
     /**
      * unshare dataref if it was created as shared
      */
-    ~DataRef();
+    virtual ~DataRef();
 
     /**
       * read the current value from X-Plane's plugin system
@@ -176,12 +176,23 @@ public:
       */
     typename dataref_trait<SimType>::BasicType operator[](std::size_t index) const;
 
+    void notify() { doNotify(); }
+
+    std::string name() const { return identifier_; }
 
 private:
+
+    static void NotifactionFunc(void* refcon)
+    {
+        DataRef* self = static_cast<DataRef*>(refcon);
+        self->notify();
+    }
 
     void shareDataRef(const std::string& identifier, bool publish_in_dre);
 
     void publishInDRE();
+
+    void share(int success, bool publish_in_dre);
 
     void unshareData();
 
@@ -192,6 +203,8 @@ private:
     void checkDataType();
 
     void logErrorWithDataRef(const std::string& error_msg, const std::string& dataref_identifier);
+
+    virtual void doNotify() {}
 
 private:
     XPLMDataRef m_data_ref; //!< opaque handle to X-Plane's data
@@ -318,6 +331,16 @@ template <typename SimType>
 void DataRef<SimType>::unshareData()
 {
     throw IncompatibleTypeException("No type defined for sharing data");
+}
+
+template <typename SimType>
+void DataRef<SimType>::share(int success, bool publish_in_dre)
+{
+    if (!success)
+        throw IncompatibleTypeException("Could not share data "+identifier_+" type mismatch with already existing data.");
+    shared_ = true;
+    if (publish_in_dre)
+        publishInDRE();
 }
 
 template<>

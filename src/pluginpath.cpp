@@ -25,6 +25,9 @@ std::string PluginPath::plugin_directory = "";
 
 std::string PluginPath::prependXPlanePath(const std::string& file)
 {
+#ifdef BUILD_FOR_STANDALONE
+    return file;
+#else
     char path[512];
     XPLMGetSystemPath(path);
     std::string absolute_path(path);
@@ -37,6 +40,7 @@ std::string PluginPath::prependXPlanePath(const std::string& file)
 #endif
     absolute_path.append(file);
     return absolute_path;
+#endif
 }
 
 std::string PluginPath::prependPluginPath(const std::string& file)

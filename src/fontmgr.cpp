@@ -214,7 +214,7 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     unsigned char* textureData = new unsigned char[info->tex_height * info->tex_width];
     // Create the texture number that we'll be tied to
 #ifdef BUILD_FOR_STANDALONE
-    glGenTextures(1, &info->tex_id);
+    glGenTextures(1, (GLuint*)&info->tex_id);
     // Now we bind to it
     glBindTexture(GL_TEXTURE_2D, info->tex_id);
 #else
