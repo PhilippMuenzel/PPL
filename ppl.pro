@@ -51,6 +51,7 @@ win32 {
 }
 
 unix:!macx {
+    INCLUDEPATH += /usr/include/freetype2
     DEFINES += APL=0 IBM=0 LIN=1 HAVE_TR1
     QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -pedantic
     QMAKE_CXXFLAGS += -fvisibility=hidden -fno-stack-protector
