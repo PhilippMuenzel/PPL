@@ -19,7 +19,12 @@ MenuItem::MenuItem(const std::string& title)
 
 MenuItem::~MenuItem()
 {
-
+    XPLMClearAllMenuItems(m_menu_id);
+    XPLMEnableMenuItem(XPLMFindPluginsMenu(), m_item_id, 0);
+#ifdef XPLM210
+    XPLMRemoveMenuItem(XPLMFindPluginsMenu(), m_item_id);
+#endif
+    XPLMDestroyMenu(m_menu_id);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
