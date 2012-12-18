@@ -8,6 +8,7 @@
 #include <string>
 #include <ctime>
 #include <sstream>
+#include <stdint.h>
 #include "namespaces.h"
 
 namespace PPLNAMESPACE {
@@ -79,7 +80,13 @@ public:
       * Log an integer.
       * @param i
       */
-    Log& operator<<(long i);
+    Log& operator<<(int32_t i);
+
+    /**
+      * Log an integer.
+      * @param i
+      */
+    Log& operator<<(int16_t i);
 
     /**
       * Log a double.
