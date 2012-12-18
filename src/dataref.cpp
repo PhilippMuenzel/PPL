@@ -21,7 +21,6 @@ template<>
 void DataRef<float>::shareDataRef(const std::string& identifier, bool publish_in_dre)
 {
    share(XPLMShareData(identifier.c_str(), xplmType_Float, NotifactionFunc, this), publish_in_dre);
-
 }
 
 template<>
@@ -236,14 +235,14 @@ const DataRef<std::string>& DataRef<std::string>::operator=(const std::string& v
 template<>
 dataref_trait<std::vector<float> >::BasicType DataRef<std::vector<float> >::operator[](std::size_t index) const
 {
-    std::vector<float> vf(*this);
+    const std::vector<float>& vf(*this);
     return vf[index];
 }
 
 template<>
 dataref_trait<std::vector<int> >::BasicType DataRef<std::vector<int> >::operator[](std::size_t index) const
 {
-    std::vector<int> vi(*this);
+    const std::vector<int>& vi(*this);
     return vi[index];
 }
 
@@ -273,23 +272,21 @@ bool DataRef<double>::hasChanged() const
 template <>
 bool DataRef<std::vector<int> >::hasChanged() const
 {
-    bool changed = false;
     std::vector<int> actual = operator std::vector<int>();
     for (std::size_t i = 0; i < actual.size() ; ++i)
         if (actual[i] != m_history[i])
-            changed = true;
-    return changed;
+            return true;
+    return false;
 }
 
 template <>
 bool DataRef<std::vector<float> >::hasChanged() const
 {
-    bool changed = false;
     std::vector<float> actual = operator std::vector<float>();
     for (std::size_t i = 0; i < actual.size() ; ++i)
         if (std::fabs(actual[i] - m_history[i]) > std::numeric_limits<float>::epsilon())
-            changed = true;
-    return changed;
+            return true;
+    return false;
 }
 
 template <>
