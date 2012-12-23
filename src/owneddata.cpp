@@ -213,7 +213,7 @@ int PPL::readFuncStr(void* inRefCon, void* outValue, int inOffset, int inMaxLeng
     if (outValue == NULL)
         return length;
     long maxlen = (inMaxLength < length)?inMaxLength:length;
-    strcpy(static_cast<char*>(outValue), p_owned_data->value().substr(inOffset, maxlen).c_str());
+    strncpy(static_cast<char*>(outValue), p_owned_data->value().substr(inOffset, maxlen).c_str(), maxlen);
     return inMaxLength;
 }
 
