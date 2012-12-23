@@ -110,7 +110,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     // create a renderbuffer object to store depth info
     glGenRenderbuffersEXT(1, &rbo_);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rbo_);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT,
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_STENCIL,
                              width_3d_, height_3d_);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, xp_rbo);
 
@@ -123,7 +123,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
                               GL_TEXTURE_2D, gauge_texture_, 0);
 
     // attach the renderbuffer to depth attachment point
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_STENCIL_ATTACHMENT,
                                  GL_RENDERBUFFER_EXT, rbo_);
 
     // check FBO status
