@@ -20,7 +20,7 @@ void DataRef<int>::shareDataRef(const std::string& identifier, bool publish_in_d
 template<>
 void DataRef<float>::shareDataRef(const std::string& identifier, bool publish_in_dre)
 {
-   share(XPLMShareData(identifier.c_str(), xplmType_Float, NotifactionFunc, this), publish_in_dre);
+    share(XPLMShareData(identifier.c_str(), xplmType_Float, NotifactionFunc, this), publish_in_dre);
 }
 
 template<>
@@ -293,5 +293,33 @@ template <>
 bool DataRef<std::string>::hasChanged() const
 {
     return m_history != operator std::string();
+}
+
+
+template<>
+void DataRef<std::vector<int> >::setVal(std::size_t pos, int val)
+{
+    if (cache_.size() <= pos)
+        throw std::out_of_range("");
+    cache_[pos] = val;
+    XPLMSetDatavi(m_data_ref, const_cast<int*>(&cache_[pos]), pos, 1);
+}
+
+template<>
+void DataRef<std::vector<float> >::setVal(std::size_t pos, float val)
+{
+    if (cache_.size() <= pos)
+        throw std::out_of_range("");
+    cache_[pos] = val;
+    XPLMSetDatavf(m_data_ref, const_cast<float*>(&cache_[pos]), pos, 1);
+}
+
+template<>
+void DataRef<std::string >::setVal(std::size_t pos, char val)
+{
+    if (cache_.size() <= pos)
+        throw std::out_of_range("");
+    cache_[pos] = val;
+    XPLMSetDatab(m_data_ref, const_cast<char*>(&cache_[pos]), pos, 1);
 }
 

@@ -180,6 +180,12 @@ public:
 
     std::string name() const { return identifier_; }
 
+    void setVal(std::size_t, typename dataref_trait<SimType>::BasicType val)
+    {
+        operator =(val);
+    }
+
+
 private:
 
     static void NotifactionFunc(void* refcon)
@@ -484,6 +490,13 @@ dataref_trait<std::vector<float> >::BasicType DataRef<std::vector<float> >::oper
 
 template<>
 dataref_trait<std::vector<int> >::BasicType DataRef<std::vector<int> >::operator[](std::size_t index) const;
+
+template<>
+void DataRef<std::vector<int> >::setVal(std::size_t pos, int val);
+template<>
+void DataRef<std::vector<float> >::setVal(std::size_t pos, float val);
+template<>
+void DataRef<std::string >::setVal(std::size_t pos, char val);
 
 }
 
