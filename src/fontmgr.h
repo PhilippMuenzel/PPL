@@ -184,6 +184,21 @@ public:
                 const char *					inString);
 
     /*
+     * Simple Drawing: draws a left- or right justified string starting at a point.  The first
+     * letter will sit on a line starting at X, and Y (e.g. Y is the basline).  Font is
+     * drawn such that one texel = one modelview unit.  So this is only appropriate if
+     * you are using OpenGL with "pixels" as a drawing unit.
+     *
+     */
+    void	drawString(
+                FontHandle						inFont,
+                float							color[4],	//	4-part color, featuring alpha.
+                float							inX,
+                float							inY,
+                FontAlign_t                     align,
+                const char *					inString);
+
+    /*
      * Advanced drawing: draws a string justified within a box.  The bottom of the box is
      * the lowest descender, the top is the highest ascender plus any built-in leading.
      * Justification: inRight is ignored for left-justified strings.  The whole string is

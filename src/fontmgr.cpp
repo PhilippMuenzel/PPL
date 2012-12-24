@@ -436,11 +436,17 @@ void FontMgr::displayTexture(
     glEnd();
 }
 
+void FontMgr::drawString(FontHandle inFont, float color[], float inX, float inY, const char *inString)
+{
+    drawString(inFont, color, inX, inY, ALIGN_LEFT, inString);
+}
+
 void	FontMgr::drawString(
                 FontHandle						inFont,
                 float							color[4],	//	4-part color, featuring alpha.
                 float							inX,
                 float							inY,
+                FontAlign_t                     align,
                 const char *					inString)
 {
     if (!inFont || !inString) return;
@@ -451,7 +457,7 @@ void	FontMgr::drawString(
             inX, 								// Ben sez: "inRight" of box is NOT used in left-align case.  OKAY to pass anything here.
             inY - inFont->line_descent + inFont->line_height,
             inString, inString + strlen(inString),
-            ALIGN_LEFT);
+            align);
 }
 
 
