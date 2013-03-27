@@ -46,8 +46,9 @@
 #endif
 
 #include "XPLMGraphics.h"
+#include "namespaces.h"
 
-namespace AIRNAV3 {
+namespace PPLNAMESPACE {
 
 
 /**
