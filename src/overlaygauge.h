@@ -76,6 +76,7 @@ public:
     XPLMCursorStatus handle2dCursorCallback(XPLMWindowID window_id, int x, int y);
     XPLMCursorStatus handle3dCursorCallback(XPLMWindowID window_id, int x, int y);
 
+
     virtual bool wantRedraw();
     virtual void draw(int left, int top, int right, int bottom) = 0;
     virtual void handleNonDragClick(int x_rel, int y_rel) = 0;
@@ -85,6 +86,8 @@ public:
     virtual void drawFrameTexture(int, int, int, int);
     virtual bool wantClearTexture();
     virtual bool frameIsBackground();
+    virtual int handle2dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks);
+    virtual int handle3dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks);
 
     static int draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
@@ -99,6 +102,9 @@ public:
 
     static XPLMCursorStatus handle2dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon);
     static XPLMCursorStatus handle3dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon);
+
+    static int handle2dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks, void* refcon);
+    static int handle3dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks, void* refcon);
 
     static float frameCallback(float, float, int, void* refcon);
 

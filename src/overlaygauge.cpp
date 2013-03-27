@@ -99,6 +99,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     win.handleKeyFunc = handle2dKeyCallback;
     win.handleMouseClickFunc = handle2dClickCallback;
     win.handleCursorFunc = handle2dCursorCallback;
+    win.handleMouseWheelFunc = handle2dWheelCallback;
     win.refcon = this;
     window2d_id_ = XPLMCreateWindowEx(&win);
 
@@ -113,6 +114,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     win.handleKeyFunc = handle3dKeyCallback;
     win.handleMouseClickFunc = handle3dClickCallback;
     win.handleCursorFunc = handle3dCursorCallback;
+    win.handleMouseWheelFunc = handle3dWheelCallback;
     win.refcon = this;
     window3d_click_harcevester_id_ = XPLMCreateWindowEx(&win);
 
@@ -462,6 +464,16 @@ XPLMCursorStatus OverlayGauge::handle3dCursorCallback(XPLMWindowID, int, int)
     return xplm_CursorDefault;
 }
 
+int OverlayGauge::handle2dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks)
+{
+    return 1;
+}
+
+int OverlayGauge::handle3dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks)
+{
+    return 0;
+}
+
 bool OverlayGauge::wantRedraw()
 {
     return true;
@@ -549,6 +561,18 @@ XPLMCursorStatus OverlayGauge::handle3dCursorCallback(XPLMWindowID window_id, in
 {
     OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
     return window->handle3dCursorCallback(window_id, x, y);
+}
+
+int OverlayGauge::handle2dWheelCallback(XPLMWindowID window_id, int x, int y, int wheel, int clicks, void *refcon)
+{
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
+    return window->handle2dWheelCallback(window_id, x, y, wheel, clicks);
+}
+
+int OverlayGauge::handle3dWheelCallback(XPLMWindowID window_id, int x, int y, int wheel, int clicks, void *refcon)
+{
+    OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
+    return window->handle3dWheelCallback(window_id, x, y, wheel, clicks);
 }
 
 float OverlayGauge::frameCallback(float, float, int, void* refcon)
