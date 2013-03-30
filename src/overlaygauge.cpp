@@ -466,7 +466,10 @@ XPLMCursorStatus OverlayGauge::handle3dCursorCallback(XPLMWindowID, int, int)
 
 int OverlayGauge::handle2dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks)
 {
-    return 1;
+    int left, right, top, bottom;
+    XPLMGetWindowGeometry(inWindowID, &left, &top, &right, &bottom);
+    printf("wheel %d %d, left %d, bottom %d\n", x, y, left, bottom);
+    return handleMouseWheel(x-left, y-bottom, wheel, clicks);
 }
 
 int OverlayGauge::handle3dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks)
@@ -501,6 +504,11 @@ bool OverlayGauge::wantClearTexture()
 bool OverlayGauge::frameIsBackground()
 {
     return false;
+}
+
+int OverlayGauge::handleMouseWheel(int, int, int, int)
+{
+    return 1;
 }
 
 int OverlayGauge::draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon)

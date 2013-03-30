@@ -75,6 +75,8 @@ public:
 
     XPLMCursorStatus handle2dCursorCallback(XPLMWindowID window_id, int x, int y);
     XPLMCursorStatus handle3dCursorCallback(XPLMWindowID window_id, int x, int y);
+    int handle3dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks);
+    int handle2dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks);
 
 
     virtual bool wantRedraw();
@@ -86,8 +88,7 @@ public:
     virtual void drawFrameTexture(int, int, int, int);
     virtual bool wantClearTexture();
     virtual bool frameIsBackground();
-    virtual int handle2dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks);
-    virtual int handle3dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks);
+    virtual int handleMouseWheel(int x, int y, int wheel, int clicks);
 
     static int draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
