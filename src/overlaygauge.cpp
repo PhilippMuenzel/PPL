@@ -468,7 +468,6 @@ int OverlayGauge::handle2dWheelCallback(XPLMWindowID inWindowID, int x, int y, i
 {
     int left, right, top, bottom;
     XPLMGetWindowGeometry(inWindowID, &left, &top, &right, &bottom);
-    printf("wheel %d %d, left %d, bottom %d\n", x, y, left, bottom);
     return handleMouseWheel(x-left, y-bottom, wheel, clicks);
 }
 
