@@ -100,13 +100,13 @@ Texture::Texture(const std::string& file_name)
 
         std::ifstream fs(file_name.c_str(), std::ios_base::in | std::ios_base::binary);
         if (!fs)
-            throw std::runtime_error("File could not be openend");
+            throw std::runtime_error("File could not be opened: "+file_name);
         fs.read(reinterpret_cast<char*>(&header), sizeof(header));
         if (!fs)
-            throw std::runtime_error("Bitmap header could not be read");
+            throw std::runtime_error("Bitmap header could not be read: "+file_name);
         fs.read(reinterpret_cast<char*>(&image_info), sizeof(image_info));
         if (!fs)
-            throw std::runtime_error("Image info could not be read");
+            throw std::runtime_error("Image info could not be read: "+file_name);
 #if APL && defined(__ppc__)
         SwapEndian(&header.bfSize);
         SwapEndian(&header.bfOffBits);
@@ -184,11 +184,11 @@ Texture::Texture(const std::string& file_name)
                 fread(header,1,sizeof(header),file)!=sizeof(header))                // If So Read Next 6 Header Bytes
         {
             if (file == NULL)                               // Did The File Even Exist? *Added Jim Strong*
-                throw std::runtime_error("File could not be openend");
+                throw std::runtime_error("File could not be opened: "+file_name);
             else                                            // Otherwise
             {
                 fclose(file);                               // If Anything Failed, Close The File
-                throw std::runtime_error("Images is not a valid TGA file");
+                throw std::runtime_error("Images is not a valid TGA file: "+file_name);
             }
         }
 
@@ -200,7 +200,7 @@ Texture::Texture(const std::string& file_name)
                 (header[4]!=24 && header[4]!=32))           // Is The TGA 24 or 32 Bit?
         {
             fclose(file);                                   // If Anything Failed, Close The File
-            throw std::runtime_error("File is not a vaid TGA file");
+            throw std::runtime_error("File is not a vaid TGA file: "+file_name);
         }
 
         m_imagedata.bpp = header[4];                        // Grab The TGA's Bits Per Pixel (24 or 32)
