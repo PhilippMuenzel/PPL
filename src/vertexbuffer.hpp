@@ -110,11 +110,11 @@ public:
      * @return the stride length in bytes
      */
     std::size_t beginSpecifyVerts(std::size_t num_vertices,
-                                  float **out_verts,
-                                  float **out_normals,
-                                  float **out_texes,
-                                  float **out_texes2,
-                                  float **out_colors);
+                                  volatile float **out_verts,
+                                  volatile float **out_normals,
+                                  volatile float **out_texes,
+                                  volatile float **out_texes2,
+                                  volatile float **out_colors);
 
     /**
      * @brief call this when done setting the vertices

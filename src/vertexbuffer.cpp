@@ -46,7 +46,7 @@ VertexBuffer::~VertexBuffer()
     glDeleteBuffers(1, &vbo_);
 }
 
-std::size_t VertexBuffer::beginSpecifyVerts(std::size_t num_vertices, float **out_verts, float **out_normals, float **out_texes, float **out_texes2, float **out_colors)
+std::size_t VertexBuffer::beginSpecifyVerts(std::size_t num_vertices, volatile float **out_verts, volatile float **out_normals, volatile float **out_texes, volatile float **out_texes2, volatile float **out_colors)
 {
     if(vbo_ == 0)
         glGenBuffers(1, &vbo_);
