@@ -87,7 +87,7 @@ void MessageWindow::setHeight(int height)
     if (height > m_xp_height)
         throw (BoxOutOfBoundsException("Requested window height greater than X-Plane window"));
     m_top = (m_xp_height + height)/2;
-    m_bottom = (m_xp_width - height)/2;
+    m_bottom = (m_xp_height - height)/2;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -155,7 +155,7 @@ void MessageWindow::display()
                                                          1,
                                                          list_of_sequences.front().c_str(),
                                                          0,
-                                                         m_screen_widget,
+                                                         m_box_widget,
                                                          xpWidgetClass_Caption)
                                           );
         list_of_sequences.pop_front();
