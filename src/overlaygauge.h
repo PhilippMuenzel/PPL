@@ -89,6 +89,7 @@ public:
     virtual bool wantClearTexture();
     virtual bool frameIsBackground();
     virtual int handleMouseWheel(int x, int y, int wheel, int clicks);
+    virtual float instrumentBrightness();
 
     static int draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);

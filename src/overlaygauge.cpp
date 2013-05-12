@@ -271,9 +271,14 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
     return 1;
 }
 
+float OverlayGauge::instrumentBrightness()
+{
+    return instrument_brightness_[0];
+}
+
 void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
 {
-    alpha_ = instrument_brightness_[0];
+    alpha_ = instrumentBrightness();
     if (wantRedraw())
     {
         GLint xp_fbo;
