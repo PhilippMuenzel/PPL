@@ -208,6 +208,7 @@ public:
         operator =(val);
     }
 
+    void reserve(std::size_t) {}
 
 private:
 
@@ -520,6 +521,13 @@ template<>
 void DataRef<std::vector<float> >::setVal(std::size_t pos, float val);
 template<>
 void DataRef<std::string >::setVal(std::size_t pos, char val);
+
+template<>
+void DataRef<std::vector<int> >::reserve(std::size_t i);
+template<>
+void DataRef<std::vector<float> >::reserve(std::size_t i);
+template<>
+void DataRef<std::string>::reserve(std::size_t i);
 
 }
 

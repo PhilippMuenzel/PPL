@@ -346,3 +346,26 @@ void DataRef<std::string >::setVal(std::size_t pos, char val)
     XPLMSetDatab(m_data_ref, const_cast<char*>(&cache_[pos]), pos, 1);
 }
 
+template<>
+void DataRef<std::vector<int> >::reserve(std::size_t i)
+{
+    if (cache_.size() < i)
+        cache_.resize(i);
+    XPLMSetDatavi(m_data_ref, const_cast<int*>(&cache_[0]), 0, i);
+}
+
+template<>
+void DataRef<std::vector<float> >::reserve(std::size_t i)
+{
+    if (cache_.size() < i)
+        cache_.resize(i);
+    XPLMSetDatavf(m_data_ref, const_cast<float*>(&cache_[0]), 0, i);
+}
+template<>
+void DataRef<std::string >::reserve(std::size_t i)
+{
+    if (cache_.size() < i)
+        cache_.resize(i);
+    XPLMSetDatab(m_data_ref, const_cast<char*>(&cache_[0]), 0, i);
+}
+
