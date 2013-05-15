@@ -269,6 +269,13 @@ dataref_trait<std::vector<int> >::BasicType DataRef<std::vector<int> >::operator
     return vi[index];
 }
 
+template<>
+dataref_trait<std::string>::BasicType DataRef<std::string>::operator[](std::size_t index) const
+{
+    const std::string& s(*this);
+    return s[index];
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -368,4 +375,11 @@ void DataRef<std::string >::reserve(std::size_t i)
         cache_.resize(i);
     XPLMSetDatab(m_data_ref, const_cast<char*>(&cache_[0]), 0, i);
 }
+
+template class DataRef<float>;
+template class DataRef<int>;
+template class DataRef<double>;
+template class DataRef<std::vector<float> >;
+template class DataRef<std::vector<int> >;
+template class DataRef<std::string>;
 

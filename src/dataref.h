@@ -516,6 +516,9 @@ template<>
 dataref_trait<std::vector<int> >::BasicType DataRef<std::vector<int> >::operator[](std::size_t index) const;
 
 template<>
+dataref_trait<std::string>::BasicType DataRef<std::string>::operator[](std::size_t index) const;
+
+template<>
 void DataRef<std::vector<int> >::setVal(std::size_t pos, int val);
 template<>
 void DataRef<std::vector<float> >::setVal(std::size_t pos, float val);
@@ -528,6 +531,7 @@ template<>
 void DataRef<std::vector<float> >::reserve(std::size_t i);
 template<>
 void DataRef<std::string>::reserve(std::size_t i);
+
 
 }
 
