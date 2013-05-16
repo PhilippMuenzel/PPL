@@ -506,7 +506,8 @@ const DataRef<std::string>& DataRef<std::string>::operator=(const std::string&);
 template <typename SimType>
 typename dataref_trait<SimType>::BasicType DataRef<SimType>::operator[](std::size_t) const
 {
-    return dataref_trait<SimType>::BasicType(*this);
+    typedef typename dataref_trait<SimType>::BasicType T;
+    return T(*this);
 }
 
 template<>
