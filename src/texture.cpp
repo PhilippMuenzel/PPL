@@ -55,38 +55,38 @@
 using namespace PPLNAMESPACE;
 
 #if APL && defined(__ppc__)
-short Endian(short Data)
+int16_t Endian(int16_t Data)
 {
     unsigned char *pBuffer = (unsigned char *)&Data;
-    short Result = (short)(pBuffer[0] & 0xff) + ( (short)(pBuffer[1] & 0xff) << 8) ;
+    int16_t Result = (int16_t)(pBuffer[0] & 0xff) + ( (int16_t)(pBuffer[1] & 0xff) << 8) ;
     return(Result);
 }
 
-long Endian(long Data)
+int32_t Endian(int32_t Data)
 {
     unsigned char *pBuffer = (unsigned char *)&Data;
 
-    long Result =     (long)(pBuffer[0] & 0xff)
-            + ( (long)(pBuffer[1] & 0xff) << 8)
-            + ( (long)(pBuffer[2] & 0xff) << 16)
-            + ( (long)(pBuffer[3] & 0xff) << 24);
+    int32_t Result =     (int32_t)(pBuffer[0] & 0xff)
+            + ( (int32_t)(pBuffer[1] & 0xff) << 8)
+            + ( (int32_t)(pBuffer[2] & 0xff) << 16)
+            + ( (int32_t)(pBuffer[3] & 0xff) << 24);
 
     return(Result);
 }
 
-void SwapEndian(short *Data)
+void SwapEndian(int16_t *Data)
 {
     *Data = Endian(*Data);
 }
 
-void SwapEndian(long *Data)
+void SwapEndian(int32_t *Data)
 {
     *Data = Endian(*Data);
 }
 #else
 /// Only the ppc mac needs these so dummy functions for x86.
-void SwapEndian(short *){}
-void SwapEndian(long *){}
+void SwapEndian(int16_t *){}
+void SwapEndian(int32_t *){}
 #endif
 
 
@@ -96,7 +96,7 @@ Texture::Texture(const std::string& file_name)
     {
         BMPFILEHEADER header;
         BMPINFOHEADER image_info;
-        long padding;
+        int32_t padding;
 
         std::ifstream fs(file_name.c_str(), std::ios_base::in | std::ios_base::binary);
         if (!fs)
@@ -107,7 +107,7 @@ Texture::Texture(const std::string& file_name)
         fs.read(reinterpret_cast<char*>(&image_info), sizeof(image_info));
         if (!fs)
             throw std::runtime_error("Image info could not be read: "+file_name);
-#if APL && defined(__ppc__)
+      #if APL && defined(__ppc__)
         SwapEndian(&header.bfSize);
         SwapEndian(&header.bfOffBits);
 
@@ -124,9 +124,9 @@ Texture::Texture(const std::string& file_name)
               (image_info.biBitCount == 24) &&
               (image_info.biWidth > 0) &&
               (image_info.biHeight > 0)))
-            throw std::runtime_error("Image is not a bitmap");
+            throw std::runtime_error("Image is not a bitmap: "+file_name);
         if (!((header.bfSize + image_info.biSize - header.bfOffBits) >= (image_info.biWidth * image_info.biHeight * 3)))
-            throw std::runtime_error("Image size mismatch");
+            throw std::runtime_error("Image size mismatch: "+file_name);
         padding = (image_info.biWidth * 3 + 3) & ~3;
         padding -= image_info.biWidth * 3;
 
@@ -272,7 +272,7 @@ int Texture::height() const
 
 void Texture::swapRedBlue()
 {
-    long x,y;
+    int32_t x,y;
 
     /// Does not support 4 channels.
     if (m_imagedata.Channels == 4)
