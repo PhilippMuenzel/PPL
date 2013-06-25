@@ -31,6 +31,7 @@
 #include <string>
 #include <vector>
 #include "namespaces.h"
+#include "stdint.h"
 
 namespace PPLNAMESPACE {
 
