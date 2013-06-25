@@ -376,10 +376,14 @@ void DataRef<std::string >::reserve(std::size_t i)
     XPLMSetDatab(m_data_ref, const_cast<char*>(&cache_[0]), 0, i);
 }
 
+namespace PPLNAMESPACE {
+
 template class DataRef<float>;
 template class DataRef<int>;
 template class DataRef<double>;
 template class DataRef<std::vector<float> >;
 template class DataRef<std::vector<int> >;
 template class DataRef<std::string>;
+
+}
 
