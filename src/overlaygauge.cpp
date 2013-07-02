@@ -264,7 +264,7 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 
             if (copy_top_3d_ > -1 && copy_left_3d_ > -1)
             {
-                drawTexture(gauge_texture_, copy_left_3d_, copy_top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_, alpha_);
+                drawTexture(gauge_texture_, copy_left_3d_, copy_top_3d_, copy_left_3d_+width_view_3d_ * scale_3d_, copy_top_3d_-height_view_3d_*scale_3d_, alpha_);
             }
         }
     }
