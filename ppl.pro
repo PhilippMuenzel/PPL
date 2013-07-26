@@ -12,8 +12,8 @@ INCLUDEPATH += include/simpleini
 INCLUDEPATH += ../SDK/CHeaders/XPLM
 INCLUDEPATH += ../SDK/CHeaders/Widgets
 
-# Defined to use X-Plane SDK 2.0 capabilities - no backward compatibility before 9.0
-DEFINES += XPLM200
+# Defined to use X-Plane SDK 2.1 capabilities - no backward compatibility before 10.0
+DEFINES += XPLM200 XPLM210
 
 OBJECTS_DIR  = objects
 TARGET = ppl
@@ -113,7 +113,7 @@ withsound {
 
 withfreetype {
     win32 {
-        INCLUDEPATH += include include/freetype2
+        INCLUDEPATH += include ../../Downloads/freetype-2.3.5/include
     }
     unix:!macx {
         INCLUDEPATH += /usr/local/include/freetype2
