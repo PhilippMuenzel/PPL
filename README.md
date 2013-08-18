@@ -44,6 +44,9 @@ Connects with existing datarefs
 **owneddata.h**
 Creates new datarefs
 
+**commandbase.h**
+Abstract base for commands
+
 **processor.h**
 Abstract base for flight-loop callbacks
 
