@@ -3,23 +3,23 @@ TEMPLATE = lib
 # Static library without any Qt functionality
 QT -= gui core
 
-CONFIG += static exceptions stl console
+CONFIG += static exceptions stl console withfreetype withserialization
 CONFIG -= thread qt rtti warn_on
 
 VERSION = 1.0.0
 
 INCLUDEPATH += include/simpleini
-INCLUDEPATH += ../SDK/CHeaders/XPLM
-INCLUDEPATH += ../SDK/CHeaders/Widgets
+INCLUDEPATH += ../SDK21/CHeaders/XPLM
+INCLUDEPATH += ../SDK21/CHeaders/Widgets
 
-# Defined to use X-Plane SDK 2.1 capabilities - no backward compatibility before 10.0
-DEFINES += XPLM200 XPLM210
+# Defined to use X-Plane SDK 2.1 capabilities - no backward compatibility before 10
+DEFINES += XPLM210
 
 OBJECTS_DIR  = objects
 TARGET = ppl
 
 DEFINES += PRIVATENAMESPACE=$$PRIVATENAMESPACE
-DESTDIR = lib$$PRIVATENAMESPACE
+DESTDIR = libPPL/$$ARCH
 
 standalone {
     DEFINES += BUILD_FOR_STANDALONE
@@ -52,7 +52,7 @@ win32 {
 
 unix:!macx {
     DEFINES += APL=0 IBM=0 LIN=1 HAVE_TR1
-    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -pedantic
+    QMAKE_CXXFLAGS += -O3 -Wall -Wextra -Wfloat-equal -pedantic
     QMAKE_CXXFLAGS += -fvisibility=hidden -fno-stack-protector
 }
 
@@ -72,8 +72,9 @@ HEADERS += \
     src/settings.h \
     src/texture.h \
     src/overlaygauge.h \
-    src/xposd.h \
+    #src/xposd.h \
     src/log.h \
+    src/command.h \
     src/logwriter.h \
     src/basics.h \
     src/menuitem.h \
@@ -94,6 +95,7 @@ SOURCES += \
     src/texture.cpp \
     src/overlaygauge.cpp \
     src/log.cpp \
+    src/command.cpp \
     src/logwriter.cpp \
     src/menuitem.cpp \
     src/smoothed.cpp \
@@ -113,10 +115,10 @@ withsound {
 
 withfreetype {
     win32 {
-        INCLUDEPATH += include ../../Downloads/freetype-2.3.5/include
+        INCLUDEPATH += include include/freetype2
     }
     unix:!macx {
-        INCLUDEPATH += /usr/local/include/freetype2
+        INCLUDEPATH += /usr/include/freetype2
     }
     macx {
         INCLUDEPATH += /usr/local/include/freetype2
@@ -131,7 +133,7 @@ withserialization {
         INCLUDEPATH += C:\\Boost\\include\\boost-1_52
     }
     unix:!macx {
-        INCLUDEPATH += /usr/local/include/
+        INCLUDEPATH += /usr/include/
     }
     macx {
         INCLUDEPATH += /usr/local/include/
