@@ -59,7 +59,7 @@ using namespace PPLNAMESPACE;
  */
 #ifndef NDEBUG
 #include <cassert>
-#define OGL_ERROR(expression) expression; if(glGetError()){assert(false);}
+#define OGL_ERROR(expression) expression; GLenum err = glGetError(); if(err){ XPLMDebugString((const char*)gluErrorString(err)); XPLMDebugString("\n"); assert(false);}
 #else
 #define OGL_ERROR(expression) expression;
 #endif
@@ -309,6 +309,9 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     //				info->tex_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureData))
 
     // Now build mipmaps based on this texture
+    char buf[256];
+    sprintf(buf, "Trying to build mipmaps for font %s, tex width %d, tex height %d, texture data %p\n", inFontPath, info->tex_width, info->tex_height, textureData);
+    XPLMDebugString(buf);
     OGL_ERROR(gluBuild2DMipmaps(GL_TEXTURE_2D, GL_ALPHA, info->tex_width, info->tex_height, GL_ALPHA, GL_UNSIGNED_BYTE, textureData))
 
     // Ben sez: use nearest neighbor for exact-size fonts...pixel accurate!
