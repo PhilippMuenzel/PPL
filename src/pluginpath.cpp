@@ -28,12 +28,6 @@
 #include <string>
 #include <cstring>
 
-#if APL
-#if defined(__MACH__)
-#include <CoreFoundation/CoreFoundation.h>
-#endif
-#endif
-
 #include "XPLMUtilities.h"
 #include "XPLMPlanes.h"
 
@@ -54,13 +48,6 @@ std::string PluginPath::prependXPlanePath(const std::string& file)
     char path[512];
     XPLMGetSystemPath(path);
     std::string absolute_path(path);
-#if APL && __MACH__
-    int result = ConvertPath(absolute_path.c_str(), path, 512);
-    if (result == 0)
-        absolute_path = std::string(path);
-    else
-        throw PathSetupError("Critical error - cannot convert Mac-HFS-format path to unix-format path");
-#endif
     absolute_path.append(file);
     return absolute_path;
 #endif
@@ -102,13 +89,6 @@ std::string PluginPath::prependPlanePath(const std::string& file)
     std::string absolute_path(path);
     std::size_t pos = absolute_path.find(name);
     absolute_path = absolute_path.substr(0, pos);
-#if APL && __MACH__
-    int result = ConvertPath(absolute_path.c_str(), path, 512);
-    if (result == 0)
-        absolute_path = std::string(path);
-    else
-        throw PathSetupError("Critical error - cannot convert Mac-HFS-format path to unix-format path");
-#endif
     absolute_path.append(file);
     return absolute_path;
 #endif
@@ -121,24 +101,4 @@ void PluginPath::setPluginDirectoryName(const std::string& name)
 {
     PluginPath::plugin_directory = name;
 }
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-#if APL && __MACH__
-int PluginPath::ConvertPath(const char * inPath, char * outPath, int outPathMaxLen)
-{
-    CFStringRef inStr = CFStringCreateWithCString(kCFAllocatorDefault, inPath ,kCFStringEncodingMacRoman);
-    if (inStr == NULL)
-        return -1;
-    CFURLRef url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, inStr, kCFURLHFSPathStyle,0);
-    CFStringRef outStr = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
-    if (!CFStringGetCString(outStr, outPath, outPathMaxLen, kCFURLPOSIXPathStyle))
-        return -1;
-    CFRelease(outStr);
-    CFRelease(url);
-    CFRelease(inStr);
-    return 0;
-}
-#endif
 
