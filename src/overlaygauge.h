@@ -123,6 +123,10 @@ public:
     static bool coordInRect(float x, float y, float l, float t, float r, float b);
     void drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha = 1, int blend = 1);
 
+    int width3d() const { return width_3d_; }
+    int height3d() const { return height_3d_; }
+    GLuint gaugeTexture() const { return gauge_texture_; }
+
 private:
     XPLMWindowID window2d_id_;
     XPLMWindowID window3d_click_harcevester_id_;

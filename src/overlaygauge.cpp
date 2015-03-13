@@ -120,12 +120,12 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
 
     generateTex((int*)(&gauge_texture_), 1);
     bindTex(gauge_texture_, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_3d_, height_3d_, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, 0);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_3d_, height_3d_, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
     // store whatever rbo and fbo X-Plane is using right now
     GLint xp_rbo, xp_fbo;

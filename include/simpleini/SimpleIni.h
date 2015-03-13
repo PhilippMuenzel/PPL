@@ -214,7 +214,7 @@
 #include <map>
 #include <list>
 #include <algorithm>
-#include <cstdio>
+#include <stdio.h>
 #include <cstdlib>
 
 #ifdef SI_SUPPORT_IOSTREAMS
