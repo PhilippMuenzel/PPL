@@ -302,7 +302,9 @@ bool DataRef<double>::hasChanged() const
 template <>
 bool DataRef<std::vector<int> >::hasChanged() const
 {
-    std::vector<int> actual = operator std::vector<int>();
+    const std::vector<int>& actual = operator std::vector<int>();
+    if (m_history.size() != actual.size())
+        return true;
     for (std::size_t i = 0; i < actual.size() ; ++i)
         if (actual[i] != m_history[i])
             return true;
@@ -312,7 +314,9 @@ bool DataRef<std::vector<int> >::hasChanged() const
 template <>
 bool DataRef<std::vector<float> >::hasChanged() const
 {
-    std::vector<float> actual = operator std::vector<float>();
+    const std::vector<float>& actual = operator std::vector<float>();
+    if (m_history.size() != actual.size())
+        return true;
     for (std::size_t i = 0; i < actual.size() ; ++i)
         if (std::fabs(actual[i] - m_history[i]) > std::numeric_limits<float>::epsilon())
             return true;
@@ -322,7 +326,10 @@ bool DataRef<std::vector<float> >::hasChanged() const
 template <>
 bool DataRef<std::string>::hasChanged() const
 {
-    return m_history != operator std::string();
+    const std::string& actual = operator std::string();
+    if (m_history.size() != actual.size())
+        return true;
+    return m_history != actual;
 }
 
 
@@ -375,6 +382,30 @@ void DataRef<std::string >::reserve(std::size_t i)
         cache_.resize(i);
     XPLMSetDatab(m_data_ref, const_cast<char*>(&cache_[0]), 0, i);
 }
+
+template<>
+void DataRef<std::vector<int> >::reserve()
+{
+    std::size_t i = XPLMGetDatavi(m_data_ref, NULL, 0, 0);
+    cache_.resize(i);
+    m_history.resize(i);
+}
+
+template<>
+void DataRef<std::vector<float> >::reserve()
+{
+    std::size_t i = XPLMGetDatavf(m_data_ref, NULL, 0, 0);
+    cache_.resize(i);
+    m_history.resize(i);
+}
+template<>
+void DataRef<std::string >::reserve()
+{
+    std::size_t i = XPLMGetDatab(m_data_ref, NULL, 0, 0);
+    cache_.resize(i);
+    m_history.resize(i);
+}
+
 
 namespace PPLNAMESPACE {
 
