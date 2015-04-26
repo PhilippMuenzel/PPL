@@ -333,6 +333,37 @@ bool DataRef<std::string>::hasChanged() const
 }
 
 
+template <>
+void DataRef<std::vector<int> >::forceChanged()
+{
+    const std::vector<int>& actual = operator std::vector<int>();
+    if (m_history.size() != actual.size())
+        return;
+    for (std::size_t i = 0; i < m_history.size() ; ++i)
+        m_history[i] = INT_MAX;
+}
+
+template <>
+void DataRef<std::vector<float> >::forceChanged()
+{
+    const std::vector<float>& actual = operator std::vector<float>();
+    if (m_history.size() != actual.size())
+        return;
+    for (std::size_t i = 0; i < m_history.size() ; ++i)
+        m_history[i] = std::numeric_limits<float>::max();
+}
+
+template <>
+void DataRef<std::string>::forceChanged()
+{
+    const std::string& actual = operator std::string();
+    if (m_history.size() != actual.size())
+        return;
+    for (std::size_t i = 0; i < m_history.size() ; ++i)
+        m_history[i] = CHAR_MAX;
+}
+
+
 template<>
 void DataRef<std::vector<int> >::setVal(std::size_t pos, int val)
 {

@@ -134,7 +134,7 @@ struct dataref_trait<std::string> {
  * obeying to X-Planes writeability restrictions.
  * By creating a DataRef instance, it is bound to a specific dataref
  * specified in the constructor.
- * @author (c) 2009-2011 by Philipp Muenzel
+ * @author (c) 2009-2015 by Philipp Muenzel
  * @version 2.0
  */
 template <typename SimType>
@@ -151,7 +151,7 @@ public:
       * @param share treat the dataref as a shared dataref, i.e. register the user as a shared dataref participant
       * @exception LookupException is thrown if one of the following happens
       * a) DataRef can not be found
-      * b) Data type is invalid (trying to access an int DataRef through float functions
+      * b) Data type is invalid (trying to access an int DataRef through float functions)
       * c) data was requested to be writeable, but X-Plane says it is read-only
       */
     DataRef(const std::string& identifier, RWType writeability = ReadOnly, bool share = false, bool publish_in_dre = false);
@@ -193,22 +193,46 @@ public:
     void undo();
 
     /**
+     * offset history value from actual value, so the next hasChanged returns true.
+     * Does not change the actual value of the dataref.
+     */
+    void forceChanged();
+
+    /**
       * read the current value from X-Plane and access element in vector data
       * @note is the same as operator SimType() for non-vector data
       * @todo is there a more elegant way to do this?
       */
     typename dataref_trait<SimType>::BasicType operator[](std::size_t index) const;
 
+    /**
+     * callback that invokes the template function specified in a sub-class,
+     * if the value of a shared dataref has been changed by someone else
+     */
     void notify() { doNotify(); }
 
     std::string name() const { return identifier_; }
 
+    /**
+      * write value of vector element to X-Plane
+      * @note is the same as operator=() for non-vector data
+      * @todo is there a more elegant way to do this?
+      */
     void setVal(std::size_t, typename dataref_trait<SimType>::BasicType val)
     {
         operator =(val);
     }
 
+    /**
+     * reserve as many elements in the history value array as X-Plane says the vector can hold at maximum
+     * @note does nothing for non-vector data
+     */
     void reserve() {}
+
+    /**
+     * reserve this many elements in the history value array
+     * @note does nothing for non-vector data
+     */
     void reserve(std::size_t) {}
 
 private:
@@ -235,7 +259,7 @@ private:
 
     void logErrorWithDataRef(const std::string& error_msg, const std::string& dataref_identifier);
 
-    virtual void doNotify() {}
+    virtual void doNotify() {}  //!< override this in a subclass if you want callback functionality
 
 private:
     XPLMDataRef m_data_ref; //!< opaque handle to X-Plane's data
@@ -320,6 +344,25 @@ bool DataRef<std::string>::hasChanged() const;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+template <typename SimType>
+void DataRef<SimType>::forceChanged()
+{
+    m_history = std::numeric_limits<SimType>::max();
+}
+
+template <>
+void DataRef<std::vector<int> >::forceChanged();
+
+template <>
+void DataRef<std::vector<float> >::forceChanged();
+
+template <>
+void DataRef<std::string>::forceChanged();
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
 
 template <typename SimType>
 void DataRef<SimType>::save()
