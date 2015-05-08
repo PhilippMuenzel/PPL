@@ -218,6 +218,7 @@ int OverlayGauge::draw2dCallback(XPLMDrawingPhase, int)
 
 void OverlayGauge::frame()
 {
+    XPLMSetWindowIsVisible(window2d_id_,1);
     region_draw_counter_ = 0;
 }
 
