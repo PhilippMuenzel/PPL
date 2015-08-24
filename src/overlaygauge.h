@@ -88,6 +88,7 @@ public:
     virtual void drawFrameTexture(int, int, int, int);
     virtual bool wantClearTexture();
     virtual bool frameIsBackground();
+    virtual bool wantVFlip();
     virtual int handleMouseWheel(int x, int y, int wheel, int clicks);
     virtual float instrumentBrightness();
 
@@ -121,7 +122,7 @@ public:
     void generateTex(int* tex_id, int number_of_textures);
 
     static bool coordInRect(float x, float y, float l, float t, float r, float b);
-    void drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha = 1, int blend = 1);
+    void drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha = 1, int blend = 1, bool vflip=false);
 
     int width3d() const { return width_3d_; }
     int height3d() const { return height_3d_; }

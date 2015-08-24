@@ -52,7 +52,7 @@ win32 {
 
 unix:!macx {
     DEFINES += APL=0 IBM=0 LIN=1 HAVE_TR1
-    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -pedantic
+    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -pedantic -Wno-c++11-narrowing
     QMAKE_CXXFLAGS += -fvisibility=hidden -fno-stack-protector
 }
 
@@ -114,9 +114,10 @@ withsound {
 withfreetype {
     win32 {
         INCLUDEPATH += include ../../Downloads/freetype-2.3.5/include
+        DEFINES+=FREETYPE2_STATIC
     }
     unix:!macx {
-        INCLUDEPATH += /usr/local/include/freetype2
+        INCLUDEPATH += /usr/include/freetype2
     }
     macx {
         INCLUDEPATH += /usr/local/include/freetype2

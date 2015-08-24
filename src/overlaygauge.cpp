@@ -222,7 +222,7 @@ void OverlayGauge::frame()
     region_draw_counter_ = 0;
 }
 
-void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha, int blend)
+void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha, int blend, bool vflip)
 {
     setDrawState(0/*Fog*/, 1/*TexUnits*/, 0/*Lighting*/, 0/*AlphaTesting*/, blend/*AlphaBlending*/, 0/*DepthTesting*/, 0/*DepthWriting*/);
     bindTex(tex_id, 0);
@@ -234,10 +234,10 @@ void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bot
                          1,1,1,alpha,
                          1,1,1,alpha,
                          1,1,1,alpha };
-    GLfloat tex_coords[] = { 0, 1,
-                             1, 1,
-                             1, 0,
-                             0, 0 };
+    GLfloat tex_coords[] = { 0, !vflip,
+                             1, !vflip,
+                             1, vflip,
+                             0, vflip };
 
     if (xplane_version_ < 10000)
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -261,11 +261,11 @@ int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
         region_draw_counter_++;
         if (visible_3d_ && (panel_region_id_3d_ == -1 || region_draw_counter_ == static_cast<unsigned int>(panel_region_id_3d_)))
         {
-            drawTexture(gauge_texture_, left_3d_, top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_, alpha_);
+            drawTexture(gauge_texture_, left_3d_, top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_, alpha_,1,wantVFlip());
 
             if (copy_top_3d_ > -1 && copy_left_3d_ > -1)
             {
-                drawTexture(gauge_texture_, copy_left_3d_, copy_top_3d_, copy_left_3d_+width_view_3d_ * scale_3d_, copy_top_3d_-height_view_3d_*scale_3d_, alpha_);
+                drawTexture(gauge_texture_, copy_left_3d_, copy_top_3d_, copy_left_3d_+width_view_3d_ * scale_3d_, copy_top_3d_-height_view_3d_*scale_3d_, alpha_,1,wantVFlip());
             }
         }
     }
@@ -327,7 +327,7 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
 
         if (frameIsBackground())
             drawFrameTexture(left, top, right, bottom);
-        drawTexture(gauge_texture_, left+frame_off_x_, top-frame_off_y_, left+frame_off_x_+width_view_3d_, top -frame_off_y_-height_view_3d_, alpha_, (frameIsBackground() || wantClearTexture()));
+        drawTexture(gauge_texture_, left+frame_off_x_, top-frame_off_y_, left+frame_off_x_+width_view_3d_, top -frame_off_y_-height_view_3d_, alpha_, (frameIsBackground() || wantClearTexture()), wantVFlip());
         if (!frameIsBackground())
             drawFrameTexture(left, top, right, bottom);
 
@@ -511,6 +511,11 @@ bool OverlayGauge::wantClearTexture()
 }
 
 bool OverlayGauge::frameIsBackground()
+{
+    return false;
+}
+
+bool OverlayGauge::wantVFlip()
 {
     return false;
 }
