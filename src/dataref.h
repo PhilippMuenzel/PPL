@@ -31,6 +31,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <limits>
 
 #include "XPLMDataAccess.h"
 #include "XPLMPlugin.h"
