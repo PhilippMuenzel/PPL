@@ -233,7 +233,7 @@ void OwnedData<std::vector<float> >::registerReadWrite()
 int PPL::readFuncStr(void* inRefCon, void* outValue, int inOffset, int inMaxLength)
 {
     OwnedData<std::string>* p_owned_data = static_cast<OwnedData<std::string>*>(inRefCon);
-    long length = p_owned_data->value().length();
+    long length = static_cast<long>(p_owned_data->value().length());
     if (outValue == NULL)
         return length;
     long maxlen = (inMaxLength < length)?inMaxLength:length;
@@ -259,9 +259,11 @@ int PPL::readFuncVF(void* inRefCon, float* outValues, int inOffset, int inMaxLen
     std::size_t max_length = static_cast<unsigned int>(inMaxLength);
     OwnedData<std::vector<float> >* p_owned_data = static_cast<OwnedData<std::vector<float> >*>(inRefCon);
     if (outValues == NULL)
-        return p_owned_data->value().size();
-    int end = (p_owned_data->value().size() < max_length) ? p_owned_data->value().size() : max_length;
-    memcpy(outValues, &p_owned_data->value()[inOffset], sizeof(float)*end);
+        return static_cast<int>(p_owned_data->value().size());
+    int end = static_cast<int>((p_owned_data->value().size() < max_length)
+                                   ? p_owned_data->value().size()
+                                   : max_length);
+    memcpy(outValues, &p_owned_data->value()[inOffset], sizeof(float) * end);
     return end;
 }
 
