@@ -3,7 +3,7 @@ TEMPLATE = lib
 # Static library without any Qt functionality
 QT -= gui core
 
-CONFIG += static exceptions stl console
+CONFIG += static exceptions stl console c++11
 CONFIG -= thread qt rtti warn_on
 
 VERSION = 1.0.0
@@ -28,13 +28,13 @@ standalone {
 
 macx {
     DEFINES += APL=1 IBM=0 LIN=0
-    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -pedantic
+    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -Wno-c++11-narrowing -pedantic
 
     # Build for multiple architectures.
     # The following line is only needed to build universal on PPC architectures.
     # QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
     # This line defines for which architectures we build.
-    CONFIG += x86 x86_64
+    CONFIG += x86_64
 }
 
 win32 {
@@ -101,6 +101,7 @@ SOURCES += \
     src/vertexbuffer.cpp
 
 withsound {
+    macx:INCLUDEPATH+=/usr/local/include/
     HEADERS += \
         src/alsoundbuffer.h \
         src/alcontextmanager.h \
@@ -120,7 +121,7 @@ withfreetype {
         INCLUDEPATH += /usr/include/freetype2
     }
     macx {
-        INCLUDEPATH += /usr/local/include/freetype2
+        INCLUDEPATH += /usr/local/include/freetype2 /usr/X11/include/freetype2/
     }
 
     HEADERS += src/fontmgr.h
