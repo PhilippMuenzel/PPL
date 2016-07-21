@@ -340,7 +340,7 @@ void DataRef<std::vector<int> >::forceChanged()
     if (m_history.size() != actual.size())
         return;
     for (std::size_t i = 0; i < m_history.size() ; ++i)
-        m_history[i] = INT_MAX;
+        m_history[i] = std::numeric_limits<int>::max();
 }
 
 template <>
@@ -360,7 +360,7 @@ void DataRef<std::string>::forceChanged()
     if (m_history.size() != actual.size())
         return;
     for (std::size_t i = 0; i < m_history.size() ; ++i)
-        m_history[i] = CHAR_MAX;
+        m_history[i] = std::numeric_limits<char>::max();
 }
 
 

@@ -51,7 +51,7 @@ const char* const DRE_PLUGIN_SINATURE = "xplanesdk.examples.DataRefEditor";
   *
   * For simdata, it specifies if incoming data may be written to X-Plane
   * and if data should be readable.
-  * For owned data, it specifies if the data is readable or writebale
+  * For owned data, it specifies if the data is readable or writeable
   * to OTHER plugins (or anything that accesses datarefs e.g. panels).
   * @todo Should there be two enums for simdata and owned data?
   */
