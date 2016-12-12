@@ -36,7 +36,8 @@
 using namespace PPLNAMESPACE;
 
 OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
-                           int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard, bool is_visible3d, bool is_visible2d, bool always_draw_3d, bool allow_3d_click, float scale_3d, bool double_size):
+                           int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard, bool is_visible3d, bool is_visible2d,
+                           bool always_draw_3d, bool allow_3d_click, float scale_3d, bool double_size, int panel_render_pass):
     left_3d_(left3d),
     top_3d_(top3d),
     width_2d_(width2d),
@@ -57,6 +58,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     screen_width_("sim/graphics/view/window_width"),
     screen_height_("sim/graphics/view/window_height"),
     view_type_("sim/graphics/view/view_type"),
+    panel_render_type_("sim/graphics/view/panel_render_type"),
     click_3d_x_("sim/graphics/view/click_3d_x_pixels"),
     click_3d_y_("sim/graphics/view/click_3d_y_pixels"),
     instrument_brightness_("sim/cockpit2/switches/instrument_brightness_ratio"),
@@ -66,7 +68,8 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     window_is_dragging_(false),
     window_has_keyboard_focus_(false),
     copy_left_3d_(-1),
-    copy_top_3d_(-1)
+    copy_top_3d_(-1),
+    panel_render_pass_(panel_render_pass)
 {
     // sim/graphics/view/panel_render_type
     // debug/texture_browser
@@ -256,16 +259,19 @@ void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bot
 
 int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 {
-    if (view_type_ == 1026 || always_draw_3d_)
-    {
-        region_draw_counter_++;
-        if (visible_3d_ && (panel_region_id_3d_ == -1 || region_draw_counter_ == static_cast<unsigned int>(panel_region_id_3d_)))
+    int renderPass = panel_render_type_;
+    if (renderPass == 0 || renderPass == panel_render_pass_) {
+        if (view_type_ == 1026 || always_draw_3d_)
         {
-            drawTexture(gauge_texture_, left_3d_, top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_, alpha_,1,wantVFlip());
-
-            if (copy_top_3d_ > -1 && copy_left_3d_ > -1)
+            region_draw_counter_++;
+            if (visible_3d_ && (panel_region_id_3d_ == -1 || region_draw_counter_ == static_cast<unsigned int>(panel_region_id_3d_)))
             {
-                drawTexture(gauge_texture_, copy_left_3d_, copy_top_3d_, copy_left_3d_+width_view_3d_ * scale_3d_, copy_top_3d_-height_view_3d_*scale_3d_, alpha_,1,wantVFlip());
+                drawTexture(gauge_texture_, left_3d_, top_3d_, left_3d_+width_view_3d_ * scale_3d_, top_3d_-height_view_3d_*scale_3d_, alpha_,1,wantVFlip());
+
+                if (copy_top_3d_ > -1 && copy_left_3d_ > -1)
+                {
+                    drawTexture(gauge_texture_, copy_left_3d_, copy_top_3d_, copy_left_3d_+width_view_3d_ * scale_3d_, copy_top_3d_-height_view_3d_*scale_3d_, alpha_,1,wantVFlip());
+                }
             }
         }
     }

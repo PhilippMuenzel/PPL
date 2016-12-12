@@ -53,7 +53,9 @@ class OverlayGauge
 {
 public:
     OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
-                 int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard = true, bool is_visible3d = true, bool is_visible2d = false, bool always_draw_3d = false, bool allow_3d_click = true, float scale_3d = 1.0f, bool double_size = false);
+                 int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard = true, bool is_visible3d = true,
+                 bool is_visible2d = false, bool always_draw_3d = false, bool allow_3d_click = true, float scale_3d = 1.0f,
+                 bool double_size = false, int panel_render_pass = 2);
     virtual ~OverlayGauge();
 
     void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d);
@@ -147,10 +149,11 @@ private:
     float scale_3d_;
     bool doubled_size_;
     int width_view_3d_;
-    int height_view_3d_;
+    int panel_render_pass_;
     DataRef<int> screen_width_;
     DataRef<int> screen_height_;
     DataRef<int> view_type_;
+    DataRef<int> panel_render_type_;
     DataRef<float> click_3d_x_;
     DataRef<float> click_3d_y_;
     DataRef<std::vector<float> > instrument_brightness_;
@@ -164,6 +167,7 @@ private:
     GLuint fbo_;
     int copy_left_3d_;
     int copy_top_3d_;
+    int height_view_3d_;
     int xplane_version_;
 };
 
