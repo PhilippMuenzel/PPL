@@ -34,7 +34,7 @@ snippets(
 
     // load from a string
     std::string strData;
-    rc = ini.Load(strData.c_str(), strData.size());
+    rc = ini.LoadData(strData.c_str(), strData.size());
     if (rc < 0) return false;
 
     // GETTING SECTIONS AND KEYS
@@ -101,8 +101,13 @@ snippets(
 
     // DELETING DATA
 
-    // deleting a key from a section. Optionally the entire
-    // section may be deleted if it is now empty.
+    // deleting a key with a value from a section.
+    // Optionally the entire section may be deleted if
+    // it is now empty.
+    ini.DeleteValue("section-name", "key-name", "value",
+        true /*delete the section if empty*/);
+
+    // deleting a key with any value from a section.
     ini.Delete("section-name", "key-name",
         true /*delete the section if empty*/);
 
