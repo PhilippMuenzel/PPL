@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Julio Campagnolo juliocampagnolo@gmail.com
+/* Copyright (c) 2013, Julio Campagnolo juliocampagnolo@gmail.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -24,6 +24,7 @@
 // The views and conclusions contained in the software and documentation are those
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
+*/
 
 #include "command.h"
 
