@@ -73,6 +73,12 @@ Test(
     _tprintf(_T("\n-- Number of keys in section [standard] = %d\n"),
         ini.GetSectionSize(_T("standard")));
 
+    // delete the key "foo" in section "standard", if it has value "bar"
+    ini.DeleteValue(_T("standard"), _T("foo"), _T("bar"));
+    pszVal = ini.GetValue(_T("standard"), _T("foo"), 0);
+    _tprintf(_T("\n-- Value of standard::foo is now '%s'\n"),
+        pszVal ? pszVal : _T("(null)"));
+
     // delete the key "foo" in section "standard"
     ini.Delete(_T("standard"), _T("foo"));
     pszVal = ini.GetValue(_T("standard"), _T("foo"), 0);
@@ -154,10 +160,10 @@ TestStreams(
     // load the file
     CSimpleIni ini(a_bIsUtf8, a_bUseMultiKey, a_bUseMultiLine);
     _tprintf(_T("Loading file: %s\n"), a_pszFile);
-    std::ifstream infile;
-    infile.open(a_pszFile, std::ifstream::in | std::ifstream::binary);
-    SI_Error rc = ini.Load(infile);
-    infile.close();
+    std::ifstream instream;
+    instream.open(a_pszFile, std::ifstream::in | std::ifstream::binary);
+    SI_Error rc = ini.LoadData(instream);
+    instream.close();
     if (rc < 0) {
         printf("Failed to open file.\n");
         return false;
@@ -167,10 +173,10 @@ TestStreams(
 
     // save the file (simple)
     _tprintf(_T("\n-- Saving file to: testsi-out-streams.ini\n"));
-    std::ofstream outfile;
-    outfile.open("testsi-out-streams.ini", std::ofstream::out | std::ofstream::binary);
-    ini.Save(outfile);
-    outfile.close();
+    std::ofstream outstream;
+    outstream.open("testsi-out-streams.ini", std::ofstream::out | std::ofstream::binary);
+    ini.Save(outstream);
+    outstream.close();
 
     return true;
 }
