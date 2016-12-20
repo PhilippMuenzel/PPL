@@ -1,4 +1,4 @@
-/* Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+/* Copyright (c) 2013, Julio Campagnolo juliocampagnolo@gmail.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -26,55 +26,24 @@
 // either expressed or implied, of the FreeBSD Project.
 */
 
-#ifndef ALCONTEXTCHANGER_H
-#define ALCONTEXTCHANGER_H
-
-#if APL == 1
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
-#elif IBM == 1
-#include <AL/al.h>
-#include <AL/alc.h>
-#elif LIN == 1
-#include <AL/al.h>
-#include <AL/alc.h>
-#else
-#error "No platform defined"
-#endif
-
-#include <boost/noncopyable.hpp>
-#include "namespaces.h"
+#include "commandbase.h"
 
 namespace PPLNAMESPACE {
-
-/**
-  * @brief RAII class to change the openal context on construction and
-  * ensure the old context is restored on destruction.
-  *
-  * @author (c) 2009-2011 by Philipp Muenzel, Technische Universitaet Darmstadt, Department of Mathematics
-  * @version 0.5
-  * @file alcontextchanger.h
-  */
-class ALContextChanger : boost::noncopyable
+Command::Command(const char *inName, const char *inDescription, int inBefore) : m_before_(inBefore)
 {
-public:
-
-    /**
-      * Switch to the openAL context given for the time this object lives.
-      *
-      * @param own_context the AL context to switch to
-      */
-    ALContextChanger(ALCcontext* own_context);
-
-    /**
-      * switch back to whatever context was active at the time the object was created.
-      */
-    ~ALContextChanger();
-
-private:
-    ALCcontext* m_other_context;
-};
-
+    m_ref_ = XPLMCreateCommand(inName,inDescription);
+    XPLMRegisterCommandHandler(Command::m_ref_,Command::m_handler_,inBefore,this);
 }
 
-#endif // ALCONTEXTCHANGER_H
+Command::~Command()
+{
+    XPLMUnregisterCommandHandler(Command::m_ref_,Command::m_handler_,Command::m_before_,this);
+}
+
+int Command::m_handler_(XPLMCommandRef inCommand, XPLMCommandPhase inPhase, void *inRefcon)
+{
+    Command* comm = static_cast<Command*>(inRefcon);
+    return comm->handler(inCommand,inPhase);
+}
+
+}

@@ -10,6 +10,7 @@
 #endif
 
 #ifdef _WIN32
+# include <windows.h>
 # define DELETE_FILE DeleteFileA
 #else
 # include <unistd.h>
@@ -121,17 +122,17 @@ bool TestStreams()
 
     Test oTest("TestStreams");
 
-    CSimpleIniA ini;
+    CSimpleIniW ini;
     ini.SetUnicode(true);
     ini.SetMultiKey(true);
     ini.SetMultiLine(true);
 
     // load the file
     try {
-        std::ifstream infile;
-        infile.open(rgszTestFile[0], std::ifstream::in | std::ifstream::binary);
-        if (ini.Load(infile) < 0) throw false;
-        infile.close();
+        std::ifstream instream;
+        instream.open(rgszTestFile[0], std::ifstream::in | std::ifstream::binary);
+        if (ini.LoadData(instream) < 0) throw false;
+        instream.close();
     }
     catch (...) {
         return oTest.Failure("Failed to load file");

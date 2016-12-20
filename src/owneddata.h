@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+/* Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -24,6 +24,7 @@
 // The views and conclusions contained in the software and documentation are those
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
+*/
 
 #ifndef OWNEDDATA_H
 #define OWNEDDATA_H
@@ -31,6 +32,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <functional>
 
 #include "XPLMDataAccess.h"
 
@@ -67,8 +69,6 @@ template <typename T>
 class OwnedData{
 public:
 
-    typedef void (*DataCallback_f)(const T&);
-
     /**
       * create owned date for sharing.
       * the identifier provided is the string identifier later used for the dataref.
@@ -83,11 +83,13 @@ public:
     OwnedData(const std::string& identifier,
               RWType read_write = ReadOnly,
               bool publish_in_dre = false,
-              DataCallback_f callback = 0):
+              std::function<void(const T&)> write_callback = nullptr,
+              std::function<T()> read_callback = nullptr):
         m_data_ref_identifier(identifier),
         m_data_ref(0),
         m_value(T()),
-        m_callback(callback)
+        m_write_callback(write_callback),
+        m_read_callback(read_callback)
     {
         switch(read_write)
         {
@@ -118,13 +120,19 @@ public:
       * acces the currently stored value
       * @return value
       */
-    T value() const { return m_value; }
+    T value() const
+    {
+        if(m_read_callback)
+            return m_read_callback();
+        else
+            return m_value;
+    }
 
     /**
       * acces the currently stored value
       * @return value
       */
-    operator T() const { return m_value; }
+    operator T() const { return value(); }
 
     /**
       * set the value so all other monitors of the dataref get it
@@ -139,8 +147,8 @@ public:
     void setValue(const T& val)
     {
         m_value = val;
-        if (m_callback)
-            m_callback(val);
+        if (m_write_callback)
+            m_write_callback(val);
     }
 
 
@@ -166,7 +174,8 @@ private:
     std::string m_data_ref_identifier;
     XPLMDataRef m_data_ref;
     T m_value;
-    DataCallback_f m_callback;
+    std::function<void(const T&)> m_write_callback;
+    std::function<T()> m_read_callback;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

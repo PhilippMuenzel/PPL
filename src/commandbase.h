@@ -1,4 +1,4 @@
-/* Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+/* Copyright (c) 2013, Julio Campagnolo juliocampagnolo@gmail.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -26,55 +26,27 @@
 // either expressed or implied, of the FreeBSD Project.
 */
 
-#ifndef ALCONTEXTCHANGER_H
-#define ALCONTEXTCHANGER_H
-
-#if APL == 1
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
-#elif IBM == 1
-#include <AL/al.h>
-#include <AL/alc.h>
-#elif LIN == 1
-#include <AL/al.h>
-#include <AL/alc.h>
-#else
-#error "No platform defined"
-#endif
-
-#include <boost/noncopyable.hpp>
+#ifndef COMMAND_H
+#define COMMAND_H
 #include "namespaces.h"
+#include "XPLMUtilities.h"
 
 namespace PPLNAMESPACE {
 
-/**
-  * @brief RAII class to change the openal context on construction and
-  * ensure the old context is restored on destruction.
-  *
-  * @author (c) 2009-2011 by Philipp Muenzel, Technische Universitaet Darmstadt, Department of Mathematics
-  * @version 0.5
-  * @file alcontextchanger.h
-  */
-class ALContextChanger : boost::noncopyable
+typedef int (* CommandCallback)(XPLMCommandRef,XPLMCommandPhase);
+
+class Command
 {
 public:
-
-    /**
-      * Switch to the openAL context given for the time this object lives.
-      *
-      * @param own_context the AL context to switch to
-      */
-    ALContextChanger(ALCcontext* own_context);
-
-    /**
-      * switch back to whatever context was active at the time the object was created.
-      */
-    ~ALContextChanger();
-
+    Command(const char *inName, const char *inDescription, int inBefore);
+    virtual ~Command();
+    virtual int handler(XPLMCommandRef inCommand, XPLMCommandPhase inPhase) = 0;
 private:
-    ALCcontext* m_other_context;
+    XPLMCommandRef m_ref_;
+    int m_before_;
+    static int m_handler_(XPLMCommandRef inCommand, XPLMCommandPhase inPhase,void * inRefcon);
 };
 
 }
 
-#endif // ALCONTEXTCHANGER_H
+#endif // COMMAND_H

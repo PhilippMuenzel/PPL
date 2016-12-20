@@ -81,7 +81,8 @@ HEADERS += \
     src/smoothed.h \
     src/processor.h \
     src/namespaces.h \
-    src/vertexbuffer.hpp
+    src/vertexbuffer.hpp \
+    src/commandbase.h
 
 SOURCES += \
     src/pluginpath.cpp \
@@ -98,7 +99,8 @@ SOURCES += \
     src/menuitem.cpp \
     src/smoothed.cpp \
     src/processor.cpp \
-    src/vertexbuffer.cpp
+    src/vertexbuffer.cpp \
+    src/commandbase.cpp
 
 withsound {
     macx:INCLUDEPATH+=/usr/local/include/
