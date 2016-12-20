@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+/* Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -24,6 +24,7 @@
 // The views and conclusions contained in the software and documentation are those
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
+*/
 
 #include <cstring>
 #include <cmath>
@@ -179,7 +180,7 @@ template <>
 DataRef<std::vector<float> >::operator std::vector<float>() const
 {
     cache_.resize(XPLMGetDatavf(m_data_ref, NULL, 0, 0));
-    XPLMGetDatavf(m_data_ref, &cache_[0], 0, cache_.size());
+    XPLMGetDatavf(m_data_ref, &cache_[0], 0, static_cast<int>(cache_.size()));
     return cache_;
 }
 
@@ -187,7 +188,7 @@ template <>
 DataRef<std::vector<int> >::operator std::vector<int>() const
 {
     cache_.resize(XPLMGetDatavi(m_data_ref, NULL, 0, 0));
-    XPLMGetDatavi(m_data_ref, &cache_[0], 0, cache_.size());
+    XPLMGetDatavi(m_data_ref, &cache_[0], 0, static_cast<int>(cache_.size()));
     return cache_;
 }
 
@@ -195,7 +196,7 @@ template <>
 DataRef<std::string>::operator std::string() const
 {
     cache_.resize(XPLMGetDatab(m_data_ref, NULL, 0, 0));
-    XPLMGetDatab(m_data_ref, &cache_[0], 0, cache_.size());
+    XPLMGetDatab(m_data_ref, &cache_[0], 0, static_cast<int>(cache_.size()));
     return std::string(cache_.begin(), cache_.end());
 }
 
@@ -232,7 +233,7 @@ template <>
 const DataRef<std::vector<float> >& DataRef<std::vector<float> >::operator=(const std::vector<float>& value)
 {
     if (m_read_write != ReadOnly)
-        XPLMSetDatavf(m_data_ref, const_cast<float*>(&value[0]), 0, value.size());
+        XPLMSetDatavf(m_data_ref, const_cast<float*>(&value[0]), 0, static_cast<int>(value.size()));
     return *this;
 }
 
@@ -240,7 +241,7 @@ template <>
 const DataRef<std::vector<int> >& DataRef<std::vector<int> >::operator=(const std::vector<int>& value)
 {
     if (m_read_write != ReadOnly)
-        XPLMSetDatavi(m_data_ref, const_cast<int*>(&value[0]), 0, value.size());
+        XPLMSetDatavi(m_data_ref, const_cast<int*>(&value[0]), 0, static_cast<int>(value.size()));
     return *this;
 }
 
@@ -248,7 +249,7 @@ template <>
 const DataRef<std::string>& DataRef<std::string>::operator=(const std::string& value)
 {
     if (m_read_write != ReadOnly)
-        XPLMSetDatab(m_data_ref, const_cast<char*>(value.c_str()) , 0, value.size() + 1);
+        XPLMSetDatab(m_data_ref, const_cast<char*>(value.c_str()) , 0, static_cast<int>(value.size()) + 1);
     return *this;
 }
 
@@ -370,7 +371,7 @@ void DataRef<std::vector<int> >::setVal(std::size_t pos, int val)
     if (cache_.size() <= pos)
         throw std::out_of_range("");
     cache_[pos] = val;
-    XPLMSetDatavi(m_data_ref, const_cast<int*>(&cache_[pos]), pos, 1);
+    XPLMSetDatavi(m_data_ref, const_cast<int*>(&cache_[pos]), static_cast<int>(pos), 1);
 }
 
 template<>
@@ -379,7 +380,7 @@ void DataRef<std::vector<float> >::setVal(std::size_t pos, float val)
     if (cache_.size() <= pos)
         throw std::out_of_range("");
     cache_[pos] = val;
-    XPLMSetDatavf(m_data_ref, const_cast<float*>(&cache_[pos]), pos, 1);
+    XPLMSetDatavf(m_data_ref, const_cast<float*>(&cache_[pos]), static_cast<int>(pos), 1);
 }
 
 template<>
@@ -388,7 +389,7 @@ void DataRef<std::string >::setVal(std::size_t pos, char val)
     if (cache_.size() <= pos)
         throw std::out_of_range("");
     cache_[pos] = val;
-    XPLMSetDatab(m_data_ref, const_cast<char*>(&cache_[pos]), pos, 1);
+    XPLMSetDatab(m_data_ref, const_cast<char*>(&cache_[pos]), static_cast<int>(pos), 1);
 }
 
 template<>
@@ -396,7 +397,7 @@ void DataRef<std::vector<int> >::reserve(std::size_t i)
 {
     if (cache_.size() < i)
         cache_.resize(i);
-    XPLMSetDatavi(m_data_ref, const_cast<int*>(&cache_[0]), 0, i);
+    XPLMSetDatavi(m_data_ref, const_cast<int*>(&cache_[0]), 0, static_cast<int>(i));
 }
 
 template<>
@@ -404,14 +405,14 @@ void DataRef<std::vector<float> >::reserve(std::size_t i)
 {
     if (cache_.size() < i)
         cache_.resize(i);
-    XPLMSetDatavf(m_data_ref, const_cast<float*>(&cache_[0]), 0, i);
+    XPLMSetDatavf(m_data_ref, const_cast<float*>(&cache_[0]), 0, static_cast<int>(i));
 }
 template<>
 void DataRef<std::string >::reserve(std::size_t i)
 {
     if (cache_.size() < i)
         cache_.resize(i);
-    XPLMSetDatab(m_data_ref, const_cast<char*>(&cache_[0]), 0, i);
+    XPLMSetDatab(m_data_ref, const_cast<char*>(&cache_[0]), 0, static_cast<int>(i));
 }
 
 template<>

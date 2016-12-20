@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+/* Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -24,6 +24,7 @@
 // The views and conclusions contained in the software and documentation are those
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
+*/
 
 #include "alcontextchanger.h"
 
