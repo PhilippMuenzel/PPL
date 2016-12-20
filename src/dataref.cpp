@@ -196,7 +196,7 @@ DataRef<std::string>::operator std::string() const
 {
     cache_.resize(XPLMGetDatab(m_data_ref, NULL, 0, 0));
     XPLMGetDatab(m_data_ref, &cache_[0], 0, cache_.size());
-    return std::string(cache_.begin(), cache_.end());
+    return std::string(cache_.data(), strlen(cache_.data()));
 }
 
 
