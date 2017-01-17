@@ -27,6 +27,7 @@
 
 #include <cstring>
 #include <cmath>
+#include <climits>
 #include <limits>
 
 #include "dataref.h"
