@@ -55,6 +55,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     doubled_size_(double_size),
     width_view_3d_(width3d),
     height_view_3d_(height3d),
+    panel_render_pass_(panel_render_pass),
     screen_width_("sim/graphics/view/window_width"),
     screen_height_("sim/graphics/view/window_height"),
     view_type_("sim/graphics/view/view_type"),
@@ -68,8 +69,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     window_is_dragging_(false),
     window_has_keyboard_focus_(false),
     copy_left_3d_(-1),
-    copy_top_3d_(-1),
-    panel_render_pass_(panel_render_pass)
+    copy_top_3d_(-1)
 {
     // sim/graphics/view/panel_render_type
     // debug/texture_browser
