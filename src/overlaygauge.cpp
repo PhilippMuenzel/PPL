@@ -259,8 +259,8 @@ void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bot
 
 int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 {
-    int renderPass = panel_render_type_;
-    if (renderPass == 0 || renderPass == panel_render_pass_) {
+    if (panel_render_type_ == 0 || panel_render_type_ == panel_render_pass_)
+    {
         if (view_type_ == 1026 || always_draw_3d_)
         {
             region_draw_counter_++;
