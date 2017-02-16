@@ -149,6 +149,7 @@ private:
     float scale_3d_;
     bool doubled_size_;
     int width_view_3d_;
+    int height_view_3d_;
     int panel_render_pass_;
     DataRef<int> screen_width_;
     DataRef<int> screen_height_;
@@ -167,7 +168,6 @@ private:
     GLuint fbo_;
     int copy_left_3d_;
     int copy_top_3d_;
-    int height_view_3d_;
     int xplane_version_;
 };
 
