@@ -86,13 +86,14 @@ public:
     virtual void handleNonDragClick(int x_rel, int y_rel) = 0;
     virtual void handleNonDragClickRelease(int x_rel, int y_rel);
     virtual void handleKeyPress(char key, XPLMKeyFlags flags, char virtual_key) = 0;
-    virtual int  frameTextureId() const;
+    virtual int  frameTextureId() const = 0;
+    virtual int  frameTextureLitId() const { return 0; }
     virtual void drawFrameTexture(int, int, int, int);
-    virtual bool wantClearTexture();
-    virtual bool frameIsBackground();
-    virtual bool wantVFlip();
+    virtual void drawFrameTextureLit(int, int, int, int);
+    virtual bool wantClearTexture() const;
+    virtual bool wantVFlip() const;
     virtual int handleMouseWheel(int x, int y, int wheel, int clicks);
-    virtual float instrumentBrightness();
+    virtual float instrumentBrightness() const;
 
     static int draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
@@ -124,7 +125,7 @@ public:
     void generateTex(int* tex_id, int number_of_textures);
 
     static bool coordInRect(float x, float y, float l, float t, float r, float b);
-    void drawTexture(int tex_id, int left, int top, int right, int bottom, float alpha = 1, int blend = 1, bool vflip=false);
+    void drawTexture(int tex_id, int left, int top, int right, int bottom, bool vflip=false);
 
     int width3d() const { return width_3d_; }
     int height3d() const { return height_3d_; }
@@ -158,7 +159,7 @@ private:
     DataRef<float> click_3d_x_;
     DataRef<float> click_3d_y_;
     DataRef<std::vector<float> > instrument_brightness_;
-    float alpha_;
+    DataRef<float> lit_level_r_, lit_level_g_, lit_level_b_;
     int panel_region_id_3d_;
     unsigned int region_draw_counter_;
     bool window_is_dragging_;
@@ -168,7 +169,6 @@ private:
     GLuint fbo_;
     int copy_left_3d_;
     int copy_top_3d_;
-    int xplane_version_;
 };
 
 }
