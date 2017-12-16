@@ -177,13 +177,13 @@ int ALContextManager::addSoundFromFile(const std::string& filename)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ALContextManager::playSound(int id)
+bool ALContextManager::playSound(int id, float volume)
 {
     ALSoundBuffer* sound = findSoundById(id);
     try
     {
         ALContextChanger cc(m_my_context);
-        sound->play();
+        sound->play(volume);
         return true;
     }
     catch (ALSoundBuffer::SoundPlayingError& ex)
@@ -233,6 +233,16 @@ void ALContextManager::unLoopSound(int id)
     ALSoundBuffer* sound = findSoundById(id);
     ALContextChanger cc(m_my_context);
     sound->setLoop(false);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+bool ALContextManager::isPlayingSound(int id)
+{
+    ALSoundBuffer* sound = findSoundById(id);
+    ALContextChanger cc(m_my_context);
+    return sound->isPlaying();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

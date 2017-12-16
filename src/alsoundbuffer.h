@@ -100,7 +100,7 @@ public:
       * set up the listener at coordinate origin and play the sound buffer
       * @return play command was successfull (false could mean invalid source or buffer)
       */
-    bool play();
+    bool play(float volume);
 
     /**
       * set source to looping the sound (effective next time play() called)

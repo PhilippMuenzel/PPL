@@ -116,7 +116,7 @@ public:
       * starts playback of the sound (playback continues when function returns)
       * @param id the sound buffers id in the map
       */
-    bool playSound(int id);
+    bool playSound(int id, float volume=1.f);
 
     /**
       * stops playback of the sound
@@ -141,6 +141,12 @@ public:
       * @param id the sound buffers id in the map
       */
     void rewindSound(int id);
+
+    /**
+      * @return whether the sound is playing right now
+      * @param id the sound buffers id in the map
+      */
+    bool isPlayingSound(int id);
 
 
 private:

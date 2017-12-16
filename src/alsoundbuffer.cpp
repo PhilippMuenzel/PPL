@@ -87,7 +87,7 @@ ALSoundBuffer::~ALSoundBuffer()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ALSoundBuffer::play()
+bool ALSoundBuffer::play(float volume)
 {
     if (!(alIsSource( m_source ) == AL_TRUE))
     {
@@ -116,6 +116,7 @@ bool ALSoundBuffer::play()
     alListenerfv(AL_POSITION,    listener_position);
     alListenerfv(AL_VELOCITY,    listener_velocity);
     alListenerfv(AL_ORIENTATION, listener_orientation);
+    alSourcef(m_source, AL_GAIN, volume);
     if (alGetError() != AL_NO_ERROR)
     {
         std::stringstream stream;
@@ -205,7 +206,7 @@ ALuint PPL::LoadWav(const std::string& fileName)
         // Open for binary reading
         f = fopen(fileName.c_str(), "rb");
         if (!f)
-            throw PPL::ALSoundBuffer::SoundBufferError("LoadWav: Could not load wav from " + fileName);
+            throw ALSoundBuffer::SoundBufferError("LoadWav: Could not load wav from " + fileName);
 
         // buffers
         char magic[5];
@@ -215,7 +216,7 @@ ALuint PPL::LoadWav(const std::string& fileName)
 
         // check magic
         if(fread(magic,4,1,f) != 1)
-            throw PPL::ALSoundBuffer::SoundBufferError("LoadWav: Cannot read wav file "+ fileName );
+            throw ALSoundBuffer::SoundBufferError("LoadWav: Cannot read wav file "+ fileName );
         if(std::string(magic) != "RIFF")
             throw ALSoundBuffer::SoundBufferError("LoadWav: Wrong wav file format. This file is not a .wav file (no RIFF magic): "+ fileName );
 
