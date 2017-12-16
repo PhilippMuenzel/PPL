@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 
 #include "pluginpath.h"
 
-using namespace PPLNAMESPACE;
+using namespace PPL;
 
 std::string PluginPath::plugin_directory = "";
 

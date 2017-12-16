@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,12 +37,11 @@
 #include "XPLMPlugin.h"
 
 #include "log.h"
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 
-const long DRE_MSG_ADD_DATAREF = 0x01000000;
+constexpr long DRE_MSG_ADD_DATAREF = 0x01000000;
 const char* const DRE_PLUGIN_SINATURE = "xplanesdk.examples.DataRefEditor";
 
 
@@ -156,7 +155,7 @@ public:
       * c) data was requested to be writeable, but X-Plane says it is read-only
       */
     DataRef(const std::string& identifier, RWType writeability = ReadOnly, bool share = false, bool publish_in_dre = false);
-
+    DataRef(const DataRef&) = delete;
 
     /**
      * unshare dataref if it was created as shared

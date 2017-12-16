@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 #include "action.h"
 #include <iostream>
 
-using namespace PPLNAMESPACE;
+using namespace PPL;
 
 MenuItem::MenuItem(const std::string& title)
 {
@@ -44,9 +44,7 @@ MenuItem::~MenuItem()
 {
     XPLMClearAllMenuItems(m_menu_id);
     XPLMEnableMenuItem(XPLMFindPluginsMenu(), m_item_id, 0);
-#ifdef XPLM210
     XPLMRemoveMenuItem(XPLMFindPluginsMenu(), m_item_id);
-#endif
     XPLMDestroyMenu(m_menu_id);
 }
 

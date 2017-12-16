@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Ben Supnik, Philipp Münzel
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -46,9 +46,8 @@
 #endif
 
 #include "XPLMGraphics.h"
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL{
 
 
 /**

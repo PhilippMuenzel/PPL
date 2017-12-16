@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,8 @@
 #define SMOOTHED_H
 
 #include <cstring>
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 template <typename T, int n>
 class Smoothed

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include "dataref.h"
 
-using namespace PPLNAMESPACE;
+using namespace PPL;
 
 
 template<>
@@ -197,7 +197,7 @@ DataRef<std::string>::operator std::string() const
 {
     cache_.resize(XPLMGetDatab(m_data_ref, NULL, 0, 0));
     XPLMGetDatab(m_data_ref, &cache_[0], 0, cache_.size());
-    return std::string(cache_.data(), strlen(cache_.data()));
+    return std::string(cache_.data(), strnlen(cache_.data(), cache_.size()));
 }
 
 
@@ -439,7 +439,7 @@ void DataRef<std::string >::reserve()
 }
 
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 template class DataRef<float>;
 template class DataRef<int>;

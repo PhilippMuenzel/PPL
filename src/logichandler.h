@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,8 @@
 
 #include <vector>
 #include <string>
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 /**
   * abstract class for all kinds of processing that takes values from XP,
@@ -45,7 +44,7 @@ class LogicHandler {
  public:
 
 
-    virtual ~LogicHandler() {}
+    virtual ~LogicHandler() = default;
 
     /**
      * reimplement to do the setups that have to be done once when data is acessible

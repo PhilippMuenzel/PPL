@@ -3,23 +3,21 @@ TEMPLATE = lib
 # Static library without any Qt functionality
 QT -= gui core
 
-CONFIG += static exceptions stl console c++11
-CONFIG -= thread qt rtti warn_on
+CONFIG += static console c++11 warn_on
+CONFIG -= thread qt
 
-VERSION = 1.0.0
+VERSION = 2.0.0
 
 INCLUDEPATH += include/simpleini
 INCLUDEPATH += ../SDK/CHeaders/XPLM
 INCLUDEPATH += ../SDK/CHeaders/Widgets
 
-# Defined to use X-Plane SDK 2.1 capabilities - no backward compatibility before 10.0
-DEFINES += XPLM200 XPLM210
+# Defined to use X-Plane SDK 2.0, 2.1 and 3.0 capabilities - no backward compatibility before 11.10
+DEFINES += XPLM200 XPLM210 XPLM300
 
 OBJECTS_DIR  = objects
+DESTDIR = lib
 TARGET = ppl
-
-DEFINES += PRIVATENAMESPACE=$$PRIVATENAMESPACE
-DESTDIR = lib$$PRIVATENAMESPACE
 
 standalone {
     DEFINES += BUILD_FOR_STANDALONE
@@ -28,7 +26,7 @@ standalone {
 
 macx {
     DEFINES += APL=1 IBM=0 LIN=0
-    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -Wno-c++11-narrowing -pedantic
+    QMAKE_CXXFLAGS += -Wextra -Wfloat-equal -pedantic
 
     # Build for multiple architectures.
     # The following line is only needed to build universal on PPC architectures.
@@ -39,22 +37,24 @@ macx {
 
 win32 {
     DEFINES += APL=0 IBM=1 LIN=0
-    CONFIG += warn_on
     #disable the deprecated warnings that make writing standards-compliant code impossible
     QMAKE_CXXFLAGS += -wd4996
-    DEFINES += NOMINMAX
+    DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN
 
     INCLUDEPATH += include C:\\Boost\\include\\boost-1_63 ..\openALsoft\include
 }
 
-unix:!macx {
-    DEFINES += APL=0 IBM=0 LIN=1 HAVE_TR1
-    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -pedantic -Wno-c++11-narrowing
-    QMAKE_CXXFLAGS += -fvisibility=hidden -fno-stack-protector
+linux {
+    DEFINES += APL=0 IBM=0 LIN=1
+    QMAKE_CXXFLAGS += -Wextra -Wfloat-equal -pedantic -Wno-c++11-narrowing
+    QMAKE_CXXFLAGS += -fvisibility=hidden
 }
 
 CONFIG( debug, debug|release ) {
     # debug settings go here
+    !win32 {
+        QMAKE_CXXFLAGS_DEBUG += -ftrapv
+    }
 } else {
     DEFINES += NDEBUG
 }
@@ -77,7 +77,6 @@ HEADERS += \
     src/action.h \
     src/smoothed.h \
     src/processor.h \
-    src/namespaces.h \
     src/vertexbuffer.hpp
 
 SOURCES += \
@@ -93,7 +92,6 @@ SOURCES += \
     src/log.cpp \
     src/logwriter.cpp \
     src/menuitem.cpp \
-    src/smoothed.cpp \
     src/processor.cpp \
     src/vertexbuffer.cpp
 
@@ -123,20 +121,4 @@ withfreetype {
 
     HEADERS += src/fontmgr.h
     SOURCES += src/fontmgr.cpp
-}
-
-withserialization {
-    win32 {
-        INCLUDEPATH += C:\\Boost\\include\\boost-1_52
-    }
-    unix:!macx {
-        INCLUDEPATH += /usr/local/include/
-    }
-    macx {
-        INCLUDEPATH += /usr/local/include/
-    }
-
-    HEADERS += src/sharedobject.h
-    SOURCES += src/sharedobject.cpp
-
 }

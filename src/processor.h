@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,8 @@
 
 #ifndef PROCESSOR_H
 #define PROCESSOR_H
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 class Processor
 {

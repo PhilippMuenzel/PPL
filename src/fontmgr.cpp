@@ -41,7 +41,7 @@
 #include "XPLMGraphics.h"
 #endif
 
-using namespace PPLNAMESPACE;
+using namespace PPL;
 
 /*
     BEN SEZ: Mac has 3 ways to get true type fonts:
@@ -86,7 +86,7 @@ using namespace PPLNAMESPACE;
  * an opaque pointer to the struct that stores the info for their class
  * so we use that for draw operations.
  */
-namespace PPLNAMESPACE {
+namespace PPL {
 struct	FontInfo_t {
     int		nRefCnt;
     int		tex_id;				// OpenGL texture ID for bitmap

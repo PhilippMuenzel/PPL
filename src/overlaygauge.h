@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,18 +45,19 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 class OverlayGauge
 {
 public:
     OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
                  int frameOffX, int frameOffY, int textureId3d, bool allow_keyboard = true, bool is_visible3d = true,
-                 bool is_visible2d = false, bool always_draw_3d = false, bool allow_3d_click = true, float scale_3d = 1.0f,
+                 bool is_visible2d = false, bool always_draw_3d = false, bool allow_3d_click = false, float scale_3d = 1.0f,
                  bool double_size = false, int panel_render_pass = 2);
     virtual ~OverlayGauge();
+    OverlayGauge(const OverlayGauge&) = delete;
+    OverlayGauge& operator=(const OverlayGauge&) = delete;
 
     void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d);
     void setCopy3d(int left3dcopy, int top3dcopy);
@@ -64,20 +65,13 @@ public:
     bool isVisible() const;
     void setVisible(bool b);
     void frame();
-    int draw2dCallback(XPLMDrawingPhase phase, int is_before);
     int draw3dCallback(XPLMDrawingPhase phase, int is_before);
+
     void draw2dWindowCallback(XPLMWindowID window_id);
-    void draw3dWindowCallback(XPLMWindowID window_id);
-
     void handle2dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, int losing_focus);
-    void handle3dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, int losing_focus);
-
     int handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse);
-    int handle3dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse);
-
+    int handle2dRightClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse);
     XPLMCursorStatus handle2dCursorCallback(XPLMWindowID window_id, int x, int y);
-    XPLMCursorStatus handle3dCursorCallback(XPLMWindowID window_id, int x, int y);
-    int handle3dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks);
     int handle2dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks);
 
 
@@ -95,22 +89,14 @@ public:
     virtual int handleMouseWheel(int x, int y, int wheel, int clicks);
     virtual float instrumentBrightness() const;
 
-    static int draw2dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
+
     static void draw2dWindowCallback(XPLMWindowID window_id, void* refcon);
-    static void draw3dWindowCallback(XPLMWindowID window_id, void* refcon);
-
     static void handle2dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, void* refcon, int losing_focus);
-    static void handle3dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, void* refcon, int losing_focus);
-
     static int handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon);
-    static int handle3dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon);
-
+    static int handle2dRightClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon);
     static XPLMCursorStatus handle2dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon);
-    static XPLMCursorStatus handle3dCursorCallback(XPLMWindowID window_id, int x, int y, void* refcon);
-
     static int handle2dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks, void* refcon);
-    static int handle3dWheelCallback(XPLMWindowID inWindowID, int x, int y, int wheel, int clicks, void* refcon);
 
     static float frameCallback(float, float, int, void* refcon);
 
@@ -133,11 +119,10 @@ public:
 
 private:
     XPLMWindowID window2d_id_;
-    XPLMWindowID window3d_click_harcevester_id_;
     int left_3d_;
     int top_3d_;
-    int width_2d_;
-    int height_2d_;
+    //int width_2d_;
+    //int height_2d_;
     int width_3d_;
     int height_3d_;
     int frame_off_x_;
@@ -146,9 +131,7 @@ private:
     bool visible_3d_;
     bool always_draw_3d_;
     bool allow_keyboard_grab_;
-    bool allow_3d_click_;
     float scale_3d_;
-    bool doubled_size_;
     int width_view_3d_;
     int height_view_3d_;
     int panel_render_pass_;
@@ -156,12 +139,8 @@ private:
     DataRef<int> screen_height_;
     DataRef<int> view_type_;
     DataRef<int> panel_render_type_;
-    DataRef<float> click_3d_x_;
-    DataRef<float> click_3d_y_;
     DataRef<std::vector<float> > instrument_brightness_;
     DataRef<float> lit_level_r_, lit_level_g_, lit_level_b_;
-    int panel_region_id_3d_;
-    unsigned int region_draw_counter_;
     bool window_is_dragging_;
     bool window_has_keyboard_focus_;
     GLuint gauge_texture_;

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Ben Supnik, Philipp Münzel
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
 
 #include "vertexbuffer.hpp"
 
-using namespace PPLNAMESPACE;
+using namespace PPL;
 
 VertexBuffer::VertexBuffer(Type type, std::size_t num_verts, std::size_t num_normals, std::size_t num_tex, std::size_t num_tex2, std::size_t num_colors):
     num_vrt_(num_verts),

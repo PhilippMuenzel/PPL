@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,9 +35,8 @@
 #include "XPLMDataAccess.h"
 
 #include "dataref.h"
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 template <typename T>
 T readFunc(void*);
@@ -113,6 +112,9 @@ public:
       * upon destruction, the dataref is de-registered from X-Plane
       */
     ~OwnedData() { unregister(); }
+
+    OwnedData(const OwnedData&) = delete;
+    OwnedData& operator=(const OwnedData&) = delete;
 
     /**
       * acces the currently stored value

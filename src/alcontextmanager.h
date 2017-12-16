@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@
 
 #include <string>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
 #if APL == 1
@@ -47,19 +46,18 @@
 #endif
 
 #include "alsoundbuffer.h"
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 /**
   * Encapsulates all openAL and alut related stuff for looking up devices, handling different
   * contexts etc. Stores SoundBuffer istances to keep track of the currently loaded sounds
   * and provides convenient functions for standard operations like playing.
   *
-  * @version 0.5
-  * @author (c) 2009-2011 by Philipp Muenzel
+  * @version 1.0
+  * @author (c) 2009-2017 by Philipp Ringler
   */
-class ALContextManager : boost::noncopyable
+class ALContextManager
 {
 public:
     class SoundNotFoundError : public std::runtime_error
@@ -96,6 +94,9 @@ public:
       */
     ~ALContextManager();
 
+    ALContextManager(const ALContextManager&) = delete;
+    ALContextManager& operator=(const ALContextManager&) = delete;
+
     /**
       * tries to load a sound by a file (format depends on what alut distro supports)
       * and stores it locally in a map, providing access by an integer key
@@ -103,47 +104,47 @@ public:
       * @return unique integer id for adressing the sound buffer
       * @exception throws a SoundLoadError if file cannot be found or has unacceptable format
       */
-    int addSoundFromFile(const std::string& filename) throw(SoundLoadError);
+    int addSoundFromFile(const std::string& filename);
 
     /**
       * removes the sound from the map and deletes its buffer
       * @param id the sound buffers id in the map
       */
-    void removeSound(int id) throw(SoundNotFoundError);
+    void removeSound(int id);
 
     /**
       * starts playback of the sound (playback continues when function returns)
       * @param id the sound buffers id in the map
       */
-    bool playSound(int id) throw(SoundNotFoundError, SoundPlayError);
+    bool playSound(int id);
 
     /**
       * stops playback of the sound
       * @param id the sound buffers id in the map
       */
-    void stopSound(int id) throw(SoundNotFoundError);
+    void stopSound(int id);
 
     /**
       * marks the sound to be played in a loop (when playback starts by play() )
       * @param id the sound buffers id in the map
       */
-    void loopSound(int id) throw(SoundNotFoundError);
+    void loopSound(int id);
 
     /**
       * removes the looping flag (playback does stop when the sound's end is reached)
       * @param id the sound buffers id in the map
       */
-    void unLoopSound(int id) throw(SoundNotFoundError);
+    void unLoopSound(int id);
 
     /**
       * rewinds the sound to it's starting position
       * @param id the sound buffers id in the map
       */
-    void rewindSound(int id) throw(SoundNotFoundError);
+    void rewindSound(int id);
 
 
 private:
-    ALSoundBuffer* findSoundById(int id) throw(SoundNotFoundError);
+    ALSoundBuffer* findSoundById(int id);
     void deleteAllSounds();
 
 private:

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,9 +32,8 @@
 
 #define SI_CONVERT_GENERIC
 #include "SimpleIni.h"
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 /**
   * Convenient access to ini-Files.
@@ -42,8 +41,7 @@ namespace PPLNAMESPACE {
   * @version 0.3
   * @author (c) 2009-2011 by Philipp Muenzel
   */
-class Settings : private CSimpleIniA
-{
+class Settings : private CSimpleIniA {
 public:
     /**
       * init with the path to an ini.-file. If the file does not exist, it is created
@@ -86,13 +84,9 @@ public:
 
 
 private:
-
     std::string m_config_file_name;
-
     bool m_file_did_exist_before;
-
     bool m_create_file_if_not_exists;
-
     bool m_write_new_file;
 };
 

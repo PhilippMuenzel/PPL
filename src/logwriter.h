@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,8 @@
 
 #include <fstream>
 #include "log.h"
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 /**
   * @brief Logger implementation that logs to file.
@@ -49,6 +48,9 @@ public:
 
     ~LogWriter();
 
+    LogWriter(const LogWriter&) = delete;
+    LogWriter& operator=(const LogWriter&) = delete;
+
     /**
       * Set a file to log all outputs to. If a log happens before
       * this funtion was called (e.g. static initializations), output is logged to stdout
@@ -64,8 +66,6 @@ public:
     static LogWriter& getLogger();
 
 private:
-    LogWriter(const LogWriter&);
-    LogWriter& operator=(const LogWriter&);
     std::ofstream m_logfile;
 };
 

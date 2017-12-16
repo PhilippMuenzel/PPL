@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,9 +32,9 @@
 
 #include "alsoundbuffer.h"
 
-using namespace PPLNAMESPACE;
+using namespace PPL;
 
-ALSoundBuffer::ALSoundBuffer(const std::string& filename) throw(SoundPlayingError):
+ALSoundBuffer::ALSoundBuffer(const std::string& filename):
     m_name(filename)
 {
     ALfloat source_position[] = { 0.0, 0.0, 0.0 };
@@ -50,7 +50,9 @@ ALSoundBuffer::ALSoundBuffer(const std::string& filename) throw(SoundPlayingErro
         stream << "ALUT: Buffer creation failed: "/*
                                     << alutGetErrorString(alutGetError())*/;
         throw SoundBufferError(stream.str());
-    } else {
+    }
+    else
+    {
         if (alGetError() != AL_NO_ERROR)
         {
             throw SoundBufferError("Error in creating buffer");
@@ -85,7 +87,7 @@ ALSoundBuffer::~ALSoundBuffer()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ALSoundBuffer::play() throw(SoundPlayingError)
+bool ALSoundBuffer::play()
 {
     if (!(alIsSource( m_source ) == AL_TRUE))
     {
@@ -160,7 +162,7 @@ bool ALSoundBuffer::isPlaying() const
     return (state == AL_PLAYING);
 }
 
-namespace PPLNAMESPACE {
+namespace PPL {
 static uint16_t readByte16(const unsigned char buffer[2]) {
 #if APL && defined(__ppc__)
     return (buffer[0] << 8) + buffer[1];
@@ -183,16 +185,16 @@ static uint32_t readByte32(const unsigned char buffer[4]) {
 //  -  http://www.borg.com/~jglatt/tech/wave.htm
 //  -  Alut source code: static BufferData *loadWavFile (InputStream *stream)
 //     http://www.openal.org/repos/openal/tags/freealut_1_1_0/alut/alut/src/alutLoader.c
-ALuint PPL::LoadWav(const std::string& fileName) {
-    const unsigned int BUFFER_SIZE = 32768;     // 32 KB buffers
-    long bytes;
+ALuint PPL::LoadWav(const std::string& fileName)
+{
+    constexpr std::size_t BUFFER_SIZE = 32768;     // 32 KB buffers
+    std::size_t bytes;
     std::vector<char> data;
     ALenum format;
     ALsizei freq;
 
     // Local resources
-    FILE *f = NULL;
-    char *array = NULL;
+    FILE *f = nullptr;
     ALuint buffer = AL_NONE;
 
     alGetError();
@@ -284,11 +286,12 @@ ALuint PPL::LoadWav(const std::string& fileName) {
         if (sizeof(freq) != sizeof(frequency))
             throw ALSoundBuffer::SoundBufferError("LoadWav: freq and frequency different sizes");
 
-        array = new char[BUFFER_SIZE];
+        auto array = std::vector<char>();
+        array.resize(BUFFER_SIZE);
 
         while (data.size() != subChunk2Size) {
             // Read up to a buffer's worth of decoded sound data
-            bytes = fread(array, 1, BUFFER_SIZE, f);
+            bytes = fread(array.data(), 1, array.size(), f);
 
             if (bytes <= 0)
                 break;
@@ -297,14 +300,11 @@ ALuint PPL::LoadWav(const std::string& fileName) {
                 bytes = subChunk2Size - data.size();
 
             // Append to end of buffer
-            data.insert(data.end(), array, array + bytes);
+            data.insert(data.end(), array.begin(), array.begin() + bytes);
         };
 
-        delete []array;
-        array = NULL;
-
         fclose(f);
-        f = NULL;
+        f = nullptr;
 
         alGenBuffers(1, &buffer);
         if(alGetError() != AL_NO_ERROR)
@@ -317,13 +317,11 @@ ALuint PPL::LoadWav(const std::string& fileName) {
             throw ALSoundBuffer::SoundBufferError("LoadWav: Could not load buffer data");
 
         return buffer;
-    } catch (std::runtime_error& er) {
-        if (buffer)
-            if (alIsBuffer(buffer) == AL_TRUE)
-                alDeleteBuffers(1, &buffer);
-
-        if (array)
-            delete []array;
+    }
+    catch (std::runtime_error& er)
+    {
+        if (buffer && alIsBuffer(buffer) == AL_TRUE)
+            alDeleteBuffers(1, &buffer);
 
         if (f)
             fclose(f);

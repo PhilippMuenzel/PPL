@@ -28,9 +28,8 @@
 
 #include <map>
 #include <string>
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 using std::multimap;
 using std::string;

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,9 +36,8 @@
 #include "XPStandardWidgets.h"
 
 #include "dataref.h"
-#include "namespaces.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 /**
   * A convenient way to display a message box with a title and a longer text message
@@ -75,6 +74,9 @@ public:
       * destroy window and all child windows
       */
     ~MessageWindow();
+
+    MessageWindow(const MessageWindow&) = delete;
+    MessageWindow& operator=(const MessageWindow&) = delete;
 
     /**
       * @param width in pixels

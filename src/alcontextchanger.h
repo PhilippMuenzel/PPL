@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -41,20 +41,16 @@
 #error "No platform defined"
 #endif
 
-#include <boost/noncopyable.hpp>
-#include "namespaces.h"
-
-namespace PPLNAMESPACE {
+namespace PPL {
 
 /**
   * @brief RAII class to change the openal context on construction and
   * ensure the old context is restored on destruction.
   *
-  * @author (c) 2009-2011 by Philipp Muenzel, Technische Universitaet Darmstadt, Department of Mathematics
-  * @version 0.5
-  * @file alcontextchanger.h
+  * @author (c) 2009-2017 by Philipp Ringler, Laminar Research
+  * @version 1.0
   */
-class ALContextChanger : boost::noncopyable
+class ALContextChanger
 {
 public:
 
@@ -69,6 +65,9 @@ public:
       * switch back to whatever context was active at the time the object was created.
       */
     ~ALContextChanger();
+
+    ALContextChanger(const ALContextChanger&) = delete;
+    ALContextChanger& operator=(const ALContextChanger&) = delete;
 
 private:
     ALCcontext* m_other_context;

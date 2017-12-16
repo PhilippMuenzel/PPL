@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,9 @@
 
 #include <string>
 #include <vector>
-#include "namespaces.h"
 #include "stdint.h"
 
-namespace PPLNAMESPACE {
+namespace PPL {
 
 class Texture
 {
@@ -79,16 +78,16 @@ public:
 
     Texture(const std::string& file_name);
     ~Texture();
+    Texture(const Texture&) = delete;
+    Texture& operator=(const Texture&) = delete;
     int id() const;
     int width() const;
     int height() const;
 
 private:
-
     void swapRedBlue();
     IMAGEDATA m_imagedata;
     int m_id;
-
 };
 
 }

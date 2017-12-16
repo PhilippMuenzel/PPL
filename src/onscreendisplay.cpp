@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 
 #include "onscreendisplay.h"
 
-using namespace PPLNAMESPACE;
+using namespace PPL;
 
 OnScreenDisplay::OnScreenDisplay(int width, int height, const std::string& title):
     screen_w_("sim/graphics/view/window_width"),

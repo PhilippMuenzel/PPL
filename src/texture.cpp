@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2017, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@
 #endif
 #endif
 
-using namespace PPLNAMESPACE;
+using namespace PPL;
 
 #if APL && defined(__ppc__)
 int16_t Endian(int16_t Data)
@@ -165,7 +165,8 @@ Texture::Texture(const std::string& file_name)
 
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    } else if (file_name.rfind(".tga") != std::string::npos)
+    }
+    else if (file_name.rfind(".tga") != std::string::npos)
     {
         GLubyte TGAheader[12]={0,0,2,0,0,0,0,0,0,0,0,0};    // Uncompressed TGA Header
         GLubyte TGAcompare[12];                             // Used To Compare TGA Header
@@ -245,7 +246,9 @@ Texture::Texture(const std::string& file_name)
 
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    } else {
+    }
+    else
+    {
         throw std::runtime_error("The texture file is neither a BMP nor a TGA. Other fileformats are not supported.");
     }
 }
