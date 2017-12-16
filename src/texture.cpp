@@ -209,12 +209,9 @@ Texture::Texture(const std::string& file_name)
         imageSize       = m_imagedata.Width*m_imagedata.Height*bytesPerPixel;   // Calculate The Memory Required For The TGA Data
 
         try {
-            unsigned char* buffer = new unsigned char[imageSize];
-            if (fread(reinterpret_cast<char*>(buffer), 1, imageSize, file) == imageSize)
+            m_imagedata.pData.resize(imageSize);
+            if (fread(m_imagedata.pData.data(), 1, imageSize, file) != imageSize)
             {
-                m_imagedata.pData.assign(buffer, buffer+imageSize);
-                delete[] buffer;
-            } else {
                 throw std::runtime_error("Image size of tga doesn't match");
             }
         } catch (std::bad_alloc&)

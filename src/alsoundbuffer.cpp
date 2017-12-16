@@ -286,8 +286,7 @@ ALuint PPL::LoadWav(const std::string& fileName)
         if (sizeof(freq) != sizeof(frequency))
             throw ALSoundBuffer::SoundBufferError("LoadWav: freq and frequency different sizes");
 
-        auto array = std::vector<char>();
-        array.resize(BUFFER_SIZE);
+        auto array = std::vector<char>(BUFFER_SIZE);
 
         while (data.size() != subChunk2Size) {
             // Read up to a buffer's worth of decoded sound data
