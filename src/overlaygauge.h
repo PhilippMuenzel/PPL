@@ -66,6 +66,7 @@ public:
     void setVisible(bool b);
     void frame();
     int draw3dCallback(XPLMDrawingPhase phase, int is_before);
+    void toggleKeyboardFocus();
 
     void draw2dWindowCallback(XPLMWindowID window_id);
     void handle2dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, int losing_focus);
@@ -77,8 +78,8 @@ public:
 
     virtual bool wantRedraw();
     virtual void draw(int left, int top, int right, int bottom) = 0;
-    virtual void handleNonDragClick(int x_rel, int y_rel) = 0;
-    virtual void handleNonDragClickRelease(int x_rel, int y_rel);
+    virtual int handleNonDragClick(int x_rel, int y_rel, bool right) = 0;
+    virtual void handleNonDragClickRelease(int x_rel, int y_rel, bool right);
     virtual void handleKeyPress(char key, XPLMKeyFlags flags, char virtual_key) = 0;
     virtual int  frameTextureId() const = 0;
     virtual int  frameTextureLitId() const { return 0; }
@@ -121,16 +122,17 @@ private:
     XPLMWindowID window2d_id_;
     int left_3d_;
     int top_3d_;
-    //int width_2d_;
-    //int height_2d_;
+    int left_2d_;
+    int top_2d_;
     int width_3d_;
     int height_3d_;
+    const int width_2d_;
+    const int height_2d_;
     int frame_off_x_;
     int frame_off_y_;
     bool visible_2d_;
     bool visible_3d_;
     bool always_draw_3d_;
-    bool allow_keyboard_grab_;
     float scale_3d_;
     int width_view_3d_;
     int height_view_3d_;
@@ -148,6 +150,8 @@ private:
     GLuint fbo_;
     int copy_left_3d_;
     int copy_top_3d_;
+    int dX = 0;
+    int dY = 0;
 };
 
 }
