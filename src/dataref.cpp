@@ -273,8 +273,9 @@ dataref_trait<std::vector<int> >::BasicType DataRef<std::vector<int> >::operator
 template<>
 dataref_trait<std::string>::BasicType DataRef<std::string>::operator[](std::size_t index) const
 {
-    const std::string& s(*this);
-    return s[index];
+    cache_.resize(XPLMGetDatab(m_data_ref, NULL, 0, 0));        // can't use convert to std::string method here, because we might want the raw data with embedded null bytes.
+    XPLMGetDatab(m_data_ref, &cache_[0], 0, cache_.size());
+    return cache_[index];
 }
 
 
