@@ -208,40 +208,8 @@ void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bot
 
 int OverlayGauge::draw3dCallback(XPLMDrawingPhase, int)
 {
-    if (wantRedraw())
-    {
-        GLint xp_fbo;
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &xp_fbo);
-        // set rendering destination to FBO
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_);
-        glPushAttrib(GL_VIEWPORT_BIT);
-        glViewport(0,0,width_3d_, height_3d_);
-        glMatrixMode (GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
-        glOrtho(0,width_3d_, 0, height_3d_, 0, 1);
-        glMatrixMode (GL_MODELVIEW);
-        glPushMatrix();
-        glLoadIdentity();
-
-        // clear buffers
-        if (wantClearTexture())
-            glClearColor(0,0,0,0);
-        else
-            glClearColor(0,0,0,1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // draw a scene to a texture directly
-        draw(0, height_3d_, width_3d_, 0);
-
-        // unbind FBO
-        glPopMatrix();
-        glMatrixMode (GL_PROJECTION);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-        glPopAttrib();
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, xp_fbo);
-    }
+    if (!visible_2d_)
+        updateFBO();
     if (panel_render_type_ == 0 || panel_render_type_ == panel_render_pass_)
     {
         if (view_type_ == 1026 || always_draw_3d_)
@@ -284,6 +252,7 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
 {
     if (visible_2d_)
     {
+        updateFBO();
         int left, top, right, bottom;
         XPLMGetWindowGeometry(window2d_id_, &left, &top, &right, &bottom);
         float sX = (right-left)/float(width_2d_);
@@ -331,6 +300,44 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
             static char str[] = "K";
             XPLMDrawString(color, left + 20, top - 25, str, 0, xplmFont_Proportional);
         }
+    }
+}
+
+void OverlayGauge::updateFBO()
+{
+    if (wantRedraw())
+    {
+        GLint xp_fbo;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &xp_fbo);
+        // set rendering destination to FBO
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_);
+        glPushAttrib(GL_VIEWPORT_BIT);
+        glViewport(0,0,width_3d_, height_3d_);
+        glMatrixMode (GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0,width_3d_, 0, height_3d_, 0, 1);
+        glMatrixMode (GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        // clear buffers
+        if (wantClearTexture())
+            glClearColor(0,0,0,0);
+        else
+            glClearColor(0,0,0,1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // draw a scene to a texture directly
+        draw(0, height_3d_, width_3d_, 0);
+
+        // unbind FBO
+        glPopMatrix();
+        glMatrixMode (GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glPopAttrib();
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, xp_fbo);
     }
 }
 

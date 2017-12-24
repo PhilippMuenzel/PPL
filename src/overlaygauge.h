@@ -119,6 +119,7 @@ public:
     GLuint gaugeTexture() const { return gauge_texture_; }
 
 private:
+    void updateFBO();
     XPLMWindowID window2d_id_;
     int left_3d_;
     int top_3d_;
