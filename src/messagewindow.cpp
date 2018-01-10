@@ -162,7 +162,7 @@ void MessageWindow::display()
     }
 
     XPSetWidgetProperty(m_screen_widget, xpProperty_SubWindowType, xpSubWindowStyle_SubWindow);
-    XPSetWidgetProperty(m_box_widget, xpProperty_Object, reinterpret_cast<long>(this));
+    XPSetWidgetProperty(m_box_widget, xpProperty_Object, reinterpret_cast<intptr_t>(this));
     XPAddWidgetCallback(m_box_widget, widgetCallback);
     m_is_displayed = true;
 }

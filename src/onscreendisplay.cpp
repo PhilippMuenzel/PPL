@@ -52,7 +52,7 @@ OnScreenDisplay::OnScreenDisplay(int width, int height, const std::string& title
                                 0,
                                 xpWidgetClass_MainWindow);
     XPSetWidgetProperty(widget_id_, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
-    XPSetWidgetProperty(widget_id_, xpProperty_Object, reinterpret_cast<long>(this));
+    XPSetWidgetProperty(widget_id_, xpProperty_Object, reinterpret_cast<intptr_t>(this));
     XPAddWidgetCallback(widget_id_, widgetCallback);
 }
 

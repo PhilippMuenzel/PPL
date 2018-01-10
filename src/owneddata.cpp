@@ -232,10 +232,10 @@ void OwnedData<std::vector<float> >::registerReadWrite()
 int PPL::readFuncStr(void* inRefCon, void* outValue, int inOffset, int inMaxLength)
 {
     OwnedData<std::string>* p_owned_data = static_cast<OwnedData<std::string>*>(inRefCon);
-    long length = p_owned_data->value().length();
+    std::size_t length = p_owned_data->value().length();
     if (outValue == NULL)
         return length;
-    long maxlen = (inMaxLength < length)?inMaxLength:length;
+    std::size_t maxlen = std::min(std::size_t(inMaxLength), length);
     strncpy(static_cast<char*>(outValue), p_owned_data->value().substr(inOffset, maxlen).c_str(), maxlen);
     return inMaxLength;
 }
