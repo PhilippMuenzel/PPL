@@ -136,8 +136,6 @@ private:
     XPLMWindowID window3d_click_harcevester_id_;
     int left_3d_;
     int top_3d_;
-    int width_2d_;
-    int height_2d_;
     int width_3d_;
     int height_3d_;
     int frame_off_x_;

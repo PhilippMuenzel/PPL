@@ -40,8 +40,6 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
                            bool always_draw_3d, bool allow_3d_click, float scale_3d, bool double_size, int panel_render_pass):
     left_3d_(left3d),
     top_3d_(top3d),
-    width_2d_(width2d),
-    height_2d_(height2d),
     width_3d_(width3d),
     height_3d_(height3d),
     frame_off_x_(frameOffX),

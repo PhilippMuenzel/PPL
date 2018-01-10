@@ -29,9 +29,8 @@
 #define ALCONTEXTMANAGER_H
 
 #include <string>
-
-#include <boost/noncopyable.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
+#include <map>
+#include <memory>
 
 #if APL == 1
 #include <OpenAL/al.h>
@@ -56,10 +55,10 @@ namespace PPLNAMESPACE {
   * contexts etc. Stores SoundBuffer istances to keep track of the currently loaded sounds
   * and provides convenient functions for standard operations like playing.
   *
-  * @version 0.5
-  * @author (c) 2009-2011 by Philipp Muenzel
+  * @version 1.1
+  * @author (c) 2009-2018 by Philipp Ringler
   */
-class ALContextManager : boost::noncopyable
+class ALContextManager
 {
 public:
     class SoundNotFoundError : public std::runtime_error
@@ -96,6 +95,9 @@ public:
       */
     ~ALContextManager();
 
+    ALContextManager(const ALContextManager&) = delete;
+    ALContextManager& operator=(const ALContextManager&) = delete;
+
     /**
       * tries to load a sound by a file (format depends on what alut distro supports)
       * and stores it locally in a map, providing access by an integer key
@@ -103,51 +105,56 @@ public:
       * @return unique integer id for adressing the sound buffer
       * @exception throws a SoundLoadError if file cannot be found or has unacceptable format
       */
-    int addSoundFromFile(const std::string& filename) throw(SoundLoadError);
+    int addSoundFromFile(const std::string& filename);
 
     /**
       * removes the sound from the map and deletes its buffer
       * @param id the sound buffers id in the map
       */
-    void removeSound(int id) throw(SoundNotFoundError);
+    void removeSound(int id);
 
     /**
       * starts playback of the sound (playback continues when function returns)
       * @param id the sound buffers id in the map
       */
-    bool playSound(int id) throw(SoundNotFoundError, SoundPlayError);
+    bool playSound(int id);
 
     /**
       * stops playback of the sound
       * @param id the sound buffers id in the map
       */
-    void stopSound(int id) throw(SoundNotFoundError);
+    void stopSound(int id);
 
     /**
       * marks the sound to be played in a loop (when playback starts by play() )
       * @param id the sound buffers id in the map
       */
-    void loopSound(int id) throw(SoundNotFoundError);
+    void loopSound(int id);
 
     /**
       * removes the looping flag (playback does stop when the sound's end is reached)
       * @param id the sound buffers id in the map
       */
-    void unLoopSound(int id) throw(SoundNotFoundError);
+    void unLoopSound(int id);
 
     /**
       * rewinds the sound to it's starting position
       * @param id the sound buffers id in the map
       */
-    void rewindSound(int id) throw(SoundNotFoundError);
+    void rewindSound(int id);
+
+    /**
+      * @return whether the sound is playing right now
+      * @param id the sound buffers id in the map
+      */
+    bool isPlayingSound(int id);
 
 
 private:
-    ALSoundBuffer* findSoundById(int id) throw(SoundNotFoundError);
+    ALSoundBuffer* findSoundById(int id);
     void deleteAllSounds();
 
-private:
-    boost::ptr_map<int, ALSoundBuffer> m_sounds;
+    std::map<int, std::unique_ptr<ALSoundBuffer>> m_sounds;
     int m_internal_counter;
     ALCdevice* m_device;
     ALCcontext* m_my_context;

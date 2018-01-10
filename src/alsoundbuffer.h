@@ -31,8 +31,6 @@
 #include <string>
 #include <stdexcept>
 
-#include <boost/noncopyable.hpp>
-
 #if APL == 1
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
@@ -57,7 +55,7 @@ namespace PPLNAMESPACE {
   * @version 0.5
   * @author (c) 2009-2011 by Philipp Muenzel
   */
-class ALSoundBuffer: boost::noncopyable
+class ALSoundBuffer
 {
 public:
     class SoundPlayingError : public std::runtime_error
@@ -90,18 +88,21 @@ public:
       * @param filename the sound to load as a path relative to X-Planes main directory
       * @exception throws an SoundPlayingError if Buffer could not be created
       */
-    ALSoundBuffer(const std::string& filename) throw(SoundPlayingError);
+    ALSoundBuffer(const std::string& filename);
 
     /**
       * release the resources, delete buffer and source
       */
     ~ALSoundBuffer();
 
+    ALSoundBuffer(const ALSoundBuffer&) = delete;
+    ALSoundBuffer& operator=(const ALSoundBuffer&) = delete;
+
     /**
       * set up the listener at coordinate origin and play the sound buffer
       * @return play command was successfull (false could mean invalid source or buffer)
       */
-    bool play() throw(SoundPlayingError);
+    bool play();
 
     /**
       * set source to looping the sound (effective next time play() called)

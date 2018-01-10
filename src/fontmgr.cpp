@@ -310,9 +310,9 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
 
     // Now build mipmaps based on this texture
     char buf[512];
-    sprintf(buf, "Trying to build mipmaps for font %s, tex width %d, tex height %d, texture data %p\n", inFontPath, info->tex_width, info->tex_height, textureData);
+    snprintf(buf, 512, "Trying to build mipmaps for font %s, tex width %d, tex height %d, texture data %p\n", inFontPath, info->tex_width, info->tex_height, (void*)textureData);
     XPLMDebugString(buf);
-    OGL_ERROR(gluBuild2DMipmaps(GL_TEXTURE_2D, GL_ALPHA, info->tex_width, info->tex_height, GL_ALPHA, GL_UNSIGNED_BYTE, textureData))
+    OGL_ERROR(glGenerateMipmap(GL_TEXTURE_2D))
 
     // Ben sez: use nearest neighbor for exact-size fonts...pixel accurate!
     // Use linear for scaled fonts....less artifacts when we scale.

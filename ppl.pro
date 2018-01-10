@@ -3,7 +3,7 @@ TEMPLATE = lib
 # Static library without any Qt functionality
 QT -= gui core
 
-CONFIG += static exceptions stl console c++11
+CONFIG += static exceptions stl console c++14
 CONFIG -= thread qt rtti warn_on
 
 VERSION = 1.0.0
@@ -44,12 +44,12 @@ win32 {
     QMAKE_CXXFLAGS += -wd4996
     DEFINES += NOMINMAX
 
-    INCLUDEPATH += include C:\\Boost\\include\\boost-1_63 ..\openALsoft\include
+    INCLUDEPATH += include ..\openALsoft\include
 }
 
-unix:!macx {
-    DEFINES += APL=0 IBM=0 LIN=1 HAVE_TR1
-    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -pedantic -Wno-c++11-narrowing
+linux {
+    DEFINES += APL=0 IBM=0 LIN=1
+    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -Wno-c++11-narrowing -pedantic
     QMAKE_CXXFLAGS += -fvisibility=hidden -fno-stack-protector
 }
 
@@ -114,7 +114,7 @@ withfreetype {
         INCLUDEPATH += ../freetype-2.6.5/include
         DEFINES+=FREETYPE2_STATIC
     }
-    unix:!macx {
+    linux {
         INCLUDEPATH += /usr/include/freetype2
     }
     macx {
@@ -127,7 +127,7 @@ withfreetype {
 
 withserialization {
     win32 {
-        INCLUDEPATH += C:\\Boost\\include\\boost-1_52
+        INCLUDEPATH += C:\\Boost\\include\\boost-1_66
     }
     unix:!macx {
         INCLUDEPATH += /usr/local/include/

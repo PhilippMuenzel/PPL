@@ -41,7 +41,6 @@
 #error "No platform defined"
 #endif
 
-#include <boost/noncopyable.hpp>
 #include "namespaces.h"
 
 namespace PPLNAMESPACE {
@@ -50,11 +49,11 @@ namespace PPLNAMESPACE {
   * @brief RAII class to change the openal context on construction and
   * ensure the old context is restored on destruction.
   *
-  * @author (c) 2009-2011 by Philipp Muenzel, Technische Universitaet Darmstadt, Department of Mathematics
+  * @author (c) 2009-2018 by Philipp Ringler
   * @version 0.5
   * @file alcontextchanger.h
   */
-class ALContextChanger : boost::noncopyable
+class ALContextChanger
 {
 public:
 
@@ -69,6 +68,9 @@ public:
       * switch back to whatever context was active at the time the object was created.
       */
     ~ALContextChanger();
+
+    ALContextChanger(const ALContextChanger&) = delete;
+    ALContextChanger& operator=(const ALContextChanger&) = delete;
 
 private:
     ALCcontext* m_other_context;

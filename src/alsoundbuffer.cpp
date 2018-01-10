@@ -34,7 +34,7 @@
 
 using namespace PPLNAMESPACE;
 
-ALSoundBuffer::ALSoundBuffer(const std::string& filename) throw(SoundPlayingError):
+ALSoundBuffer::ALSoundBuffer(const std::string& filename):
     m_name(filename)
 {
     ALfloat source_position[] = { 0.0, 0.0, 0.0 };
@@ -85,7 +85,7 @@ ALSoundBuffer::~ALSoundBuffer()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ALSoundBuffer::play() throw(SoundPlayingError)
+bool ALSoundBuffer::play()
 {
     if (!(alIsSource( m_source ) == AL_TRUE))
     {
