@@ -27,7 +27,6 @@
 
 #if APL
 #include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
 #elif IBM
 #include <windows.h>
 #include <GL/gl.h>
@@ -59,7 +58,22 @@ using namespace PPLNAMESPACE;
  */
 #ifndef NDEBUG
 #include <cassert>
-#define OGL_ERROR(expression) expression; GLenum err = glGetError(); if(err){ XPLMDebugString((const char*)gluErrorString(err)); XPLMDebugString("\n"); assert(false);}
+const char* getErrorString(GLenum error)
+{
+    switch (error)
+    {
+    case GL_INVALID_ENUM:       return "Invalid enum";
+    case GL_INVALID_VALUE:      return "Invalid value";
+    case GL_INVALID_OPERATION:  return "Invalid operation";
+    case GL_INVALID_FRAMEBUFFER_OPERATION:  return "Invalid framebuffer operation";
+    case GL_OUT_OF_MEMORY:      return "Out of memory";
+    case GL_STACK_UNDERFLOW:    return "Stack underflow";
+    case GL_STACK_OVERFLOW:     return "Stack overflow";
+    }
+    return "Unknown error code";
+}
+
+#define OGL_ERROR(expression) expression; GLenum err = glGetError(); if(err){ XPLMDebugString(getErrorString(err)); XPLMDebugString("\n"); assert(false);}
 #else
 #define OGL_ERROR(expression) expression;
 #endif
@@ -312,7 +326,12 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     char buf[512];
     snprintf(buf, 512, "Trying to build mipmaps for font %s, tex width %d, tex height %d, texture data %p\n", inFontPath, info->tex_width, info->tex_height, (void*)textureData);
     XPLMDebugString(buf);
+#if APL
     OGL_ERROR(glGenerateMipmap(GL_TEXTURE_2D))
+#else
+    OGL_ERROR(gluBuild2DMipmaps(GL_TEXTURE_2D, GL_ALPHA, info->tex_width, info->tex_height, GL_ALPHA, GL_UNSIGNED_BYTE, textureData))
+#endif
+
 
     // Ben sez: use nearest neighbor for exact-size fonts...pixel accurate!
     // Use linear for scaled fonts....less artifacts when we scale.
