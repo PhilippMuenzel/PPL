@@ -289,7 +289,8 @@ ALuint PPL::LoadWav(const std::string& fileName)
 
         auto array = std::vector<char>(BUFFER_SIZE);
 
-        while (data.size() != subChunk2Size) {
+        while (data.size() != subChunk2Size)
+        {
             // Read up to a buffer's worth of decoded sound data
             bytes = fread(array.data(), 1, array.size(), f);
 

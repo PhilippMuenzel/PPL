@@ -31,10 +31,8 @@
 #include <cstddef>
 
 #if APL == 1
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/glu.h>
+#include <OpenGL/GL.h>
 #elif IBM == 1
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include "GL/glew.h"
 #include <gl/gl.h>

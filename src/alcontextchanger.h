@@ -47,7 +47,7 @@ namespace PPL {
   * @brief RAII class to change the openal context on construction and
   * ensure the old context is restored on destruction.
   *
-  * @author (c) 2009-2017 by Philipp Ringler, Laminar Research
+  * @author (c) 2009-2018 by Philipp Ringler
   * @version 1.0
   */
 class ALContextChanger

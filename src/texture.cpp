@@ -35,21 +35,14 @@
 #endif
 
 #if IBM
-#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <gl\gl.h>
 #include <gl\glu.h>
 #elif LIN
 #include <GL/gl.h>
 #include <GL/glu.h>
-#else
-#if __GNUC__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else
-#include <gl.h>
-#include <glu.h>
-#endif
+#elif APL
+#include <OpenGL/GL.h>
 #endif
 
 using namespace PPL;
@@ -160,8 +153,11 @@ Texture::Texture(const std::string& file_name)
         XPLMBindTexture2d(m_id, 0);
 #endif
 
-
+#if APL
+        glGenerateMipmap(GL_TEXTURE_2D);
+#else
         gluBuild2DMipmaps(GL_TEXTURE_2D, 3, m_imagedata.Width, m_imagedata.Height, GL_RGB, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]);
+#endif
 
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);

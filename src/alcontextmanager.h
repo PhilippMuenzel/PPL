@@ -29,8 +29,8 @@
 #define ALCONTEXTMANAGER_H
 
 #include <string>
-
-#include <boost/ptr_container/ptr_map.hpp>
+#include <map>
+#include <memory>
 
 #if APL == 1
 #include <OpenAL/al.h>
@@ -54,7 +54,7 @@ namespace PPL {
   * contexts etc. Stores SoundBuffer istances to keep track of the currently loaded sounds
   * and provides convenient functions for standard operations like playing.
   *
-  * @version 1.0
+  * @version 1.1
   * @author (c) 2009-2017 by Philipp Ringler
   */
 class ALContextManager
@@ -154,7 +154,7 @@ private:
     void deleteAllSounds();
 
 private:
-    boost::ptr_map<int, ALSoundBuffer> m_sounds;
+    std::map<int, std::unique_ptr<ALSoundBuffer>> m_sounds;
     int m_internal_counter;
     ALCdevice* m_device;
     ALCcontext* m_my_context;

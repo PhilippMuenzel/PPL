@@ -133,7 +133,7 @@ ALSoundBuffer* ALContextManager::findSoundById(int id)
     auto it = m_sounds.find(id);
     if (it != m_sounds.end())
     {
-        return it->second;
+        return it->second.get();
     }
     else
     {
@@ -148,27 +148,26 @@ ALSoundBuffer* ALContextManager::findSoundById(int id)
 
 int ALContextManager::addSoundFromFile(const std::string& filename)
 {
-    std::pair<boost::ptr_map<int, ALSoundBuffer>::iterator, bool> return_value;
-    m_internal_counter++;
     ALContextChanger cc(m_my_context);
     // object cc is not used, but it changes context, and since cc is on the stack,
     // it is destroyed when function exits, which changes back the contexts!
     // this is known as the RAII idiom
     try
     {
-        return_value = m_sounds.insert(m_internal_counter, new ALSoundBuffer(filename));
+        auto return_value = m_sounds.insert(std::make_pair(++m_internal_counter, std::make_unique<ALSoundBuffer>(filename)));
+
+        if (return_value.second == false)
+        {
+            std::stringstream stream;
+            stream << "Failure inserting soundfile " << filename;
+            throw SoundLoadError(stream.str());
+        }
     }
     catch (ALSoundBuffer::SoundPlayingError& ex)
     {
         std::stringstream stream;
         stream << "Failure inserting soundfile " << filename << " AL error: "
                << ex.what();
-        throw SoundLoadError(stream.str());
-    }
-    if (return_value.second == false)
-    {
-        std::stringstream stream;
-        stream << "Failure inserting soundfile " << filename;
         throw SoundLoadError(stream.str());
     }
     return m_internal_counter;
@@ -270,7 +269,7 @@ void ALContextManager::removeSound(int id)
 void ALContextManager::deleteAllSounds()
 {
     ALContextChanger cc(m_my_context);
-    for (auto it: m_sounds)
-        it->second->stop();
-    m_sounds.erase(m_sounds.begin(),m_sounds.end());
+    for (auto& it: m_sounds)
+        it.second->stop();
+    m_sounds.clear();
 }

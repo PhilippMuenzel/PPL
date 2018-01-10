@@ -3,7 +3,7 @@ TEMPLATE = lib
 # Static library without any Qt functionality
 QT -= gui core
 
-CONFIG += static console c++11 warn_on
+CONFIG += static console c++14 warn_on
 CONFIG -= thread qt
 
 VERSION = 2.0.0
@@ -41,7 +41,7 @@ win32 {
     QMAKE_CXXFLAGS += -wd4996
     DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN
 
-    INCLUDEPATH += include C:\\Boost\\include\\boost-1_63 ..\openALsoft\include
+    INCLUDEPATH += include ..\openALsoft\include
 }
 
 linux {
