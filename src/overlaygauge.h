@@ -57,6 +57,8 @@ public:
                  bool is_visible2d = false, bool always_draw_3d = false, bool allow_3d_click = true, float scale_3d = 1.0f,
                  bool double_size = false, int panel_render_pass = 2);
     virtual ~OverlayGauge();
+    OverlayGauge(const OverlayGauge&) = delete;
+    OverlayGauge& operator=(const OverlayGauge&) = delete;
 
     void set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d);
     void setCopy3d(int left3dcopy, int top3dcopy);

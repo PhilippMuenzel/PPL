@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Philipp Muenzel mail@philippmuenzel.de
+// Copyright (c) 2018, Philipp Ringler philipp@x-plane.com
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -50,8 +50,7 @@ namespace PPLNAMESPACE {
   * ensure the old context is restored on destruction.
   *
   * @author (c) 2009-2018 by Philipp Ringler
-  * @version 0.5
-  * @file alcontextchanger.h
+  * @version 1.0
   */
 class ALContextChanger
 {

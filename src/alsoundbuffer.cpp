@@ -50,7 +50,9 @@ ALSoundBuffer::ALSoundBuffer(const std::string& filename):
         stream << "ALUT: Buffer creation failed: "/*
                                     << alutGetErrorString(alutGetError())*/;
         throw SoundBufferError(stream.str());
-    } else {
+    }
+    else
+    {
         if (alGetError() != AL_NO_ERROR)
         {
             throw SoundBufferError("Error in creating buffer");
@@ -85,7 +87,7 @@ ALSoundBuffer::~ALSoundBuffer()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ALSoundBuffer::play()
+bool ALSoundBuffer::play(float volume)
 {
     if (!(alIsSource( m_source ) == AL_TRUE))
     {
@@ -114,6 +116,7 @@ bool ALSoundBuffer::play()
     alListenerfv(AL_POSITION,    listener_position);
     alListenerfv(AL_VELOCITY,    listener_velocity);
     alListenerfv(AL_ORIENTATION, listener_orientation);
+    alSourcef(m_source, AL_GAIN, volume);
     if (alGetError() != AL_NO_ERROR)
     {
         std::stringstream stream;
@@ -183,16 +186,16 @@ static uint32_t readByte32(const unsigned char buffer[4]) {
 //  -  http://www.borg.com/~jglatt/tech/wave.htm
 //  -  Alut source code: static BufferData *loadWavFile (InputStream *stream)
 //     http://www.openal.org/repos/openal/tags/freealut_1_1_0/alut/alut/src/alutLoader.c
-ALuint PPL::LoadWav(const std::string& fileName) {
-    const unsigned int BUFFER_SIZE = 32768;     // 32 KB buffers
-    long bytes;
+ALuint PPL::LoadWav(const std::string& fileName)
+{
+    constexpr std::size_t BUFFER_SIZE = 32768;     // 32 KB buffers
+    std::size_t bytes;
     std::vector<char> data;
     ALenum format;
     ALsizei freq;
 
     // Local resources
-    FILE *f = NULL;
-    char *array = NULL;
+    FILE *f = nullptr;
     ALuint buffer = AL_NONE;
 
     alGetError();
@@ -203,7 +206,7 @@ ALuint PPL::LoadWav(const std::string& fileName) {
         // Open for binary reading
         f = fopen(fileName.c_str(), "rb");
         if (!f)
-            throw PPL::ALSoundBuffer::SoundBufferError("LoadWav: Could not load wav from " + fileName);
+            throw ALSoundBuffer::SoundBufferError("LoadWav: Could not load wav from " + fileName);
 
         // buffers
         char magic[5];
@@ -213,7 +216,7 @@ ALuint PPL::LoadWav(const std::string& fileName) {
 
         // check magic
         if(fread(magic,4,1,f) != 1)
-            throw PPL::ALSoundBuffer::SoundBufferError("LoadWav: Cannot read wav file "+ fileName );
+            throw ALSoundBuffer::SoundBufferError("LoadWav: Cannot read wav file "+ fileName );
         if(std::string(magic) != "RIFF")
             throw ALSoundBuffer::SoundBufferError("LoadWav: Wrong wav file format. This file is not a .wav file (no RIFF magic): "+ fileName );
 
@@ -284,11 +287,12 @@ ALuint PPL::LoadWav(const std::string& fileName) {
         if (sizeof(freq) != sizeof(frequency))
             throw ALSoundBuffer::SoundBufferError("LoadWav: freq and frequency different sizes");
 
-        array = new char[BUFFER_SIZE];
+        auto array = std::vector<char>(BUFFER_SIZE);
 
-        while (data.size() != subChunk2Size) {
+        while (data.size() != subChunk2Size)
+        {
             // Read up to a buffer's worth of decoded sound data
-            bytes = fread(array, 1, BUFFER_SIZE, f);
+            bytes = fread(array.data(), 1, array.size(), f);
 
             if (bytes <= 0)
                 break;
@@ -297,14 +301,11 @@ ALuint PPL::LoadWav(const std::string& fileName) {
                 bytes = subChunk2Size - data.size();
 
             // Append to end of buffer
-            data.insert(data.end(), array, array + bytes);
+            data.insert(data.end(), array.begin(), array.begin() + bytes);
         };
 
-        delete []array;
-        array = NULL;
-
         fclose(f);
-        f = NULL;
+        f = nullptr;
 
         alGenBuffers(1, &buffer);
         if(alGetError() != AL_NO_ERROR)
@@ -317,13 +318,11 @@ ALuint PPL::LoadWav(const std::string& fileName) {
             throw ALSoundBuffer::SoundBufferError("LoadWav: Could not load buffer data");
 
         return buffer;
-    } catch (std::runtime_error& er) {
-        if (buffer)
-            if (alIsBuffer(buffer) == AL_TRUE)
+    }
+    catch (std::runtime_error& er)
+    {
+        if (buffer && alIsBuffer(buffer) == AL_TRUE)
                 alDeleteBuffers(1, &buffer);
-
-        if (array)
-            delete []array;
 
         if (f)
             fclose(f);

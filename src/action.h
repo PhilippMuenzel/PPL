@@ -35,7 +35,7 @@ namespace PPLNAMESPACE {
 
 class Action {
 public:
-    virtual ~Action() {};
+    virtual ~Action() = default;
     virtual const std::string name() const = 0;
     virtual void doAction() = 0;
 };

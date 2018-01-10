@@ -42,7 +42,7 @@
 namespace PPLNAMESPACE {
 
 
-const long DRE_MSG_ADD_DATAREF = 0x01000000;
+constexpr long DRE_MSG_ADD_DATAREF = 0x01000000;
 const char* const DRE_PLUGIN_SINATURE = "xplanesdk.examples.DataRefEditor";
 
 
@@ -156,7 +156,7 @@ public:
       * c) data was requested to be writeable, but X-Plane says it is read-only
       */
     DataRef(const std::string& identifier, RWType writeability = ReadOnly, bool share = false, bool publish_in_dre = false);
-
+    DataRef(const DataRef&) = delete;
 
     /**
      * unshare dataref if it was created as shared

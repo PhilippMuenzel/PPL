@@ -117,7 +117,7 @@ public:
       * starts playback of the sound (playback continues when function returns)
       * @param id the sound buffers id in the map
       */
-    bool playSound(int id);
+    bool playSound(int id, float volume=1.f);
 
     /**
       * stops playback of the sound

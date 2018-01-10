@@ -28,17 +28,6 @@
 #ifndef BASICS_H
 #define BASICS_H
 
-#if (defined(_WIN32) || defined(__CYGWIN__)) && defined(_MSC_VER)   // Windows && MS Visual C
-#    define MSVC_EXPORT __declspec(dllexport)
-#    pragma warning( disable : 4996 )   // disable deprecation warnings
-#    pragma warning( disable : 4091 )   // disable typedef warning without variable declaration
-#    pragma warning( disable : 4275 )   // non &#8211; DLL-interface classkey 'identifier' used as base for DLL-interface classkey 'identifier'
-#    pragma warning( disable : 4251 )   // like warning above but for templates (like std::string)
-#    pragma warning( disable : 4290 )   // exception handling of MSVC is lousy
-#else
-#    define MSVC_EXPORT
-#endif
-
 #include <algorithm>
 #include <cmath>
 

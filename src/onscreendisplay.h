@@ -40,6 +40,9 @@ public:
 
     ~OnScreenDisplay();
 
+    OnScreenDisplay(const OnScreenDisplay&) = delete;
+    OnScreenDisplay& operator=(const OnScreenDisplay&) = delete;
+
     int processMessages(XPWidgetMessage inMessage, intptr_t, intptr_t);
 
     static int widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t param1, intptr_t param2);

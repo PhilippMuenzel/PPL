@@ -114,6 +114,9 @@ public:
       */
     ~OwnedData() { unregister(); }
 
+    OwnedData(const OwnedData&) = delete;
+    OwnedData& operator=(const OwnedData&) = delete;
+
     /**
       * acces the currently stored value
       * @return value

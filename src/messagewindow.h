@@ -76,6 +76,9 @@ public:
       */
     ~MessageWindow();
 
+    MessageWindow(const MessageWindow&) = delete;
+    MessageWindow& operator=(const MessageWindow&) = delete;
+
     /**
       * @param width in pixels
       * @exception BoxOutOfBoundsException if width is inappropriate

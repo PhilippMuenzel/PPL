@@ -3,8 +3,8 @@ TEMPLATE = lib
 # Static library without any Qt functionality
 QT -= gui core
 
-CONFIG += static exceptions stl console c++14
-CONFIG -= thread qt rtti warn_on
+CONFIG += static console c++14 warn_on
+CONFIG -= thread qt
 
 VERSION = 1.0.0
 
@@ -28,7 +28,7 @@ standalone {
 
 macx {
     DEFINES += APL=1 IBM=0 LIN=0
-    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -Wno-c++11-narrowing -pedantic
+    QMAKE_CXXFLAGS += -Wextra -Wfloat-equal -pedantic
 
     # Build for multiple architectures.
     # The following line is only needed to build universal on PPC architectures.
@@ -39,22 +39,24 @@ macx {
 
 win32 {
     DEFINES += APL=0 IBM=1 LIN=0
-    CONFIG += warn_on
     #disable the deprecated warnings that make writing standards-compliant code impossible
     QMAKE_CXXFLAGS += -wd4996
-    DEFINES += NOMINMAX
+    DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN
 
     INCLUDEPATH += include ..\openALsoft\include
 }
 
 linux {
     DEFINES += APL=0 IBM=0 LIN=1
-    QMAKE_CXXFLAGS += -Wall -Wextra -Wfloat-equal -Wno-c++11-narrowing -pedantic
-    QMAKE_CXXFLAGS += -fvisibility=hidden -fno-stack-protector
+    QMAKE_CXXFLAGS += -Wextra -Wfloat-equal -Wno-c++11-narrowing -pedantic
+    QMAKE_CXXFLAGS += -fvisibility=hidden
 }
 
 CONFIG( debug, debug|release ) {
     # debug settings go here
+    !win32 {
+        QMAKE_CXXFLAGS_DEBUG += -ftrapv
+    }
 } else {
     DEFINES += NDEBUG
 }

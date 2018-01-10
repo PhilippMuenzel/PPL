@@ -52,8 +52,8 @@ namespace PPLNAMESPACE {
 /**
   * This class encapsulates openALs buffers and sources, does the resource handling
   * and provides the listener setup.
-  * @version 0.5
-  * @author (c) 2009-2011 by Philipp Muenzel
+  * @version 1.0
+  * @author (c) 2009-2018 by Philipp Ringler
   */
 class ALSoundBuffer
 {
@@ -102,7 +102,7 @@ public:
       * set up the listener at coordinate origin and play the sound buffer
       * @return play command was successfull (false could mean invalid source or buffer)
       */
-    bool play();
+    bool play(float volume);
 
     /**
       * set source to looping the sound (effective next time play() called)

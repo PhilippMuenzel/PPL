@@ -45,7 +45,7 @@ class LogicHandler {
  public:
 
 
-    virtual ~LogicHandler() {}
+    virtual ~LogicHandler() = default;
 
     /**
      * reimplement to do the setups that have to be done once when data is acessible

@@ -79,16 +79,17 @@ public:
 
     Texture(const std::string& file_name);
     ~Texture();
+    Texture(const Texture&) = delete;
+    Texture& operator=(const Texture&) = delete;
+
     int id() const;
     int width() const;
     int height() const;
 
 private:
-
     void swapRedBlue();
     IMAGEDATA m_imagedata;
     int m_id;
-
 };
 
 }
