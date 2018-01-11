@@ -41,9 +41,11 @@ win32 {
     DEFINES += APL=0 IBM=1 LIN=0
     #disable the deprecated warnings that make writing standards-compliant code impossible
     QMAKE_CXXFLAGS += -wd4996
-    DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN
+    QMAKE_CXXFLAGS_DEBUG =  -Zi -MTd
+    QMAKE_CXXFLAGS_RELEASE = -MT
+    DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN GLEW_STATIC
 
-    INCLUDEPATH += include ..\openALsoft\include
+    INCLUDEPATH += ..\\glew-1.13.0\\include
 }
 
 linux {
@@ -57,6 +59,7 @@ CONFIG( debug, debug|release ) {
     !win32 {
         QMAKE_CXXFLAGS_DEBUG += -ftrapv
     }
+    TARGET = ppld
 } else {
     DEFINES += NDEBUG
 }
@@ -100,7 +103,8 @@ SOURCES += \
     src/vertexbuffer.cpp
 
 withsound {
-    macx:INCLUDEPATH+=/usr/local/include/
+    macx:INCLUDEPATH += /usr/local/include/
+    win32:INCLUDEPATH += ..\\openal-soft-1.18.2\\include
     HEADERS += \
         src/alsoundbuffer.h \
         src/alcontextmanager.h \
