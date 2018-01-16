@@ -2,3 +2,6 @@
     path = include/glew
     url = https://github.com/nigels-com/glew.git
     branch = glew-1.13
+[submodule "include/simpleini"]
+	path = include/simpleini
+	url = https://github.com/brofield/simpleini.git
