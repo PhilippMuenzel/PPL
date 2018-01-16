@@ -43,7 +43,7 @@ win32 {
     QMAKE_CXXFLAGS += -wd4996
     DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN
 
-    INCLUDEPATH += include ..\openALsoft\include
+    INCLUDEPATH += ..\openALsoft\include
 }
 
 linux {
