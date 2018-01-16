@@ -1,0 +1,4 @@
+[submodule "include/glew"]
+    path = include/glew
+    url = https://github.com/nigels-com/glew.git
+    branch = glew-1.13
