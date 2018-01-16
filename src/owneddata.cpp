@@ -26,6 +26,7 @@
 // either expressed or implied, of the FreeBSD Project.
 
 #include <cstring>
+#include <algorithm>
 
 #include "owneddata.h"
 

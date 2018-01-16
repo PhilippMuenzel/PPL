@@ -36,18 +36,20 @@ macx {
 }
 
 win32 {
+    INCLUDEPATH += include/glew/include
     DEFINES += APL=0 IBM=1 LIN=0
     #disable the deprecated warnings that make writing standards-compliant code impossible
     QMAKE_CXXFLAGS += -wd4996
-    DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN
-
-    INCLUDEPATH += include ..\openALsoft\include
+    QMAKE_CXXFLAGS_DEBUG =  -Zi -MTd
+    QMAKE_CXXFLAGS_RELEASE = -MT
+    DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN GLEW_STATIC=1
 }
 
 linux {
     DEFINES += APL=0 IBM=0 LIN=1
-    QMAKE_CXXFLAGS += -Wextra -Wfloat-equal -pedantic -Wno-c++11-narrowing
+    QMAKE_CXXFLAGS += -Wextra -Wfloat-equal -Wno-c++11-narrowing -pedantic
     QMAKE_CXXFLAGS += -fvisibility=hidden
+    QMAKE_CXXFLAGS_CXX11 = -std=c++14
 }
 
 CONFIG( debug, debug|release ) {
@@ -55,6 +57,7 @@ CONFIG( debug, debug|release ) {
     !win32 {
         QMAKE_CXXFLAGS_DEBUG += -ftrapv
     }
+    TARGET = ppld
 } else {
     DEFINES += NDEBUG
 }
@@ -96,7 +99,9 @@ SOURCES += \
     src/vertexbuffer.cpp
 
 withsound {
-    macx:INCLUDEPATH+=/usr/local/include/
+    win32 {
+        INCLUDEPATH += include/openal-soft/include
+    }
     HEADERS += \
         src/alsoundbuffer.h \
         src/alcontextmanager.h \
@@ -109,14 +114,14 @@ withsound {
 
 withfreetype {
     win32 {
-        INCLUDEPATH += ../freetype-2.6.5/include
+        INCLUDEPATH += include/freetype2/include
         DEFINES+=FREETYPE2_STATIC
     }
-    unix:!macx {
+    linux {
         INCLUDEPATH += /usr/include/freetype2
     }
     macx {
-        INCLUDEPATH += /usr/local/include/freetype2 /usr/X11/include/freetype2/
+        INCLUDEPATH += /usr/X11/include/freetype2/
     }
 
     HEADERS += src/fontmgr.h

@@ -51,7 +51,7 @@ namespace PPL {
   * This class encapsulates openALs buffers and sources, does the resource handling
   * and provides the listener setup.
   * @version 1.0
-  * @author (c) 2009-2017 by Philipp Ringler
+  * @author (c) 2009-2018 by Philipp Ringler
   */
 class ALSoundBuffer
 {

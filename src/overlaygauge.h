@@ -32,7 +32,7 @@
 #include "dataref.h"
 
 #if APL == 1
-#include <OpenGL/GL.h>
+#include <OpenGL/gl.h>
 #elif IBM == 1
 #include <windows.h>
 #include "GL/glew.h"

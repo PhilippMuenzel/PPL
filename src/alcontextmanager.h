@@ -55,7 +55,7 @@ namespace PPL {
   * and provides convenient functions for standard operations like playing.
   *
   * @version 1.1
-  * @author (c) 2009-2017 by Philipp Ringler
+  * @author (c) 2009-2018 by Philipp Ringler
   */
 class ALContextManager
 {

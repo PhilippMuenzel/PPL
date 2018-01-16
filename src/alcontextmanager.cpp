@@ -26,6 +26,7 @@
 // either expressed or implied, of the FreeBSD Project.
 
 #include <sstream>
+#include <memory>
 
 #include "XPLMUtilities.h"
 #include "alcontextmanager.h"
@@ -185,7 +186,7 @@ bool ALContextManager::playSound(int id, float volume)
         sound->play(volume);
         return true;
     }
-    catch (ALSoundBuffer::SoundPlayingError& ex)
+    catch(ALSoundBuffer::SoundPlayingError& ex)
     {
         std::stringstream stream;
         stream << "Sound number " << id << " failed to play with message: "

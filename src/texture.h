@@ -80,6 +80,7 @@ public:
     ~Texture();
     Texture(const Texture&) = delete;
     Texture& operator=(const Texture&) = delete;
+
     int id() const;
     int width() const;
     int height() const;

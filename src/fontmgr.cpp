@@ -29,8 +29,8 @@
 #include <OpenGL/gl.h>
 #elif IBM
 #include <windows.h>
+#include <GL/glew.h>
 #include <GL/gl.h>
-#include <GL/glu.h>
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>

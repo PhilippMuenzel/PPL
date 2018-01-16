@@ -1,0 +1,15 @@
+[submodule "include/glew"]
+    path = include/glew
+    url = https://github.com/nigels-com/glew.git
+    branch = glew-1.13
+[submodule "include/freetype2"]
+	path = include/freetype2
+	url = https://git.savannah.gnu.org/git/freetype/freetype2.git
+    branch = 2.6.5
+[submodule "include/openal-soft"]
+	path = include/openal-soft
+	url = https://github.com/kcat/openal-soft.git
+    branch = v1.18
+[submodule "include/simpleini"]
+	path = include/simpleini
+	url = https://github.com/brofield/simpleini.git
