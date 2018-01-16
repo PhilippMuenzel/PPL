@@ -51,6 +51,7 @@ linux {
     DEFINES += APL=0 IBM=0 LIN=1
     QMAKE_CXXFLAGS += -Wextra -Wfloat-equal -Wno-c++11-narrowing -pedantic
     QMAKE_CXXFLAGS += -fvisibility=hidden
+    QMAKE_CXXFLAGS_CXX11 = -std=c++14
 }
 
 CONFIG( debug, debug|release ) {
