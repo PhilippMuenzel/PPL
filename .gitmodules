@@ -9,3 +9,7 @@
 	path = include/freetype2
 	url = https://git.savannah.gnu.org/git/freetype/freetype2.git
     branch = 2.6.5
+[submodule "include/openal-soft"]
+	path = include/openal-soft
+	url = https://github.com/kcat/openal-soft.git
+    branch = v1.18
