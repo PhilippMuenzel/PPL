@@ -42,7 +42,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #elif APL
-#include <OpenGL/GL.h>
+#include <OpenGL/gl.h>
 #endif
 
 using namespace PPLNAMESPACE;
