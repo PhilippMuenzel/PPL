@@ -36,7 +36,7 @@
 using namespace PPL;
 
 OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int left3d, int top3d, int width3d, int height3d,
-                           int frameOffX, int frameOffY, int textureId3d, bool , bool is_visible3d, bool is_visible2d,
+                           int frameOffX, int frameOffY, int, bool , bool is_visible3d, bool is_visible2d,
                            bool, bool , float scale_3d, bool, int panel_render_pass):
     left_3d_(left3d),
     top_3d_(top3d),
@@ -148,7 +148,7 @@ OverlayGauge::~OverlayGauge()
     XPLMUnregisterFlightLoopCallback(frameCallback, this);
 }
 
-void OverlayGauge::set3d(int left3d, int top3d, int width3d, int height3d, int texture_id, bool always_draw_3d)
+void OverlayGauge::set3d(int left3d, int top3d, int width3d, int height3d, int, bool always_draw_3d)
 {
     always_draw_3d_ = always_draw_3d;
 
@@ -341,7 +341,7 @@ void OverlayGauge::updateFBO()
     }
 }
 
-void OverlayGauge::handle2dKeyCallback(XPLMWindowID, char key, XPLMKeyFlags flags, char virtual_key, int losing_focus)
+void OverlayGauge::handle2dKeyCallback(XPLMWindowID, char key, XPLMKeyFlags flags, unsigned char virtual_key, int losing_focus)
 {
     if (losing_focus)
         window_has_keyboard_focus_ = false;
@@ -517,7 +517,7 @@ void OverlayGauge::draw2dWindowCallback(XPLMWindowID window_id, void* refcon)
 void OverlayGauge::handle2dKeyCallback(XPLMWindowID window_id, char key, XPLMKeyFlags flags, char virtual_key, void* refcon, int losing_focus)
 {
     OverlayGauge* window = static_cast<OverlayGauge*>(refcon);
-    window->handle2dKeyCallback(window_id, key, flags, virtual_key, losing_focus);
+    window->handle2dKeyCallback(window_id, key, flags, static_cast<unsigned char>(virtual_key), losing_focus);
 }
 
 int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XPLMMouseStatus mouse, void* refcon)
