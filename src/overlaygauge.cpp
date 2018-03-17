@@ -93,7 +93,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     win.handleCursorFunc = handle2dCursorCallback;
     win.handleMouseWheelFunc = handle2dWheelCallback;
     win.refcon = this;
-    win.decorateAsFloatingWindow = 0;
+    win.decorateAsFloatingWindow = xplm_WindowDecorationSelfDecorated;
     win.layer = xplm_WindowLayerFloatingWindows;
     win.handleRightClickFunc = handle2dRightClickCallback;
     window2d_id_ = XPLMCreateWindowEx(&win);

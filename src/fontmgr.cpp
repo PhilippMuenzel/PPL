@@ -73,7 +73,7 @@ const char* getErrorString(GLenum error)
     return "Unknown error code";
 }
 
-#define OGL_ERROR(expression) expression; GLenum err = glGetError(); if(err){ XPLMDebugString(getErrorString(err)); XPLMDebugString("\n"); assert(false);}
+#define OGL_ERROR(expression) expression; err = glGetError(); if(err){ XPLMDebugString(getErrorString(err)); XPLMDebugString("\n"); assert(false);}
 #else
 #define OGL_ERROR(expression) expression;
 #endif
@@ -319,8 +319,9 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     tex_map_.insert(TextureMap_t::value_type(inFontPath, info));
 
     // Create some texture memory in OpenGL for this font
-    //OGL_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, info->tex_width,
-    //				info->tex_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureData))
+    GLenum err = 0;
+    OGL_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, info->tex_width,
+                    info->tex_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureData))
 
     // Now build mipmaps based on this texture
     char buf[512];
@@ -357,6 +358,7 @@ void FontMgr::unloadFont(FontHandle inFont)
         return;
 
     // Delete the texture from OpenGL memory
+    GLenum err = 0;
     OGL_ERROR(glDeleteTextures(1, (GLuint*)&(inFont->tex_id)))
 
     // Remove it from our map

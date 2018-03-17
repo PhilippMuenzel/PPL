@@ -12,8 +12,8 @@ INCLUDEPATH += include/simpleini
 INCLUDEPATH += ../SDK/CHeaders/XPLM
 INCLUDEPATH += ../SDK/CHeaders/Widgets
 
-# Defined to use X-Plane SDK 2.0, 2.1 and 3.0 capabilities - no backward compatibility before 11.10
-DEFINES += XPLM200 XPLM210 XPLM300
+# Defined to use X-Plane SDK 2.0, 2.1, 3.0 and 3.01 capabilities - no backward compatibility before 11.20
+DEFINES += XPLM200 XPLM210 XPLM300 XPLM301
 
 OBJECTS_DIR  = objects
 DESTDIR = lib
