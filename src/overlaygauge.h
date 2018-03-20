@@ -87,6 +87,7 @@ public:
     virtual bool wantVFlip() const;
     virtual int handleMouseWheel(int x, int y, int wheel, int clicks);
     virtual float instrumentBrightness() const;
+    virtual bool wantVRifAvailable() const;
 
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
 
@@ -136,10 +137,8 @@ private:
     int width_view_3d_;
     int height_view_3d_;
     int panel_render_pass_;
-    DataRef<int> screen_width_;
-    DataRef<int> screen_height_;
-    DataRef<int> view_type_;
-    DataRef<int> panel_render_type_;
+    DataRef<int> screen_width_, screen_height_;
+    DataRef<int> view_type_, panel_render_type_, vr_enabled_;
     DataRef<std::vector<float> > instrument_brightness_;
     DataRef<float> lit_level_r_, lit_level_g_, lit_level_b_;
     bool window_is_dragging_;

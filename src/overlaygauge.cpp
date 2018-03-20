@@ -59,6 +59,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     screen_height_("sim/graphics/view/window_height"),
     view_type_("sim/graphics/view/view_type"),
     panel_render_type_("sim/graphics/view/panel_render_type"),
+    vr_enabled_("sim/graphics/VR/enabled"),
     instrument_brightness_("sim/cockpit2/switches/instrument_brightness_ratio"),
     lit_level_r_("sim/graphics/misc/cockpit_light_level_r"),
     lit_level_g_("sim/graphics/misc/cockpit_light_level_g"),
@@ -183,6 +184,8 @@ void OverlayGauge::setVisible(bool b)
     }
     visible_2d_ = b;
     XPLMSetWindowIsVisible(window2d_id_, visible_2d_);
+    if (b && wantVRifAvailable())
+        XPLMSetWindowPositioningMode(window2d_id_, (vr_enabled_==1) ? xplm_WindowVR : xplm_WindowPositionFree, -1);
 }
 
 bool OverlayGauge::isVisible() const
@@ -246,6 +249,11 @@ void OverlayGauge::toggleKeyboardFocus()
 float OverlayGauge::instrumentBrightness() const
 {
     return instrument_brightness_[0];
+}
+
+bool OverlayGauge::wantVRifAvailable() const
+{
+    return true;
 }
 
 void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
