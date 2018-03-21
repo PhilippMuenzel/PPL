@@ -185,7 +185,10 @@ void OverlayGauge::setVisible(bool b)
     visible_2d_ = b;
     XPLMSetWindowIsVisible(window2d_id_, visible_2d_);
     if (b && wantVRifAvailable())
+    {
         XPLMSetWindowPositioningMode(window2d_id_, (vr_enabled_==1) ? xplm_WindowVR : xplm_WindowPositionFree, -1);
+        vr_enabled_.save();
+    }
 }
 
 bool OverlayGauge::isVisible() const
@@ -196,6 +199,23 @@ bool OverlayGauge::isVisible() const
 void OverlayGauge::frame()
 {
     visible_2d_ = XPLMGetWindowIsVisible(window2d_id_);
+    if (!wantVRifAvailable())
+        return;
+    if (visible_2d_)
+    if (vr_enabled_.hasChanged())
+    {
+        XPLMSetWindowPositioningMode(window2d_id_, (vr_enabled_==1) ? xplm_WindowVR : xplm_WindowPositionFree, -1);
+        if (vr_enabled_ == 0)
+        {
+            XPLMSetWindowGeometry(window2d_id_, left_2d_, top_2d_, left_2d_+width_2d_, top_2d_-height_2d_);
+        }
+        else
+        {
+            XPLMSetWindowIsVisible(window2d_id_, visible_2d_);
+        }
+
+        vr_enabled_.save();
+    }
 }
 
 void OverlayGauge::drawTexture(int tex_id, int left, int top, int right, int bottom, bool vflip)
@@ -391,6 +411,8 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
         {
         case xplm_MouseDown:
             /// Test for the mouse in the window
+            if (vr_enabled_ == 0)
+            {
             if (coordInRect(x, y, Left, Top, Left+40, Top-40))
             {
                 XPLMTakeKeyboardFocus(0);
@@ -407,9 +429,15 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
                 dY = y - Top;
                 window_is_dragging_ = true;
             }
+            }
+            else
+            {
+                return handleNonDragClick(x_rel, y_rel, false);
+            }
             break;
         case xplm_MouseDrag:
             /// We are dragging so update the window position
+            if (vr_enabled_ == 0)
             if (window_is_dragging_)
             {
                 left_2d_ = Left = (x - dX);
