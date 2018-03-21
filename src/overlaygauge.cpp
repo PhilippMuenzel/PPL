@@ -94,7 +94,7 @@ OverlayGauge::OverlayGauge(int left2d, int top2d, int width2d, int height2d, int
     win.handleCursorFunc = handle2dCursorCallback;
     win.handleMouseWheelFunc = handle2dWheelCallback;
     win.refcon = this;
-    win.decorateAsFloatingWindow = xplm_WindowDecorationSelfDecorated;
+    win.decorateAsFloatingWindow = xplm_WindowDecorationSelfDecoratedResizable;
     win.layer = xplm_WindowLayerFloatingWindows;
     win.handleRightClickFunc = handle2dRightClickCallback;
     window2d_id_ = XPLMCreateWindowEx(&win);
@@ -206,14 +206,7 @@ void OverlayGauge::frame()
     {
         XPLMSetWindowPositioningMode(window2d_id_, (vr_enabled_==1) ? xplm_WindowVR : xplm_WindowPositionFree, -1);
         if (vr_enabled_ == 0)
-        {
             XPLMSetWindowGeometry(window2d_id_, left_2d_, top_2d_, left_2d_+width_2d_, top_2d_-height_2d_);
-        }
-        else
-        {
-            XPLMSetWindowIsVisible(window2d_id_, visible_2d_);
-        }
-
         vr_enabled_.save();
     }
 }
