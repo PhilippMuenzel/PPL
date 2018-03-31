@@ -80,7 +80,8 @@ HEADERS += \
     src/action.h \
     src/smoothed.h \
     src/processor.h \
-    src/vertexbuffer.hpp
+    src/vertexbuffer.hpp \
+    src/command.h
 
 SOURCES += \
     src/pluginpath.cpp \
@@ -96,7 +97,8 @@ SOURCES += \
     src/logwriter.cpp \
     src/menuitem.cpp \
     src/processor.cpp \
-    src/vertexbuffer.cpp
+    src/vertexbuffer.cpp \
+    src/command.cpp
 
 withsound {
     win32 {
