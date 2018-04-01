@@ -74,5 +74,5 @@ int PPL::Command::scb(XPLMCommandRef ref, XPLMCommandPhase phase, void *vp) {
   if (phase == xplm_CommandContinue) cmd->phase_ = Phase::Continue;
   if (phase == xplm_CommandEnd) cmd->phase_ = Phase::End;
   auto outcome = cmd->callback(ref, cmd->phase_);
-  return outcome == Outcome::Halt ? 1 : 0;
+  return outcome == Outcome::Halt ? 0 : 1;
 }
