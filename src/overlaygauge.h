@@ -88,6 +88,7 @@ public:
     virtual int handleMouseWheel(int x, int y, int wheel, int clicks);
     virtual float instrumentBrightness() const;
     virtual bool wantVRifAvailable() const;
+    virtual void update();
 
     static int draw3dCallback(XPLMDrawingPhase phase, int is_before, void* refcon);
 

@@ -198,6 +198,7 @@ bool OverlayGauge::isVisible() const
 
 void OverlayGauge::frame()
 {
+    update();
     visible_2d_ = XPLMGetWindowIsVisible(window2d_id_);
     if (!wantVRifAvailable())
         return;
@@ -267,6 +268,10 @@ float OverlayGauge::instrumentBrightness() const
 bool OverlayGauge::wantVRifAvailable() const
 {
     return true;
+}
+
+void OverlayGauge::update()
+{
 }
 
 void OverlayGauge::draw2dWindowCallback(XPLMWindowID)
