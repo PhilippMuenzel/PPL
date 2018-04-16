@@ -35,6 +35,7 @@ using namespace PPL;
 OnScreenDisplay::OnScreenDisplay(int width, int height, const std::string& title):
     screen_w_("sim/graphics/view/window_width"),
     screen_h_("sim/graphics/view/window_height"),
+    vr_enabled_("sim/graphics/VR/enabled"),
     title_(title)
 {
     left_ = (screen_w_ - width)/2;
@@ -54,6 +55,11 @@ OnScreenDisplay::OnScreenDisplay(int width, int height, const std::string& title
     XPSetWidgetProperty(widget_id_, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
     XPSetWidgetProperty(widget_id_, xpProperty_Object, reinterpret_cast<intptr_t>(this));
     XPAddWidgetCallback(widget_id_, widgetCallback);
+    window_id_ = XPGetWidgetUnderlyingWindow(widget_id_);
+    if (vr_enabled_ == 1)
+    {
+        XPLMSetWindowPositioningMode(window_id_, xplm_WindowVR, -1);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

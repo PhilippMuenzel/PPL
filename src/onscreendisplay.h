@@ -29,6 +29,7 @@
 #define ONSCREENDISPLAY_H
 
 #include "XPWidgetDefs.h"
+#include "XPLMDisplay.h"
 #include "dataref.h"
 
 namespace PPL {
@@ -47,9 +48,10 @@ public:
     static int widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t param1, intptr_t param2);
 
 private:
-    DataRef<int> screen_w_;
-    DataRef<int> screen_h_;
+    DataRef<int> screen_w_, screen_h_;
+    DataRef<int> vr_enabled_;
     XPWidgetID widget_id_;
+    XPLMWindowID window_id_;
     int top_, left_, bottom_, right_;
     std::string title_;
 };
