@@ -153,11 +153,8 @@ Texture::Texture(const std::string& file_name)
         XPLMBindTexture2d(m_id, 0);
 #endif
 
-#if APL
-        glGenerateMipmap(GL_TEXTURE_2D);
-#else
-        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, m_imagedata.Width, m_imagedata.Height, GL_RGB, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]);
-#endif
+        GLuint type = GL_RGB;                                        // 24bit bmp only supported for now
+        glTexImage2D(GL_TEXTURE_2D, 0, type, m_imagedata.Width, m_imagedata.Height, 0, type, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]);
 
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
