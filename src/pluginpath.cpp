@@ -42,37 +42,25 @@ std::string PluginPath::plugin_directory = "";
 
 std::string PluginPath::prependXPlanePath(const std::string& file)
 {
-#ifdef BUILD_FOR_STANDALONE
-    return file;
-#else
     char path[512];
     XPLMGetSystemPath(path);
     std::string absolute_path(path);
     absolute_path.append(file);
     return absolute_path;
-#endif
 }
 
 std::string PluginPath::prependPluginPath(const std::string& file)
 {
-#ifdef BUILD_FOR_STANDALONE
-    return file;
-#else
     std::string path = "/Resources/plugins/";
     path.append(plugin_directory).append("/").append(file);
     return prependXPlanePath(path);
-#endif
 }
 
 std::string PluginPath::prependPluginResourcesPath(const std::string& file)
 {
     std::string res_path("Resources/");
     res_path.append(file);
-#ifdef BUILD_FOR_STANDALONE
-    return res_path;
-#else
     return prependPluginPath(res_path);
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -80,9 +68,6 @@ std::string PluginPath::prependPluginResourcesPath(const std::string& file)
 
 std::string PluginPath::prependPlanePath(const std::string& file)
 {
-#ifdef BUILD_FOR_STANDALONE
-    return file;
-#else
     char name[512];
     char path[512];
     XPLMGetNthAircraftModel(0, name, path);
@@ -91,7 +76,6 @@ std::string PluginPath::prependPlanePath(const std::string& file)
     absolute_path = absolute_path.substr(0, pos);
     absolute_path.append(file);
     return absolute_path;
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////

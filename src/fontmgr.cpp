@@ -35,10 +35,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
-
-#ifndef BUILD_FOR_STANDALONE
 #include "XPLMGraphics.h"
-#endif
 
 using namespace PPL;
 
@@ -227,14 +224,8 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
 
     unsigned char* textureData = new unsigned char[info->tex_height * info->tex_width];
     // Create the texture number that we'll be tied to
-#ifdef BUILD_FOR_STANDALONE
-    glGenTextures(1, (GLuint*)&info->tex_id);
-    // Now we bind to it
-    glBindTexture(GL_TEXTURE_2D, info->tex_id);
-#else
     XPLMGenerateTextureNumbers(&info->tex_id, 1);
     XPLMBindTexture2d(info->tex_id, 0);
-#endif
     // We have to 0 out the memory or we'll get artifacts when the glyphs are cut
     memset(textureData, 0, info->tex_height * info->tex_width);
 
@@ -445,11 +436,7 @@ void FontMgr::displayTexture(
     if(!inFont)
         return;
 
-#ifdef BUILD_FOR_STANDALONE
-    glBindTexture(GL_TEXTURE_2D, inFont->tex_id);
-#else
     XPLMBindTexture2d(inFont->tex_id, 0);
-#endif
     glColor3f(1.0, 0.0, 0.0);
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 1.0);		glVertex2f(0, 0);
@@ -499,11 +486,7 @@ void FontMgr::drawRange(
         return;
     float l, b, r, t, scale;
 
-#ifdef BUILD_FOR_STANDALONE
-    glBindTexture(GL_TEXTURE_2D, inFont->tex_id);
-#else
     XPLMBindTexture2d(inFont->tex_id, 0);
-#endif
 
     // Determine how much to scale the font to make it right the height
     scale = (inTop - inBottom) / inFont->line_height;

@@ -29,10 +29,8 @@
 #include <stdexcept>
 #include <cstring>
 #include "texture.h"
-#ifndef BUILD_FOR_STANDALONE
 #include "XPLMUtilities.h"
 #include "XPLMGraphics.h"
-#endif
 
 #if IBM
 #include <Windows.h>
@@ -143,15 +141,9 @@ Texture::Texture(const std::string& file_name)
 
         swapRedBlue();
 
-
-#ifdef BUILD_FOR_STANDALONE
-        glGenTextures(1, (GLuint*)&m_id);
-        glBindTexture(GL_TEXTURE_2D, m_id);
-#else
         /// Do the opengl stuff using XPLM functions for a friendly Xplane existence.
         XPLMGenerateTextureNumbers(&m_id, 1);
         XPLMBindTexture2d(m_id, 0);
-#endif
 
         GLuint type = GL_RGB;                                        // 24bit bmp only supported for now
         glTexImage2D(GL_TEXTURE_2D, 0, type, m_imagedata.Width, m_imagedata.Height, 0, type, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]);
@@ -224,14 +216,10 @@ Texture::Texture(const std::string& file_name)
         {
             type=GL_RGB;                                        // If So Set The 'type' To GL_RGB
         }
-#ifdef BUILD_FOR_STANDALONE
-        glGenTextures(1, (GLuint*)&m_id);
-        glBindTexture(GL_TEXTURE_2D, m_id);
-#else
         /// Do the opengl stuff using XPLM functions for a friendly Xplane existence.
         XPLMGenerateTextureNumbers(&m_id, 1);
         XPLMBindTexture2d(m_id, 0);
-#endif
+
         glTexImage2D(GL_TEXTURE_2D, 0, type, m_imagedata.Width, m_imagedata.Height, 0, type, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]);
 
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);

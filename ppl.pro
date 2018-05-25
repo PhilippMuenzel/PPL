@@ -19,11 +19,6 @@ OBJECTS_DIR  = objects
 DESTDIR = lib
 TARGET = ppl
 
-standalone {
-    DEFINES += BUILD_FOR_STANDALONE
-    TARGET = pplstandalone
-}
-
 macx {
     DEFINES += APL=1 IBM=0 LIN=0
     QMAKE_CXXFLAGS += -Wextra -Wfloat-equal -pedantic
