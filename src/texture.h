@@ -76,7 +76,7 @@ public:
 
 #pragma pack(pop, ident)
 
-    Texture(const std::string& file_name);
+    Texture(const std::string& file_name, bool build_mipmaps = false);
     ~Texture();
     Texture(const Texture&) = delete;
     Texture& operator=(const Texture&) = delete;

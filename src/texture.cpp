@@ -81,7 +81,7 @@ void SwapEndian(int32_t *){}
 #endif
 
 
-Texture::Texture(const std::string& file_name)
+Texture::Texture(const std::string& file_name, bool build_mipmaps)
 {
     if (file_name.rfind(".bmp") != std::string::npos)
     {
@@ -228,6 +228,14 @@ Texture::Texture(const std::string& file_name)
     else
     {
         throw std::runtime_error("The texture file is neither a BMP nor a TGA. Other fileformats are not supported.");
+    }
+    if (build_mipmaps)
+    {
+#if APL
+        glGenerateMipmap(GL_TEXTURE_2D);
+#else
+        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_ALPHA, m_imagedata.Width, m_imagedata.Height, GL_ALPHA, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]));
+#endif
     }
 }
 
