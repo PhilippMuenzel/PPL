@@ -10,6 +10,12 @@ if(UNIX AND NOT APPLE)
 set(LINUX TRUE)
 endif()
 
+if(UNIX)
+    set(PLATFORM_COMPILE_OPTIONS -Wall -Wextra -Wfloat-equal -pedantic)
+else()
+    set(PLATFORM_COMPILE_OPTIONS /W4 /wd4996)
+endif()
+
 if(APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12)
     set(PLATFORM_CORE_DEFINITIONS
@@ -37,8 +43,9 @@ else()
         WIN32_LEAN_AND_MEAN
         GLEW_STATIC=1)
     set(PLATFORM_INCLUDE_DIRECTORIES
-        include/glew/include,
-        include/openal-soft/include)
+        include/glew/include
+        include/openal-soft/include
+        include/freetype2/include)
 endif()
 endif()
 
@@ -77,5 +84,5 @@ set(SOURCES
 
 
 add_library(PPL STATIC ${SOURCES})
-target_compile_options(PPL PRIVATE -Wall -Wextra -Wfloat-equal -pedantic)
+target_compile_options(PPL PRIVATE ${PLATFORM_COMPILE_OPTIONS})
 target_compile_definitions(PPL PRIVATE ${DEFINITIONS})

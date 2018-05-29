@@ -234,7 +234,7 @@ Texture::Texture(const std::string& file_name, bool build_mipmaps)
 #if APL
         glGenerateMipmap(GL_TEXTURE_2D);
 #else
-        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_ALPHA, m_imagedata.Width, m_imagedata.Height, GL_ALPHA, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]));
+        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_ALPHA, m_imagedata.Width, m_imagedata.Height, GL_ALPHA, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]);
 #endif
     }
 }
