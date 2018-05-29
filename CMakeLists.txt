@@ -2,9 +2,15 @@ cmake_minimum_required (VERSION 3.0)
 project(PPL VERSION 2.0.0 DESCRIPTION "Plugin Patterns Library for X-Plane 11")
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/lib)
+
+if(NOT CMAKE_DEBUG_POSTFIX)
+  set(CMAKE_DEBUG_POSTFIX d)
+endif()
 
 if(UNIX AND NOT APPLE)
 set(LINUX TRUE)
@@ -46,6 +52,8 @@ else()
         include/glew/include
         include/openal-soft/include
         include/freetype2/include)
+    set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} -Zi -MTd)
+    set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE} -MT)
 endif()
 endif()
 
