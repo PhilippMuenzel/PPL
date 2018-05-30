@@ -13,3 +13,7 @@
 [submodule "include/simpleini"]
 	path = include/simpleini
 	url = https://github.com/brofield/simpleini.git
+[submodule "include/SDK"]
+	path = include/SDK
+	url = https://github.com/PhilippMuenzel/SDK.git
+
