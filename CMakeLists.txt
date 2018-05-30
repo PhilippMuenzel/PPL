@@ -19,7 +19,7 @@ endif()
 if(UNIX)
     set(PLATFORM_COMPILE_OPTIONS -Wall -Wextra -Wfloat-equal -pedantic)
 else()
-    set(PLATFORM_COMPILE_OPTIONS /W4 /wd4996)
+    set(PLATFORM_COMPILE_OPTIONS /W3 /wd4996)
 endif()
 
 if(APPLE)
@@ -52,8 +52,8 @@ else()
         include/glew/include
         include/openal-soft/include
         include/freetype2/include)
-    set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} -Zi -MTd)
-    set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE} -MT)
+    set(PLATFORM_DEBUG_OPTIONS "-MTd")
+    set(PLATFORM_RELEASE_OPTIONS "-MT")
 endif()
 endif()
 
@@ -92,5 +92,7 @@ set(SOURCES
 
 
 add_library(PPL STATIC ${SOURCES})
-target_compile_options(PPL PRIVATE ${PLATFORM_COMPILE_OPTIONS})
+target_compile_options(PPL PUBLIC ${PLATFORM_COMPILE_OPTIONS})
+target_compile_options(PPL PUBLIC "$<$<CONFIG:DEBUG>:${PLATFORM_DEBUG_OPTIONS}>")
+target_compile_options(PPL PUBLIC "$<$<CONFIG:RELEASE>:${PLATFORM_RELEASE_OPTIONS}>")
 target_compile_definitions(PPL PRIVATE ${DEFINITIONS})
