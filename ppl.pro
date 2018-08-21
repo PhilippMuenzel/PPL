@@ -9,8 +9,8 @@ CONFIG -= thread qt
 VERSION = 2.0.0
 
 INCLUDEPATH += include/simpleini
-INCLUDEPATH += ../SDK/CHeaders/XPLM
-INCLUDEPATH += ../SDK/CHeaders/Widgets
+INCLUDEPATH += include/SDK/CHeaders/XPLM
+INCLUDEPATH += include/SDK/CHeaders/Widgets
 
 # Defined to use X-Plane SDK 2.0, 2.1, 3.0 and 3.01 capabilities - no backward compatibility before 11.20
 DEFINES += XPLM200 XPLM210 XPLM300 XPLM301
