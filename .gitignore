@@ -2,3 +2,5 @@
 Makefile
 objects/
 ppl.pro.user
+lib/libppl.a
+lib/libppld.a
