@@ -201,7 +201,7 @@ int MessageWindow::processMessages(XPWidgetMessage inMessage, intptr_t, intptr_t
 
 int MessageWindow::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t param1, intptr_t param2)
 {
-    MessageWindow* widget = reinterpret_cast<MessageWindow *>(XPGetWidgetProperty(inWidget, xpProperty_Object, NULL));
+    MessageWindow* widget = reinterpret_cast<MessageWindow *>(XPGetWidgetProperty(inWidget, xpProperty_Object, nullptr));
     if (widget)
     {
         return widget->processMessages(inMessage, param1, param2);
@@ -250,7 +250,7 @@ void MessageWindow::createSurroundingBox()
                                   1,
                                   m_title.c_str(),
                                   1,
-                                  0,
+                                  nullptr,
                                   xpWidgetClass_MainWindow);
     XPSetWidgetProperty(m_box_widget, xpProperty_MainWindowHasCloseBoxes, 1);
     XPSetWidgetProperty(m_box_widget, xpProperty_MainWindowType, xpMainWindowStyle_MainWindow);

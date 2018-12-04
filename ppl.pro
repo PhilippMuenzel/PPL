@@ -35,7 +35,7 @@ win32 {
     DEFINES += APL=0 IBM=1 LIN=0
     #disable the deprecated warnings that make writing standards-compliant code impossible
     QMAKE_CXXFLAGS += -wd4996
-    QMAKE_CXXFLAGS_DEBUG =  -Zi -MTd
+    QMAKE_CXXFLAGS_DEBUG = -Zi -MTd
     QMAKE_CXXFLAGS_RELEASE = -MT
     DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN GLEW_STATIC=1
 }

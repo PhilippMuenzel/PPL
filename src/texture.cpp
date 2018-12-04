@@ -164,12 +164,12 @@ Texture::Texture(const std::string& file_name, bool build_mipmaps)
 
         FILE *file = fopen(file_name.c_str(), "rb");        // Open The TGA File
 
-        if(    file==NULL ||                                                        // Does File Even Exist?
+        if(    file==nullptr ||                                                        // Does File Even Exist?
                 fread(TGAcompare,1,sizeof(TGAcompare),file)!=sizeof(TGAcompare) ||  // Are There 12 Bytes To Read?
                 memcmp(TGAheader,TGAcompare,sizeof(TGAheader))!=0                || // Does The Header Match What We Want?
                 fread(header,1,sizeof(header),file)!=sizeof(header))                // If So Read Next 6 Header Bytes
         {
-            if (file == NULL)                               // Did The File Even Exist? *Added Jim Strong*
+            if (file == nullptr)                               // Did The File Even Exist? *Added Jim Strong*
                 throw std::runtime_error("File could not be opened: "+file_name);
             else                                            // Otherwise
             {

@@ -33,7 +33,7 @@ using namespace PPL;
 
 MenuItem::MenuItem(const std::string& title)
 {
-    m_item_id = XPLMAppendMenuItem(XPLMFindPluginsMenu(), title.c_str(), NULL, 1);
+    m_item_id = XPLMAppendMenuItem(XPLMFindPluginsMenu(), title.c_str(), nullptr, 1);
     m_menu_id = XPLMCreateMenu(title.c_str(), XPLMFindPluginsMenu(), m_item_id, menuHandler, this);
 }
 

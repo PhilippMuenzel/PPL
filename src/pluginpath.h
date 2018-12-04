@@ -60,7 +60,7 @@ public:
       * @return the absolute path
       * @exception PathSetupError is thrown if path conversion fails
       */
-    static std::string prependPluginPath(const std::string&);
+    static std::string prependPluginPath(const std::string& path);
 
     /**
       * prepend the absolute path to the Resources subdirectory of the
@@ -69,7 +69,7 @@ public:
       * @return the absolute path
       * @exception PathSetupError is thrown if path conversion fails
       */
-    static std::string prependPluginResourcesPath(const std::string&);
+    static std::string prependPluginResourcesPath(const std::string& path);
 
     /**
       * prepend the absolute path to the directory of the currently loaded
@@ -78,7 +78,7 @@ public:
       * @return the absolute path
       * @exception PathSetupError is thrown if path conversion fails
       */
-    static std::string prependPlanePath(const std::string&);
+    static std::string prependPlanePath(const std::string& path);
 
     /**
       * set the name of the directory where fat plugin resides

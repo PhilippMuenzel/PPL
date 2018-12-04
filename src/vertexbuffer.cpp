@@ -56,7 +56,7 @@ std::size_t VertexBuffer::beginSpecifyVerts(std::size_t num_vertices, volatile f
     case STATIC:    usage = GL_STATIC_DRAW; break;
     case STREAMING: usage = GL_STREAM_DRAW; break;
     }
-    glBufferData(GL_ARRAY_BUFFER, num_vertices * stride_floats_ * sizeof(GLfloat), NULL, usage);
+    glBufferData(GL_ARRAY_BUFFER, num_vertices * stride_floats_ * sizeof(GLfloat), nullptr, usage);
     GLfloat* bp = static_cast<GLfloat*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
 
     *out_verts = bp;
@@ -66,7 +66,7 @@ std::size_t VertexBuffer::beginSpecifyVerts(std::size_t num_vertices, volatile f
         if(num_nrm_)
             *out_normals = bp;
         else
-            *out_normals = NULL;
+            *out_normals = nullptr;
     }
     bp += num_nrm_;
     if(out_texes)
@@ -74,7 +74,7 @@ std::size_t VertexBuffer::beginSpecifyVerts(std::size_t num_vertices, volatile f
         if(num_tx_)
             *out_texes = bp;
         else
-            *out_texes = NULL;
+            *out_texes = nullptr;
     }
     bp += num_tx_;
     if(out_texes2)
@@ -82,7 +82,7 @@ std::size_t VertexBuffer::beginSpecifyVerts(std::size_t num_vertices, volatile f
         if(num_tx2_)
             *out_texes2 = bp;
         else
-            *out_texes2 = NULL;
+            *out_texes2 = nullptr;
     }
     bp += num_tx2_;
     if(out_colors)
@@ -90,7 +90,7 @@ std::size_t VertexBuffer::beginSpecifyVerts(std::size_t num_vertices, volatile f
         if(num_col_)
             *out_colors = bp;
         else
-            *out_colors = NULL;
+            *out_colors = nullptr;
     }
     return stride_floats_;
 }
@@ -111,9 +111,9 @@ void VertexBuffer::setupForDraw()
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
 
-    float* p = NULL;
+    float* p = nullptr;
 
-    int stride = stride_floats_*sizeof(GLfloat);
+    std::size_t stride = stride_floats_*sizeof(GLfloat);
 
     glVertexPointer(num_vrt_, GL_FLOAT, stride, p);
     p += num_vrt_;

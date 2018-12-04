@@ -50,7 +50,7 @@ OnScreenDisplay::OnScreenDisplay(int width, int height, const std::string& title
                                 1,
                                 title_.c_str(),
                                 1,
-                                0,
+                                nullptr,
                                 xpWidgetClass_MainWindow);
     XPSetWidgetProperty(widget_id_, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
     XPSetWidgetProperty(widget_id_, xpProperty_Object, reinterpret_cast<intptr_t>(this));
@@ -89,7 +89,7 @@ int OnScreenDisplay::processMessages(XPWidgetMessage inMessage, intptr_t, intptr
 
 int OnScreenDisplay::widgetCallback(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t param1, intptr_t param2)
 {
-    OnScreenDisplay* display = reinterpret_cast<OnScreenDisplay*>(XPGetWidgetProperty(inWidget, xpProperty_Object, 0));
+    OnScreenDisplay* display = reinterpret_cast<OnScreenDisplay*>(XPGetWidgetProperty(inWidget, xpProperty_Object, nullptr));
     if (display)
     {
         return display->processMessages(inMessage, param1, param2);

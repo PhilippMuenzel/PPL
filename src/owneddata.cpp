@@ -36,10 +36,10 @@ template <>
 void OwnedData<int>::registerRead()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Int, 0,
-                                                 readFunc<int>, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                                                 NULL, NULL, NULL, NULL, this, NULL );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 readFunc<int>, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                                                 nullptr, nullptr, nullptr, nullptr, this, nullptr);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,10 +49,10 @@ template <>
 void OwnedData<float>::registerRead()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Float, 0,
-                                                 NULL, NULL, readFunc<float>, NULL, NULL, NULL, NULL, NULL,
-                                                 NULL, NULL, NULL, NULL, this, NULL );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, readFunc<float>, nullptr, nullptr, nullptr, nullptr, nullptr,
+                                                 nullptr, nullptr, nullptr, nullptr, this, nullptr);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,10 +62,10 @@ template <>
 void OwnedData<double>::registerRead()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Double, 0,
-                                                 NULL, NULL, NULL, NULL, readFunc<double>, NULL, NULL, NULL,
-                                                 NULL, NULL, NULL, NULL, this, NULL);
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, nullptr, nullptr, readFunc<double>, nullptr, nullptr, nullptr,
+                                                 nullptr, nullptr, nullptr, nullptr, this, nullptr);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,10 +75,10 @@ template <>
 void OwnedData<std::string>::registerRead()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Data, 0,
-                                                 NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                                                 NULL, NULL, readFuncStr, NULL, this, NULL );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                                                 nullptr, nullptr, readFuncStr, nullptr, this, nullptr);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -88,10 +88,10 @@ template <>
 void OwnedData<std::vector<float> >::registerRead()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_FloatArray, 0,
-                                                 NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                                                 readFuncVF, NULL, NULL, NULL, this, NULL );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                                                 readFuncVF, nullptr, nullptr, nullptr, this, nullptr);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -102,10 +102,10 @@ template <>
 void OwnedData<int>::registerWrite()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Int, 1,
-                                             NULL, writeFunc<int>, NULL, NULL, NULL, NULL, NULL, NULL,
-                                             NULL, NULL, NULL, NULL, NULL, this );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                             nullptr, writeFunc<int>, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                                             nullptr, nullptr, nullptr, nullptr, nullptr, this);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -115,10 +115,10 @@ template <>
 void OwnedData<float>::registerWrite()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Float, 1,
-                                             NULL, NULL, NULL, writeFunc<float>, NULL, NULL, NULL, NULL,
-                                             NULL, NULL, NULL, NULL, NULL, this );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                             nullptr, nullptr, nullptr, writeFunc<float>, nullptr, nullptr, nullptr, nullptr,
+                                             nullptr, nullptr, nullptr, nullptr, nullptr, this);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -128,10 +128,10 @@ template <>
 void OwnedData<double>::registerWrite()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Double, 1,
-                                                 NULL, NULL, NULL, NULL, NULL, writeFunc<double>, NULL, NULL,
-                                                 NULL, NULL, NULL, NULL, NULL, this );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, nullptr, nullptr, nullptr, writeFunc<double>, nullptr, nullptr,
+                                                 nullptr, nullptr, nullptr, nullptr, nullptr, this);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -141,10 +141,10 @@ template <>
 void OwnedData<std::string>::registerWrite()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Data, 1,
-                                                 NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                                                 NULL, NULL, NULL, writeFuncStr, NULL, this );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                                                 nullptr, nullptr, nullptr, writeFuncStr, nullptr, this);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -154,10 +154,10 @@ template <>
 void OwnedData<std::vector<float> >::registerWrite()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_FloatArray, 1,
-                                                 NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                                                 NULL, writeFuncVF, NULL, NULL, NULL, this );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                                                 nullptr, writeFuncVF, nullptr, nullptr, nullptr, this);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,10 +168,10 @@ template <>
 void OwnedData<int>::registerReadWrite()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Int, 1,
-                                                 readFunc<int>, writeFunc<int>, NULL, NULL, NULL, NULL, NULL, NULL,
-                                                 NULL, NULL, NULL, NULL, this, this );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 readFunc<int>, writeFunc<int>, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                                                 nullptr, nullptr, nullptr, nullptr, this, this);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -181,10 +181,10 @@ template <>
 void OwnedData<float>::registerReadWrite()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Float, 1,
-                                                 NULL, NULL, readFunc<float>, writeFunc<float>, NULL, NULL, NULL, NULL,
-                                                 NULL, NULL, NULL, NULL, this, this );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, readFunc<float>, writeFunc<float>, nullptr, nullptr, nullptr, nullptr,
+                                                 nullptr, nullptr, nullptr, nullptr, this, this);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -194,10 +194,10 @@ template <>
 void OwnedData<double>::registerReadWrite()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Double, 1,
-                                                 NULL, NULL, NULL, NULL, readFunc<double>, writeFunc<double>, NULL, NULL,
-                                                 NULL, NULL, NULL, NULL, this, this );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, nullptr, nullptr, readFunc<double>, writeFunc<double>, nullptr, nullptr,
+                                                 nullptr, nullptr, nullptr, nullptr, this, this);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -207,10 +207,10 @@ template <>
 void OwnedData<std::string>::registerReadWrite()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_Data, 1,
-                                                 NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                                                 NULL, NULL, readFuncStr, writeFuncStr, this, this );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                                                 nullptr, nullptr, readFuncStr, writeFuncStr, this, this);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -220,10 +220,10 @@ template <>
 void OwnedData<std::vector<float> >::registerReadWrite()
 {
     m_data_ref = XPLMRegisterDataAccessor( m_data_ref_identifier.c_str(), xplmType_FloatArray, 1,
-                                                 NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                                                 readFuncVF, writeFuncVF, NULL, NULL, this, this );
-    if (m_data_ref == 0)
-        throw DataRefNotPublishedException("");
+                                                 nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                                                 readFuncVF, writeFuncVF, nullptr, nullptr, this, this);
+    if (m_data_ref == nullptr)
+        throw DataRefNotPublishedException(m_data_ref_identifier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -234,7 +234,7 @@ int PPL::readFuncStr(void* inRefCon, void* outValue, int inOffset, int inMaxLeng
 {
     OwnedData<std::string>* p_owned_data = static_cast<OwnedData<std::string>*>(inRefCon);
     std::size_t length = p_owned_data->value().length();
-    if (outValue == NULL)
+    if (outValue == nullptr)
         return length;
     std::size_t maxlen = std::min(std::size_t(inMaxLength), length);
     strncpy(static_cast<char*>(outValue), p_owned_data->value().substr(inOffset, maxlen).c_str(), maxlen);
@@ -258,7 +258,7 @@ int PPL::readFuncVF(void* inRefCon, float* outValues, int inOffset, int inMaxLen
 {
     std::size_t max_length = static_cast<unsigned int>(inMaxLength);
     OwnedData<std::vector<float> >* p_owned_data = static_cast<OwnedData<std::vector<float> >*>(inRefCon);
-    if (outValues == NULL)
+    if (outValues == nullptr)
         return p_owned_data->value().size();
     int end = (p_owned_data->value().size() < max_length) ? p_owned_data->value().size() : max_length;
     memcpy(outValues, &p_owned_data->value()[inOffset], sizeof(float)*end);

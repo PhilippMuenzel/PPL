@@ -279,14 +279,14 @@ DataRef<SimType>::DataRef(const std::string& identifier,
                           RWType writeability,
                           bool share,
                           bool publish_in_dre):
-    m_data_ref(0),
+    m_data_ref(nullptr),
     m_read_write(writeability),
     shared_(false),
     identifier_(identifier)
 {
     try
     {
-        if (share && XPLMFindDataRef(identifier.c_str()) == 0)
+        if (share && XPLMFindDataRef(identifier.c_str()) == nullptr)
             shareDataRef(identifier, publish_in_dre);
         lookUp(identifier);
         checkDataType();
@@ -435,7 +435,7 @@ void DataRef<SimType>::publishInDRE()
 {
     XPLMPluginID PluginID = XPLMFindPluginBySignature(DRE_PLUGIN_SINATURE);
     if (PluginID != XPLM_NO_PLUGIN_ID)
-        XPLMSendMessageToPlugin(PluginID, DRE_MSG_ADD_DATAREF, (void*)identifier_.c_str());
+        XPLMSendMessageToPlugin(PluginID, DRE_MSG_ADD_DATAREF, static_cast<void*>(const_cast<char*>(identifier_.c_str())));
 }
 
 

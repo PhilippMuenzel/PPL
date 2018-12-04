@@ -84,7 +84,7 @@ public:
               bool publish_in_dre = false,
               DataCallback_f callback = 0):
         m_data_ref_identifier(identifier),
-        m_data_ref(0),
+        m_data_ref(nullptr),
         m_value(T()),
         m_callback(callback)
     {

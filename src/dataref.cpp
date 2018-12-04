@@ -179,7 +179,7 @@ DataRef<double>::operator double() const
 template <>
 DataRef<std::vector<float> >::operator std::vector<float>() const
 {
-    cache_.resize(XPLMGetDatavf(m_data_ref, NULL, 0, 0));
+    cache_.resize(XPLMGetDatavf(m_data_ref, nullptr, 0, 0));
     XPLMGetDatavf(m_data_ref, &cache_[0], 0, cache_.size());
     return cache_;
 }
@@ -187,7 +187,7 @@ DataRef<std::vector<float> >::operator std::vector<float>() const
 template <>
 DataRef<std::vector<int> >::operator std::vector<int>() const
 {
-    cache_.resize(XPLMGetDatavi(m_data_ref, NULL, 0, 0));
+    cache_.resize(XPLMGetDatavi(m_data_ref, nullptr, 0, 0));
     XPLMGetDatavi(m_data_ref, &cache_[0], 0, cache_.size());
     return cache_;
 }
@@ -195,7 +195,7 @@ DataRef<std::vector<int> >::operator std::vector<int>() const
 template <>
 DataRef<std::string>::operator std::string() const
 {
-    cache_.resize(XPLMGetDatab(m_data_ref, NULL, 0, 0));
+    cache_.resize(XPLMGetDatab(m_data_ref, nullptr, 0, 0));
     XPLMGetDatab(m_data_ref, &cache_[0], 0, cache_.size());
     return std::string(cache_.data(), strnlen(cache_.data(), cache_.size()));
 }
@@ -273,7 +273,7 @@ dataref_trait<std::vector<int> >::BasicType DataRef<std::vector<int> >::operator
 template<>
 dataref_trait<std::string>::BasicType DataRef<std::string>::operator[](std::size_t index) const
 {
-    cache_.resize(XPLMGetDatab(m_data_ref, NULL, 0, 0));        // can't use convert to std::string method here, because we might want the raw data with embedded null bytes.
+    cache_.resize(XPLMGetDatab(m_data_ref, nullptr, 0, 0));        // can't use convert to std::string method here, because we might want the raw data with embedded null bytes.
     XPLMGetDatab(m_data_ref, &cache_[0], 0, cache_.size());
     return cache_[index];
 }
@@ -419,7 +419,7 @@ void DataRef<std::string >::reserve(std::size_t i)
 template<>
 void DataRef<std::vector<int> >::reserve()
 {
-    std::size_t i = XPLMGetDatavi(m_data_ref, NULL, 0, 0);
+    std::size_t i = XPLMGetDatavi(m_data_ref, nullptr, 0, 0);
     cache_.resize(i);
     m_history.resize(i);
 }
@@ -427,14 +427,14 @@ void DataRef<std::vector<int> >::reserve()
 template<>
 void DataRef<std::vector<float> >::reserve()
 {
-    std::size_t i = XPLMGetDatavf(m_data_ref, NULL, 0, 0);
+    std::size_t i = XPLMGetDatavf(m_data_ref, nullptr, 0, 0);
     cache_.resize(i);
     m_history.resize(i);
 }
 template<>
 void DataRef<std::string >::reserve()
 {
-    std::size_t i = XPLMGetDatab(m_data_ref, NULL, 0, 0);
+    std::size_t i = XPLMGetDatab(m_data_ref, nullptr, 0, 0);
     cache_.resize(i);
     m_history.resize(i);
 }

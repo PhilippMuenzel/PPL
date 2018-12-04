@@ -34,7 +34,7 @@
 
 using namespace PPL;
 
-float HandlerCallbackInit(float, float, int, void* inRefCon)
+float PPL::HandlerCallbackInit(float, float, int, void* inRefCon)
 {
     LogicHandler* handler = static_cast<LogicHandler*>(inRefCon);
     handler->initializeAtStart();
@@ -44,7 +44,7 @@ float HandlerCallbackInit(float, float, int, void* inRefCon)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-float HandlerCallbackProcess(float, float, int, void* inRefCon)
+float PPL::HandlerCallbackProcess(float, float, int, void* inRefCon)
 {
     LogicHandler* handler = static_cast<LogicHandler*>(inRefCon);
     if (!handler->isSuspended())

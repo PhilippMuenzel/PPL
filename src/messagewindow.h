@@ -122,7 +122,7 @@ public:
       * @param param1
       * @param param2
       */
-    int processMessages(XPWidgetMessage, intptr_t, intptr_t);
+    int processMessages(XPWidgetMessage message, intptr_t param1, intptr_t param2);
 
     /**
       * static widget callback to register in X-Plane's widget logic

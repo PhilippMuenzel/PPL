@@ -124,6 +124,9 @@ private:
 
 };
 
+float HandlerCallbackInit(float, float, int, void* inRefCon);
+float HandlerCallbackProcess(float, float, int, void* inRefCon);
+
 }
 
 #endif
