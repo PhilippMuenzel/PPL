@@ -459,7 +459,7 @@ void DataRef<SimType>::checkWriteabilityIsValid()
 {
     if(m_read_write == WriteOnly || m_read_write == ReadWrite)
         if (!XPLMCanWriteDataRef(m_data_ref))
-            throw NotWriteableException("Declared to be writeable, but X-Plane says it is read-only.");
+            throw NotWriteableException(identifier_+ " declared to be writeable, but X-Plane says it is read-only.");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -468,7 +468,7 @@ void DataRef<SimType>::checkWriteabilityIsValid()
 template <typename SimType>
 void DataRef<SimType>::checkDataType()
 {
-    throw IncompatibleTypeException("No type defined.");
+    throw IncompatibleTypeException(identifier_+" no type defined.");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
