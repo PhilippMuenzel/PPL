@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
-project(PPL VERSION 2.0.0 DESCRIPTION "Plugin Patterns Library for X-Plane 11")
+project(PPL VERSION 2.0.0 DESCRIPTION "Plugin Patterns Library for X-Plane 11/12")
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -23,13 +23,14 @@ else()
 endif()
 
 if(APPLE)
-    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
+    set(CMAKE_OSX_ARCHITECTURES $(ARCHS_STANDARD))
     set(PLATFORM_CORE_DEFINITIONS
         APL=1
         LIN=0
         IBM=0)
     set(PLATFORM_INCLUDE_DIRECTORIES
-        /usr/X11/include/freetype2)
+        include/freetype2/include)
 else()
 if(LINUX)
     set(PLATFORM_CORE_DEFINITIONS
