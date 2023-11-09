@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
-project(PPL VERSION 2.0.0 DESCRIPTION "Plugin Patterns Library for X-Plane 11/12")
+project(PPL VERSION 2.1.0 DESCRIPTION "Plugin Patterns Library for X-Plane 11/12")
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -65,8 +65,8 @@ set(DEFINITIONS
     XPLM301=1
     ${PLATFORM_CORE_DEFINITIONS})
 
-include_directories(${CMAKE_SOURCE_DIR}/../SDK/CHeaders/XPLM
-                    ${CMAKE_SOURCE_DIR}/../SDK/CHeaders/Widgets
+include_directories(${CMAKE_SOURCE_DIR}/include/SDK/CHeaders/XPLM
+                    ${CMAKE_SOURCE_DIR}/include/SDK/CHeaders/Widgets
                     ${CMAKE_SOURCE_DIR}/include/simpleini
                     ${PLATFORM_INCLUDE_DIRECTORIES})
 
