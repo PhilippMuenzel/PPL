@@ -30,7 +30,7 @@
 
 namespace PPL {
 
-class Processor
+class [[deprecated("Replaced by PPL::FlightLoop<T>.")]] Processor
 {
 public:
     Processor(float time_to_start = -1.f);
