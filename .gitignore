@@ -4,3 +4,7 @@ objects/
 ppl.pro.user
 lib/libppl.a
 lib/libppld.a
+lib/PPL.lib
+lib/PPLd.lib
+lib/PPLd.pdb
+build/
