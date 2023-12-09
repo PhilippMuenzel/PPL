@@ -45,12 +45,12 @@ class MenuItem
 public:
     MenuItem(const std::string& title);
     ~MenuItem();
-    void addSubItem(Action* action);
+    void addSubItem(std::unique_ptr<Action>&& action);
     void menuHandler(void* iRef);
 private:
     static void menuHandler(void* mRef, void* iRef);
     int m_item_id;
-    std::vector<Action*> m_actions;
+    std::vector<std::unique_ptr<Action>> m_actions;
     XPLMMenuID m_menu_id;
 };
 

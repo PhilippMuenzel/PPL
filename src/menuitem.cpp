@@ -60,10 +60,10 @@ void MenuItem::menuHandler(void *iRef)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void MenuItem::addSubItem(Action* action)
+void MenuItem::addSubItem(std::unique_ptr<Action>&& action)
 {
-    m_actions.push_back(action);
-    XPLMAppendMenuItem(m_menu_id, action->name().c_str(), reinterpret_cast<void*>(m_actions.size()-1), 1);
+    m_actions.emplace_back(std::move(action));
+    XPLMAppendMenuItem(m_menu_id, m_actions.back()->name().c_str(), reinterpret_cast<void*>(m_actions.size()-1), 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
