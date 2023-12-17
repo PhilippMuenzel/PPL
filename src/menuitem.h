@@ -30,6 +30,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "XPLMDisplay.h"
 #include "XPLMMenus.h"
