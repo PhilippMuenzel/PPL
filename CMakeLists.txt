@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/lib)
 
@@ -17,7 +18,7 @@ set(LINUX TRUE)
 endif()
 
 if(UNIX)
-    set(PLATFORM_COMPILE_OPTIONS -Wall -Wextra -Wfloat-equal -pedantic)
+    set(PLATFORM_COMPILE_OPTIONS -Wall -Wextra -Wfloat-equal -pedantic -fPIC)
 else()
     set(PLATFORM_COMPILE_OPTIONS /W3 /wd4996)
 endif()
@@ -63,10 +64,11 @@ set(DEFINITIONS
     XPLM210=1
     XPLM300=1
     XPLM301=1
+    XPLM400=1
     ${PLATFORM_CORE_DEFINITIONS})
 
-include_directories(${CMAKE_SOURCE_DIR}/../SDK/CHeaders/XPLM
-                    ${CMAKE_SOURCE_DIR}/../SDK/CHeaders/Widgets
+include_directories(${CMAKE_SOURCE_DIR}/include/SDK/CHeaders/XPLM
+                    ${CMAKE_SOURCE_DIR}/include/SDK/CHeaders/Widgets
                     ${CMAKE_SOURCE_DIR}/include/simpleini
                     ${PLATFORM_INCLUDE_DIRECTORIES})
 
