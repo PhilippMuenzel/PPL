@@ -32,8 +32,8 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 #else
+#include <GL/glew.h>
 #include <GL/gl.h>
-#include <GL/glu.h>
 #endif
 #include "XPLMGraphics.h"
 
@@ -318,11 +318,7 @@ FontHandle FontMgr::loadFont(const char* inFontPath, const char * inStartMem, co
     char buf[512];
     snprintf(buf, 512, "Trying to build mipmaps for font %s, tex width %d, tex height %d, texture data %p\n", inFontPath, info->tex_width, info->tex_height, (void*)textureData);
     XPLMDebugString(buf);
-#if APL
     OGL_ERROR(glGenerateMipmap(GL_TEXTURE_2D))
-#else
-    OGL_ERROR(gluBuild2DMipmaps(GL_TEXTURE_2D, GL_ALPHA, info->tex_width, info->tex_height, GL_ALPHA, GL_UNSIGNED_BYTE, textureData))
-#endif
 
     // Ben sez: use nearest neighbor for exact-size fonts...pixel accurate!
     // Use linear for scaled fonts....less artifacts when we scale.
