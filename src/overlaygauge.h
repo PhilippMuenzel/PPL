@@ -37,11 +37,9 @@
 #include <windows.h>
 #include "GL/glew.h"
 #include <gl/gl.h>
-#include <gl/glu.h>
 #elif LIN == 1
 #include <GL/glew.h>
 #include <GL/gl.h>
-#include <GL/glu.h>
 #endif
 
 namespace PPL {

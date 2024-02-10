@@ -34,11 +34,11 @@
 
 #if IBM
 #include <Windows.h>
+#include <GL\glew.h>
 #include <gl\gl.h>
-#include <gl\glu.h>
 #elif LIN
+#include <GL/glew.h>
 #include <GL/gl.h>
-#include <GL/glu.h>
 #elif APL
 #include <OpenGL/gl.h>
 #endif
@@ -231,11 +231,7 @@ Texture::Texture(const std::string& file_name, bool build_mipmaps)
     }
     if (build_mipmaps)
     {
-#if APL
         glGenerateMipmap(GL_TEXTURE_2D);
-#else
-        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_ALPHA, m_imagedata.Width, m_imagedata.Height, GL_ALPHA, GL_UNSIGNED_BYTE, &m_imagedata.pData[0]);
-#endif
     }
 }
 
