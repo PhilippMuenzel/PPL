@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
-project(PPL VERSION 2.0.0 DESCRIPTION "Plugin Patterns Library for X-Plane 11/12")
+project(PPL VERSION 2.1.0 DESCRIPTION "Plugin Patterns Library for X-Plane 11/12")
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
