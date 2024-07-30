@@ -4,7 +4,7 @@
     branch = glew-1.13
 [submodule "include/freetype2"]
 	path = include/freetype2
-	url = https://git.savannah.gnu.org/git/freetype/freetype2.git
+	url = https://github.com/freetype/freetype2.git
     branch = 2.6.5
 [submodule "include/openal-soft"]
 	path = include/openal-soft
