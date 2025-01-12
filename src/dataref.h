@@ -234,6 +234,12 @@ public:
      * @note does nothing for non-vector data
      */
     void reserve(std::size_t) {}
+    
+    /**
+     * convenience function to get length of array data
+     * @note always returns 1 for non-vector data
+     */
+    std::size_t size() const { return 1; }
 
 private:
 
@@ -584,6 +590,14 @@ template<>
 void DataRef<std::vector<float> >::reserve();
 template<>
 void DataRef<std::string>::reserve();
+
+
+template<>
+std::size_t DataRef<std::vector<int> >::size() const;
+template<>
+std::size_t DataRef<std::vector<float> >::size() const;
+template<>
+std::size_t DataRef<std::string>::size() const;
 
 
 }

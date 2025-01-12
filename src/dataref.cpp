@@ -440,6 +440,25 @@ void DataRef<std::string >::reserve()
 }
 
 
+template<>
+std::size_t DataRef<std::vector<int> >::size() const
+{
+    return cache_.size();
+}
+
+template<>
+std::size_t DataRef<std::vector<float> >::size() const
+{
+    return cache_.size();
+}
+
+template<>
+std::size_t DataRef<std::string>::size() const
+{
+    return cache_.size();
+}
+
+
 namespace PPL {
 
 template class DataRef<float>;
