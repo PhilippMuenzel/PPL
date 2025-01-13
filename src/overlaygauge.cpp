@@ -191,6 +191,11 @@ void OverlayGauge::setVisible(bool b)
     }
 }
 
+void OverlayGauge::keepAspectRatio(bool b)
+{
+    enforce_aspect_ratio = b;
+}
+
 bool OverlayGauge::isVisible() const
 {
     return visible_2d_;
@@ -383,8 +388,8 @@ int OverlayGauge::handle2dRightClickCallback(XPLMWindowID window_id, int x, int 
         return 0;
 
     XPLMGetWindowGeometry(window_id, &Left, &Top, &Right, &Bottom);
-    int x_rel = x - Left;
-    int y_rel = y - Bottom;
+    int x_rel = (x - Left) / ((Right - Left) / (float)width_2d_);
+    int y_rel = (y - Bottom) / ((Top - Bottom) / (float)height_2d_);
     if (mouse == xplm_MouseDown)
         handleNonDragClick(x_rel, y_rel, true);
     else if (mouse == xplm_MouseUp)
@@ -401,8 +406,8 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
 
     /// Get the windows current position
     XPLMGetWindowGeometry(window_id, &Left, &Top, &Right, &Bottom);
-    int x_rel = x - Left;
-    int y_rel = y - Bottom;
+    int x_rel = (x - Left)/((Right - Left)/(float)width_2d_);
+    int y_rel = (y - Bottom)/((Top - Bottom)/(float)height_2d_);
     if (!XPLMWindowIsPoppedOut(window_id))
     {
         switch(mouse)
@@ -421,16 +426,23 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
                 {
                     XPLMSetWindowPositioningMode(window2d_id_, xplm_WindowPopOut, -1);
                 }
-                else if (!handleNonDragClick(x_rel, y_rel, false))
+                else if (!handleNonDragClick(x_rel, y_rel, false) && coordInRect(x, y, Left+10, Top-10, Right-10, Bottom+10))
                 {
                     dX = x - Left;
                     dY = y - Top;
+                    new_width = (Right - Left);
+                    new_height = (Top - Bottom);
                     window_is_dragging_ = true;
+                    return 1;
+                }
+                else
+                {
+                    return 0;
                 }
             }
             else
             {
-                handleNonDragClick(x_rel, y_rel, false);
+                return handleNonDragClick(x_rel, y_rel, false);
             }
             break;
         case xplm_MouseDrag:
@@ -438,11 +450,13 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
             if (vr_enabled_ == 0)
             if (window_is_dragging_)
             {
+                float resize_ratio = (new_width / (float)width_2d_ + new_height / (float)height_2d_) / 2.f;
                 left_2d_ = Left = (x - dX);
-                Right = Left + width_2d_;
+                Right = Left + (enforce_aspect_ratio ? width_2d_*resize_ratio : new_width);
                 top_2d_ = Top = (y - dY);
-                Bottom = Top - height_2d_;
+                Bottom = Top - (enforce_aspect_ratio ? height_2d_*resize_ratio : new_height);
                 XPLMSetWindowGeometry(window_id, Left, Top, Right, Bottom);
+                return 1;
             }
             break;
         case xplm_MouseUp:
@@ -461,9 +475,12 @@ int OverlayGauge::handle2dClickCallback(XPLMWindowID window_id, int x, int y, XP
             {
                 XPLMSetWindowPositioningMode(window2d_id_, xplm_WindowPositionFree, -1);
                 XPLMSetWindowGeometry(window_id, left_2d_, top_2d_, left_2d_+width_2d_, top_2d_-height_2d_);
+                return 1;
             }
             else
-                handleNonDragClick(x_rel, y_rel, false);
+            {
+                return handleNonDragClick(x_rel, y_rel, false);
+            }
             break;
         case xplm_MouseUp:
             window_is_dragging_ = false;
@@ -491,8 +508,10 @@ int OverlayGauge::handle2dWheelCallback(XPLMWindowID inWindowID, int x, int y, i
     if (visible_2d_)
     {
         int left, right, top, bottom;
-        XPLMGetWindowGeometry(inWindowID, &left, &top, &right, &bottom);
-        handleMouseWheel(x-left, y-bottom, wheel, clicks);
+        XPLMGetWindowGeometry(inWindowID, &left, &top, &right, &bottom); 
+        int x_rel = (x - left) / ((right - left) / (float)width_2d_);
+        int y_rel = (y - bottom) / ((top - bottom) / (float)height_2d_);
+        handleMouseWheel(x_rel, y_rel, wheel, clicks);
         return 1;
     }
     return 0;

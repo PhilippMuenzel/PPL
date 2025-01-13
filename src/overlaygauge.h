@@ -60,6 +60,7 @@ public:
     void disable3d();
     bool isVisible() const;
     void setVisible(bool b);
+    void keepAspectRatio(bool b);
     void frame();
     int draw3dCallback(XPLMDrawingPhase phase, int is_before);
     void toggleKeyboardFocus();
@@ -149,6 +150,9 @@ private:
     int copy_top_3d_;
     int dX = 0;
     int dY = 0;
+    int new_width = 0;
+    int new_height = 0;
+    bool enforce_aspect_ratio = 1;
 };
 
 }
